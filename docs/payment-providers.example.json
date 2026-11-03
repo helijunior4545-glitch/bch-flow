@@ -1,0 +1,29 @@
+{
+  "REPLACE_WITH_ORGANIZATION_UUID": {
+    "BRL": {
+      "mercadopago_test": {
+        "access_token_env": "MP_ACCESS_TOKEN",
+        "collector_id_env": "MP_COLLECTOR_ID",
+        "webhook_secret_file": "/run/secrets/mercadopago_webhook_secret"
+      }
+    },
+    "BTC": {
+      "testnet": {
+        "url": "http://127.0.0.1:18443/wallet/ORGANIZATION_BTC_WATCH_ONLY",
+        "username_env": "BTC_RPC_USER",
+        "password_file": "/run/secrets/btc_rpc_password",
+        "chain": "regtest",
+        "confirmations": 3
+      }
+    },
+    "BCH": {
+      "testnet": {
+        "url": "http://127.0.0.1:18444/wallet/ORGANIZATION_BCH_WATCH_ONLY",
+        "username_env": "BCH_RPC_USER",
+        "password_file": "/run/secrets/bch_rpc_password",
+        "chain": "regtest",
+        "confirmations": 3
+      }
+    }
+  }
+}

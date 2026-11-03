@@ -5,7 +5,7 @@ from django.db import models
 
 class BCHFlowSchemaV2Tests(SimpleTestCase):
     def test_models_discovered(self):
-        expected = {'BCHIdentity', 'BCHSession', 'BCHOrganization', 'BCHMembership', 'BCHPaymentAlias', 'BCHWalletConnection', 'BCHWalletChallenge', 'BCHInvoice', 'BCHPayment', 'BCHTransfer', 'BCHTransaction', 'BCHExchangeRateSnapshot', 'BCHIdempotencyKey', 'BCHMerchant', 'BCHAuditEvent', 'BCHFinancialEvent', 'BCHOutpointReservation'}
+        expected = {'BCHIdentity', 'BCHSession', 'BCHOrganization', 'BCHMembership', 'BCHPaymentAlias', 'BCHWalletConnection', 'BCHWalletChallenge', 'BCHInvoice', 'BCHPayment', 'BCHTransfer', 'BCHTransaction', 'BCHExchangeRateSnapshot', 'BCHIdempotencyKey', 'BCHMerchant', 'BCHAuditEvent', 'BCHFinancialEvent', 'BCHOutpointReservation', 'FlowAccount', 'FlowRequest', 'FlowReceipt', 'FlowWithdrawal', 'FlowJournal', 'FlowSpend', 'FlowInbox'}
         actual = {m.__name__ for m in apps.get_app_config('app_bch_flow').get_models()}
         self.assertEqual(expected, actual)
     def test_no_foreign_keys_to_host_models(self):

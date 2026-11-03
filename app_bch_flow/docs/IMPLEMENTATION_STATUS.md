@@ -1,7 +1,18 @@
 # Implementation status
 
-IMPLEMENTED SCAFFOLD: Django AppConfig, public landing, health JSON, core exact amount utilities, alias normalization, basic payment transition policy, data model definitions, tests for primitives.
+The repository now includes standalone identity and organization membership, legacy
+BCH observation tools, and a separate multi-asset payment orchestration center.
 
-NOT IMPLEMENTED: migrations, live login/session middleware, email flows, tenant endpoint protection, BCH chain adapter, WizardConnect/XO, live sending, checkout, rate provider, payment matching, webhook signing, production UI, deployment.
+See [Payment platform implementation and activation](../../docs/PAYMENT_PLATFORM.md)
+for current capabilities, reproducible commands, provider configuration, validation
+evidence and activation boundaries. The previous scaffold inventory was historical
+and did not describe the later migrations, authentication or checkout implementations.
 
-Do not use this blueprint for real funds until a separate security and integration review.
+The local sandbox supports the complete receive/reserve/authorize/send flow for
+simulated BTC, BCH and BRL units. Concrete full-node and Mercado Pago receiving
+adapters are implemented but were not validated against actual external accounts
+or networks in this environment. Legacy watch-only endpoints remain non-authoritative.
+
+Mainnet and real-money readiness is not established. Pix payouts are not implemented;
+external signer integration remains a manual package/sign/submit workflow. Read the
+activation document before configuring a real provider or handling funds.

@@ -1,0 +1,340 @@
+{% extends "app_bch_flow/base.html" %}
+{% load static %}
+{% block title %}Carteira · {{ member.organization.name }}{% endblock %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
+  <main id="main" class="pay-app" data-payment-app>
+    <header class="pay-top">
+      <a class="pay-brand" href="{% url 'bch_flow:dashboard' %}">
+        <span>
+          <i data-lucide="wallet">
+          </i>
+        </span>BCH <strong>FLOW</strong>
+      </a>
+      <a href="{% url 'bch_flow:v3_workspace' member.organization_id %}">
+        <i data-lucide="building-2">
+        </i>{{ member.organization.name }}<i data-lucide="arrow-up-right">
+        </i>
+      </a>
+    </header>
+    <div class="pay-heading">
+      <div>
+        <p class="pay-eyebrow">SEU ESPAÇO FINANCEIRO</p>
+        <h1>Uma carteira.<br>
+          <span>Novas possibilidades.</span>
+        </h1>
+      </div>
+      <form method="get" class="pay-environment">
+        <input type="hidden" name="asset" value="{{ asset }}">
+        <label for="environment">Ambiente</label>
+        <select id="environment" name="environment">
+          <option value="sandbox" {% if environment == 'sandbox' %}selected{% endif %}>Laboratório</option>
+          {% if asset == "BRL" %}
+            <option value="mercadopago_test" {% if environment == 'mercadopago_test' %}selected{% endif %}>Mercado Pago · teste</option>
+          {% else %}
+            <option value="testnet" {% if environment == 'testnet' %}selected{% endif %}>Rede de testes</option>
+          {% endif %}
+          <option value="live" {% if environment == 'live' %}selected{% endif %}>Produção</option>
+        </select>
+        <button type="submit" class="pay-small-button">Abrir</button>
+      </form>
+    </div>
+    <div class="pay-mode {% if is_sandbox %}pay-mode-sandbox{% endif %}" role="note">
+      <i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}">
+      </i>
+      <strong>{{ environment_label }}</strong>
+      <span>
+        {% if is_sandbox %}Valores simulados. Nenhuma operação desta conta movimenta dinheiro real.{% else %}Cada organização usa sua própria integração. Valores refletem recebimentos reconciliados, não o saldo total da carteira ou do banco.{% endif %}
+      </span>
+    </div>
+    {% if error %}
+      <div class="pay-error" role="alert">
+        <i data-lucide="circle-alert">
+        </i>{{ error }}</div>
+    {% endif %}
+    {% if account.frozen %}
+      <div class="pay-error" role="alert">Conta em revisão: foi detectada uma divergência. Novas operações estão bloqueadas.</div>
+    {% endif %}
+    <nav class="pay-assets" aria-label="Escolha o ativo">
+      <a href="?asset=BTC&amp;environment=sandbox" {% if asset == 'BTC' %}aria-current="page"{% endif %}>
+        <span class="pay-coin pay-btc">
+          <i data-lucide="bitcoin">
+          </i>
+        </span>
+        <span>Bitcoin<small>BTC</small>
+        </span>
+      </a>
+      <a href="?asset=BCH&amp;environment=sandbox" {% if asset == 'BCH' %}aria-current="page"{% endif %}>
+        <span class="pay-coin">
+          <i data-lucide="bitcoin">
+          </i>
+        </span>
+        <span>Bitcoin Cash<small>BCH</small>
+        </span>
+      </a>
+      <a href="?asset=BRL&amp;environment=sandbox" {% if asset == 'BRL' %}aria-current="page"{% endif %}>
+        <span class="pay-coin pay-brl">
+          <i data-lucide="scan-line">
+          </i>
+        </span>
+        <span>Real / Pix<small>BRL</small>
+        </span>
+      </a>
+    </nav>
+    <section class="pay-wallet-area" aria-label="Saldo e operações">
+      <div class="pay-leather">
+        <div class="pay-wallet-label">
+          <span>{{ member.organization.name }}</span>
+          <i data-lucide="fingerprint">
+          </i>
+        </div>
+        <div class="pay-balance-card">
+          <div class="pay-balance-top">
+            <span>{{ asset }} · {% if is_sandbox %}SALDO SIMULADO{% else %}RECEBIMENTOS RECONCILIADOS{% endif %}
+            </span>
+            <button type="button" data-balance-toggle aria-label="Ocultar valores" aria-pressed="false">
+              <i data-lucide="eye">
+              </i>
+            </button>
+          </div>
+          <div class="pay-amount">
+            <span data-private-value>{{ available }}</span>
+            <small>{{ asset }}</small>
+          </div>
+          <p>
+            {% if asset == "BRL" and not is_sandbox %}Total bruto conciliado · tarifas e disponibilidade no provedor{% else %}Disponível nesta conta{% endif %}
+          </p>
+          <div class="pay-reserved">
+            <i data-lucide="lock-keyhole">
+            </i>
+            <span data-private-value>{{ reserved }}</span> {{ asset }} reservado em saídas</div>
+          <div class="pay-card-footer">
+            <span>
+              <span class="pay-dot">
+              </span>{{ environment_label }}</span>
+            <span>
+              {% if account.frozen %}EM REVISÃO{% elif account %}CONTA CRIADA{% else %}SEM MOVIMENTAÇÕES{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="pay-actions">
+        <p class="pay-eyebrow">SEU DINHEIRO EM MOVIMENTO</p>
+        <h2>Receba com clareza.<br>
+          <span>Envie com controle.</span>
+        </h2>
+        <p>Uma confirmação para cada etapa. Um registro para cada movimento.</p>
+        <div class="pay-action-buttons">
+          {% if can_write %}
+            <button type="button" data-open-dialog="receive-dialog" class="pay-primary">
+              <i data-lucide="arrow-down-left">
+              </i>Receber</button>
+            <button type="button" data-open-dialog="send-dialog" class="pay-secondary">
+              <i data-lucide="arrow-up-right">
+              </i>Enviar</button>
+          {% else %}
+            <p>Seu perfil permite consultar esta carteira. Solicite a um operador uma nova cobrança.</p>
+          {% endif %}
+        </div>
+        <a class="pay-legacy" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">Ferramentas de observação BCH <i data-lucide="arrow-up-right">
+          </i>
+        </a>
+      </div>
+    </section>
+    <section class="pay-section">
+      <div class="pay-section-heading">
+        <div>
+          <p class="pay-eyebrow">ENTRADAS</p>
+          <h2>Suas cobranças</h2>
+        </div>
+        <span>Últimos 20 registros</span>
+      </div>
+      <div class="pay-list">
+        {% for charge in requests %}
+          <a class="pay-row" href="{% url 'bch_flow:financial_request' member.organization_id charge.pk %}">
+            <span class="pay-row-icon">
+              <i data-lucide="arrow-down-left">
+              </i>
+            </span>
+            <span class="pay-row-label">
+              <strong>{{ charge.description|default:'Cobrança' }}</strong>
+              <small>{{ charge.created_at|date:'d/m/Y · H:i' }}</small>
+            </span>
+            <span class="pay-row-value">
+              <strong>{{ charge.formatted_amount }} {{ asset }}</strong>
+              <small>{{ charge.friendly_status }}</small>
+            </span>
+            <i data-lucide="chevron-right">
+            </i>
+          </a>
+        {% empty %}
+          <div class="pay-empty">
+            <i data-lucide="receipt-text">
+            </i>
+            <div>
+              <h3>Sua próxima entrada começa aqui.</h3>
+              <p>Crie uma cobrança para acompanhar cada etapa do recebimento.</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </section>
+    <section class="pay-section">
+      <div class="pay-section-heading">
+        <div>
+          <p class="pay-eyebrow">SAÍDAS</p>
+          <h2>Autorizações e envios</h2>
+        </div>
+        <span>Reserva → autorização → transmissão</span>
+      </div>
+      {% for withdrawal in withdrawals %}
+        <article class="pay-withdrawal">
+          <div class="pay-row">
+            <span class="pay-row-icon">
+              <i data-lucide="arrow-up-right">
+              </i>
+            </span>
+            <span class="pay-row-label">
+              <strong>{{ withdrawal.formatted_amount }} {{ asset }}</strong>
+              <small>{{ withdrawal.destination }}</small>
+            </span>
+            <span class="pay-status" data-state="{{ withdrawal.status }}">{{ withdrawal.friendly_status }}</span>
+          </div>
+          <p class="pay-muted">Taxa máxima: {{ withdrawal.formatted_fee_limit }} {{ asset }} · Total reservado: {{ withdrawal.formatted_reservation }} {{ asset }}</p>
+          {% if withdrawal.txid %}
+            <code class="pay-txid">{{ withdrawal.txid }}</code>
+          {% endif %}
+          {% if can_approve %}
+            {% if withdrawal.status == "pending" or withdrawal.status == "approved" %}
+              {% if not is_sandbox and asset != "BRL" %}
+                <form method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+                  <button type="submit" name="action" value="prepare_send" class="pay-small-button">Preparar transação para assinatura externa</button>
+                  {% if withdrawal.signing_payload %}
+                    <a class="pay-small-button" href="{% url 'bch_flow:financial_signing_package' member.organization_id withdrawal.pk %}">Baixar pacote de assinatura</a>
+                  {% endif %}
+                </form>
+              {% endif %}
+              <form method="post" class="pay-approval" data-submit-feedback>
+                {% csrf_token %}
+                <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+                <input type="hidden" name="action" value="approve">
+                <label>Confirme sua senha<input type="password" name="password" required autocomplete="current-password" maxlength="200">
+                </label>
+                <button class="pay-small-button" type="submit">Autorizar por 5 minutos</button>
+              </form>
+            {% endif %}
+            {% if withdrawal.status == "approved" %}
+              <form method="post" class="pay-approval" data-submit-feedback>
+                {% csrf_token %}
+                <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+                <input type="hidden" name="action" value="submit">
+                {% if not is_sandbox %}
+                  <label>Transação assinada na sua carteira externa<textarea name="raw_transaction" required maxlength="1000000" spellcheck="false" autocomplete="off" placeholder="Hexadecimal da transação assinada; nunca sua chave privada.">
+                    </textarea>
+                  </label>
+                {% endif %}
+                <button class="pay-primary" type="submit">
+                  {% if is_sandbox %}Executar envio simulado{% else %}Validar e transmitir{% endif %}
+                  <i data-lucide="arrow-up-right">
+                  </i>
+                </button>
+              </form>
+            {% endif %}
+            {% if withdrawal.status == "pending" or withdrawal.status == "approved" %}
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+                <button type="submit" name="action" value="cancel" class="pay-text-button">Cancelar e liberar reserva</button>
+              </form>
+            {% endif %}
+            {% if withdrawal.status == "unknown" or withdrawal.status == "submitting" %}
+              <p class="pay-pending">O resultado da transmissão ainda precisa ser verificado. O valor permanece reservado; não crie outra saída para substituir esta.</p>
+              <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+                <button type="submit" name="action" value="recover" class="pay-small-button">Consultar transmissão no nó</button>
+              </form>
+            {% endif %}
+          {% endif %}
+        </article>
+      {% empty %}
+        <div class="pay-empty">
+          <i data-lucide="shield-check">
+          </i>
+          <div>
+            <h3>Você decide quando sai.</h3>
+            <p>Uma saída reserva saldo e exige autorização de um proprietário ou administrador.</p>
+          </div>
+        </div>
+      {% endfor %}
+    </section>
+    <details class="pay-ledger">
+      <summary>
+        <i data-lucide="book-open-check">
+        </i>Registro financeiro <span>{{ journal|length }} movimentos recentes</span>
+      </summary>
+      {% for entry in journal %}
+        <div class="pay-row">
+          <span>{{ entry.created_at|date:'d/m H:i' }}</span>
+          <span>{{ entry.credit }} → {{ entry.debit }}</span>
+          <strong>{{ entry.formatted_amount }} {{ asset }}</strong>
+        </div>
+      {% empty %}
+        <p>Nenhum movimento registrado nesta conta.</p>
+      {% endfor %}
+    </details>
+    <footer class="pay-footer">
+      <i data-lucide="shield-check">
+      </i>
+      <span>Dados isolados por organização, ativo e ambiente. Chaves privadas nunca são solicitadas aqui.</span>
+    </footer>
+    {% if can_write %}
+      <dialog id="receive-dialog" class="pay-dialog" aria-labelledby="receive-title" {% if request_form.errors %}data-show-errors{% endif %}>
+        <header>
+          <span>
+            <i data-lucide="arrow-down-left">
+            </i> NOVA ENTRADA</span>
+          <button type="button" data-close-dialog aria-label="Fechar">
+            <i data-lucide="x">
+            </i>
+          </button>
+        </header>
+        <h2 id="receive-title">Receber {{ asset }}</h2>
+        <p>{{ environment_label }}. A cobrança expira em 30 minutos.</p>
+        <form method="post" data-submit-feedback>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="request">{{ request_form.as_p }}<button type="submit" class="pay-primary">Criar cobrança<i data-lucide="arrow-up-right">
+            </i>
+          </button>
+        </form>
+      </dialog>
+      <dialog id="send-dialog" class="pay-dialog" aria-labelledby="send-title" {% if withdrawal_form.errors %}data-show-errors{% endif %}>
+        <header>
+          <span>
+            <i data-lucide="arrow-up-right">
+            </i> NOVA SAÍDA</span>
+          <button type="button" data-close-dialog aria-label="Fechar">
+            <i data-lucide="x">
+            </i>
+          </button>
+        </header>
+        <h2 id="send-title">Enviar {{ asset }}</h2>
+        <p>
+          {% if is_sandbox %}Use um destino como sandbox:carteira-destino. Nenhum dinheiro real será enviado.{% elif asset == "BRL" %}Transferências Pix dependem de contratação e integração de um produto de saques. Ainda não habilitadas.{% else %}O saldo e a taxa máxima serão reservados. A assinatura acontece na sua carteira externa. O pacote sem assinatura propõe a taxa informada; confira a taxa antes de assinar.{% endif %}
+        </p>
+        <form method="post" data-submit-feedback>
+          {% csrf_token %}
+          <input type="hidden" name="action" value="withdraw">{{ withdrawal_form.as_p }}<button type="submit" class="pay-primary">Revisar e reservar<i data-lucide="arrow-right">
+            </i>
+          </button>
+        </form>
+      </dialog>
+    {% endif %}
+    <div class="pay-toast" hidden role="status" aria-live="polite">
+    </div>
+  </main>
+  <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
+  </script>
+{% endblock %}

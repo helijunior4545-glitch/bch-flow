@@ -1,0 +1,115 @@
+{% extends "app_bch_flow/base.html" %}
+{% load static %}
+{% block title %}Cobrança · {{ charge.account.asset }}{% endblock %}
+{% block content %}
+  <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
+  <main id="main" class="pay-app pay-detail" data-payment-app>
+    <header class="pay-top">
+      <a class="pay-brand" href="{% url 'bch_flow:financial_home' member.organization_id %}?asset={{ charge.account.asset }}&amp;environment={{ charge.account.environment }}">
+        <i data-lucide="arrow-left">
+        </i>Voltar à carteira</a>
+      <span>{{ member.organization.name }}</span>
+    </header>
+    <div class="pay-heading">
+      <div>
+        <p class="pay-eyebrow">RECEBER · {{ charge.account.asset }}</p>
+        <h1>Cada entrada,<br>
+          <span>bem acompanhada.</span>
+        </h1>
+      </div>
+    </div>
+    <div class="pay-mode">
+      <i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}">
+      </i>
+      <strong>{{ environment_label }}</strong>
+      {% if is_sandbox %}
+        <span>Não envie dinheiro real para esta cobrança.</span>
+      {% endif %}
+    </div>
+    {% if error %}
+      <div class="pay-error" role="alert">{{ error }}</div>
+    {% endif %}
+    <section class="pay-request-card">
+      <div class="pay-section-heading">
+        <span>VALOR SOLICITADO</span>
+        <span class="pay-status">{{ status_label }}</span>
+      </div>
+      <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
+      </div>
+      <p>{{ charge.description|default:'Cobrança' }}</p>
+      <div class="pay-request-meta">
+        <div>
+          <span>Recebido e creditado</span>
+          <strong>{{ received }} {{ charge.account.asset }}</strong>
+        </div>
+        <div>
+          <span>Vencimento</span>
+          <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
+        </div>
+      </div>
+      <p class="pay-eyebrow">ENDEREÇO / REFERÊNCIA</p>
+      <code class="pay-address">{{ charge.address }}</code>
+      <a class="pay-primary" href="{{ checkout_url }}">
+        <i data-lucide="scan-line">
+        </i>Abrir página de pagamento</a>
+      <button type="button" class="pay-secondary" data-copy-link="{{ checkout_url }}">
+        <i data-lucide="copy">
+        </i>Copiar link</button>
+    </section>
+    {% if can_write %}
+      <section class="pay-section">
+        <h2>
+          {% if is_sandbox %}Experimentar o recebimento{% else %}Verificar no provedor{% endif %}
+        </h2>
+        {% if is_sandbox %}
+          <p class="pay-muted">Esta ação registra unidades simuladas no laboratório, sem acessar blockchain ou banco.</p>
+          <form method="post" class="pay-inline-form" data-submit-feedback>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="simulate">
+            <input type="hidden" name="key" value="{{ operation_key }}">
+            <label>Valor simulado<input name="amount" required value="{{ amount }}" inputmode="decimal" maxlength="30">
+            </label>
+            <button class="pay-primary" type="submit">Simular recebimento<i data-lucide="flask-conical">
+              </i>
+            </button>
+          </form>
+        {% else %}
+          <form method="post" class="pay-inline-form" data-submit-feedback>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="refresh">
+            {% if charge.account.asset != "BRL" %}
+              <label>TXID para consulta no nó<input name="txid" minlength="64" maxlength="64" spellcheck="false">
+              </label>
+            {% endif %}
+            <button class="pay-primary" type="submit">Consultar status real<i data-lucide="refresh-cw">
+              </i>
+            </button>
+          </form>
+          <form method="post">
+            {% csrf_token %}
+            <button class="pay-text-button" type="submit" name="action" value="prepare">Preparar ou recuperar cobrança no provedor</button>
+          </form>
+        {% endif %}
+      </section>
+    {% endif %}
+    <section class="pay-section">
+      <h2>Rastreabilidade</h2>
+      {% for receipt in charge.receipts.all %}
+        <div class="pay-receipt">
+          <code>{{ receipt.source_key }}</code>
+          <span>{{ receipt.confirmations }} confirmações · {{ receipt.get_status_display }}</span>
+        </div>
+      {% empty %}
+        <div class="pay-empty">
+          <i data-lucide="clock-3">
+          </i>
+          <p>Aguardando uma observação verificável do pagamento.</p>
+        </div>
+      {% endfor %}
+    </section>
+    <div class="pay-toast" hidden role="status" aria-live="polite">
+    </div>
+  </main>
+  <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
+  </script>
+{% endblock %}
