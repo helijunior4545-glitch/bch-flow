@@ -1,0 +1,19 @@
+{# BCH FLOW MERCHANT WALLET V2.1/V2.2 — read-only organizational context #}
+<section class="mw-panel mw-v2" aria-labelledby="mw-v2-title">
+  <div class="mw-panel-head"><div><span class="mw-eyebrow">MERCHANT WALLET / ORGANIZATION</span><h2 id="mw-v2-title">Receiving addresses</h2></div><span class="mw-tag">READ ONLY</span></div>
+  <p>Addresses below belong to records associated with this organization. A registered address is not proof of ownership or available balance.</p>
+  {% if merchant_wallet %}
+  <div class="mw-v2-merchant"><strong>Merchant receiving address</strong><span class="mw-v2-network">{{ merchant_wallet.network|upper }} · {% if merchant_wallet.verified_at %}Merchant record verified{% else %}Not verified{% endif %}</span><code class="mw-v2-address">{{ merchant_wallet.receiving_cashaddr }}</code><button type="button" class="mw-v2-copy" data-copy-address="{{ merchant_wallet.receiving_cashaddr }}">Copy address</button></div>
+  {% endif %}
+  {% if wallet_connections %}
+  <h3 class="mw-v2-subtitle">Associated wallet connections</h3>
+  <div class="mw-v2-list">{% for wallet in wallet_connections %}<div class="mw-v2-item"><div class="mw-v2-itemhead"><strong>{{ wallet.provider|upper }}</strong><span>{{ wallet.network|upper }} · {% if wallet.verified_at %}Proof recorded{% else %}Ownership not verified{% endif %}</span></div><code class="mw-v2-address">{{ wallet.public_address }}</code><button type="button" class="mw-v2-copy" data-copy-address="{{ wallet.public_address }}">Copy address</button></div>{% endfor %}</div>
+  {% endif %}
+  {% if invoice_addresses %}
+  <h3 class="mw-v2-subtitle">Addresses used in payment requests</h3>
+  <div class="mw-v2-list">{% for item in invoice_addresses %}<div class="mw-v2-item"><div class="mw-v2-itemhead"><strong>Invoice address</strong><span>{{ item.network|upper }}</span></div><code class="mw-v2-address">{{ item.receiving_cashaddr }}</code><button type="button" class="mw-v2-copy" data-copy-address="{{ item.receiving_cashaddr }}">Copy address</button></div>{% endfor %}</div>
+  {% endif %}
+  {% if not merchant_wallet and not wallet_connections and not invoice_addresses %}<div class="mw-v2-empty"><strong>No receiving address registered</strong><p>Create a watch-only payment request using an address you control. Registration does not establish ownership.</p><a class="mw-cta" href="{% url 'bch_flow:v3_invoice_new' member.organization_id %}">Create payment request →</a></div>{% endif %}
+  <div class="mw-v2-footer"><a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}">Inspect external address data →</a><span>External snapshots are not verified spendable balances.</span></div>
+  <p class="mw-v2-feedback" role="status" aria-live="polite"></p>
+</section>

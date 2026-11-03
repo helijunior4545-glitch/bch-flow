@@ -1,0 +1,52 @@
+{% extends 'app_bch_flow/base.html' %}
+{% load static %}
+{% block title %}Private Wallet · BCH Flow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-shell-v320.css' %}?v=320">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-craft-v321.css' %}?v=321">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-minimal-v322.css' %}?v=322">
+<main id="main" class="v320" data-wallet-root data-org="{{ member.organization_id }}">
+  <div class="v320-shell">
+    <aside class="v320-rail"><a class="v320-brand" href="{% url 'bch_flow:home' %}" aria-label="BCH Flow home"><span class="v320-coin">₿</span><span>BCH <em>FLOW</em><small>PRIVATE WALLET</small></span></a>
+      <div class="v320-rail-label">YOUR WALLET</div>
+      <nav class="v320-navigation" aria-label="Wallet functions">
+        <a href="#main" aria-current="page" data-v320-home><i data-lucide="wallet"></i> Overview</a>
+        <a href="{% url 'bch_flow:v3_invoice_new' member.organization_id %}" data-v320-panel="receive"><i data-lucide="arrow-down-left"></i> Receive</a>
+        <a href="{% url 'bch_flow:wallet_v41_send' member.organization_id %}" data-v320-panel="send"><i data-lucide="arrow-up-right"></i> Send</a>
+        <a href="#main" data-v320-panel="addresses"><i data-lucide="layers"></i> Addresses</a>
+        <a href="#main" data-v320-panel="activity"><i data-lucide="history"></i> Activity</a>
+        <a href="{% url 'bch_flow:wallet_v42_diagnostic' member.organization_id %}" data-v320-panel="blockchain"><i data-lucide="scan-search"></i> Blockchain</a>
+        <a href="#v320-security-pocket" data-v320-panel="security"><i data-lucide="shield-check"></i> Security</a>
+      </nav>
+      <div class="v320-rail-end"><span class="v320-dot"></span> WATCH-ONLY <p>No signing, broadcasting or verified balance.</p></div>
+    </aside>
+    <div class="v320-main">
+      <header class="v320-top"><div><span class="v320-overline">PERSONAL FINANCIAL SPACE</span><h1>Your wallet<span>.</span></h1><p>{{ member.organization.name }} · Bitcoin Cash</p></div><span class="v320-state"><i data-lucide="shield"></i> WATCH-ONLY</span></header>
+      <div class="v320-stage">
+        <div class="v320-wallet" aria-label="Physical wallet-inspired interface"><div class="v320-stitch"></div><div class="v320-pocket"><span>PRIVATE WALLET</span><span class="v320-stamp">BCH FLOW · 2026</span></div><div class="v320-card"><div class="v320-card-head"><span><i data-lucide="bitcoin"></i> BITCOIN CASH</span><i data-lucide="fingerprint"></i></div><div class="v320-balance"><small>VERIFIED ON-CHAIN BALANCE</small><strong>— <span>BCH</span></strong><p>Unavailable · Wallet not connected</p></div><div class="v320-card-bottom"><span><span class="v320-dot"></span> WATCH-ONLY MODE</span><span>NO CUSTODY</span></div></div><div class="v320-pocket-edge"></div></div>
+        <section class="v320-actions" aria-label="Wallet actions"><div class="v320-overline">QUICK ACCESS</div><h2>Everything in<br><em>one wallet.</em></h2><p>Open an operation without leaving your wallet.</p><div class="v320-action-grid"><a href="{% url 'bch_flow:v3_invoice_new' member.organization_id %}" data-v320-panel="receive"><i data-lucide="arrow-down-left"></i><span>Receive</span></a><a href="{% url 'bch_flow:wallet_v41_send' member.organization_id %}" data-v320-panel="send"><i data-lucide="arrow-up-right"></i><span>Send</span></a><a href="#main" data-v320-panel="addresses"><i data-lucide="layers"></i><span>Addresses</span></a><a href="#main" data-v320-panel="activity"><i data-lucide="history"></i><span>Activity</span></a></div></section>
+      </div>
+      <div class="v320-info"><i data-lucide="info"></i><span>Payment requests are not proof of settlement. Private keys are never collected. Signing and transfers remain disabled.</span></div>
+      <section class="v322-shelf" aria-label="Wallet compartments">
+        <button type="button" class="v322-shelf-card" data-v320-panel="addresses"><span class="v322-shelf-icon"><i data-lucide="contact-round"></i></span><span><strong>Addresses</strong><small>Receiving details</small></span><i data-lucide="chevron-right"></i></button>
+        <button type="button" class="v322-shelf-card" data-v320-panel="activity"><span class="v322-shelf-icon"><i data-lucide="activity"></i></span><span><strong>Activity</strong><small>Recent requests</small></span><i data-lucide="chevron-right"></i></button>
+      </section>
+      <template id="v322-addresses-template"><div class="v322-panel"><p class="v322-subtle">Receiving addresses <button class="v322-info-trigger" type="button" data-v322-info="addresses" aria-label="About receiving addresses"><i data-lucide="info"></i></button></p>
+        {% if merchant_wallet %}<div class="v322-address"><div class="v322-item-top"><strong>Merchant address</strong><span class="v322-pill">{{ merchant_wallet.network|upper }}</span></div><code>{{ merchant_wallet.receiving_cashaddr }}</code><div class="v322-item-actions"><button type="button" data-v322-copy="{{ merchant_wallet.receiving_cashaddr }}"><i data-lucide="copy"></i> Copy</button><a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}"><i data-lucide="scan-search"></i> Inspect</a></div></div>{% endif %}
+        {% for item in invoice_addresses %}<div class="v322-address"><div class="v322-item-top"><strong>Invoice address</strong><span class="v322-pill">{{ item.network|upper }}</span></div><code>{{ item.receiving_cashaddr }}</code><div class="v322-item-actions"><button type="button" data-v322-copy="{{ item.receiving_cashaddr }}"><i data-lucide="copy"></i> Copy</button><a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}?address={{ item.receiving_cashaddr|urlencode }}"><i data-lucide="scan-search"></i> Inspect</a></div></div>{% endfor %}
+        {% for wallet in wallet_connections %}<div class="v322-address"><div class="v322-item-top"><strong>{{ wallet.provider|upper }}</strong><span class="v322-pill">{{ wallet.network|upper }}</span></div><code>{{ wallet.public_address }}</code><div class="v322-item-actions"><button type="button" data-v322-copy="{{ wallet.public_address }}"><i data-lucide="copy"></i> Copy</button></div></div>{% endfor %}
+        {% if not merchant_wallet and not invoice_addresses and not wallet_connections %}<p class="v322-empty">No addresses recorded.</p>{% endif %}
+        <p class="v322-footnote"><i data-lucide="shield-alert"></i> Read-only · Ownership and balance unverified</p></div></template>
+      <template id="v322-activity-template"><div class="v322-panel"><p class="v322-subtle">Recent payment requests <button class="v322-info-trigger" type="button" data-v322-info="activity" aria-label="About activity"><i data-lucide="info"></i></button></p><div class="v322-activity-list">
+        {% for invoice in invoices %}<a class="v322-activity-item" href="{% url 'bch_flow:v3_invoice' member.organization_id invoice.id %}"><span class="v322-activity-icon"><i data-lucide="arrow-down-left"></i></span><span class="v322-activity-label"><strong>Payment request</strong><small>{{ invoice.id|truncatechars:16 }} · {{ invoice.network|upper }}</small></span><span class="v322-activity-amount"><strong>{{ invoice.amount_satoshis }} sat</strong><small>{{ invoice.status }}</small></span><i data-lucide="chevron-right"></i></a>{% empty %}<p class="v322-empty">No payment requests yet.</p>{% endfor %}</div><div class="v322-secondary"><button type="button" data-v322-advanced-toggle aria-expanded="false"><i data-lucide="sliders-horizontal"></i> Advanced tools <i data-lucide="chevron-down"></i></button><div class="v322-advanced" hidden><a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}">Address monitor</a><a href="{% url 'bch_flow:wallet_v42_diagnostic' member.organization_id %}">Transaction diagnostic</a></div></div><p class="v322-footnote"><i data-lucide="info"></i> Requests are not confirmed payments</p></div></template>
+      <section id="v320-security-pocket" class="v320-security"><i data-lucide="shield-check"></i><div><strong>Security by design</strong><p>Watch-only observations cannot authorize settlement. No transaction broadcasting or spending is enabled.</p></div><button type="button" data-v320-panel="security">Details <i data-lucide="arrow-up-right"></i></button></section>
+    </div>
+  </div>
+  <nav class="v320-mobile" aria-label="Mobile wallet navigation"><a href="#main" data-v320-home><i data-lucide="wallet"></i> Wallet</a><a href="{% url 'bch_flow:v3_invoice_new' member.organization_id %}" data-v320-panel="receive"><i data-lucide="arrow-down-left"></i> Receive</a><a href="{% url 'bch_flow:wallet_v41_send' member.organization_id %}" data-v320-panel="send"><i data-lucide="arrow-up-right"></i> Send</a><a href="#main" data-v320-panel="activity"><i data-lucide="history"></i> Activity</a></nav>
+  <dialog class="v320-dialog" id="v320-dialog" aria-labelledby="v320-dialog-title"><header><div><small>BCH FLOW / WALLET</small><h2 id="v320-dialog-title">Wallet operation</h2></div><button type="button" data-v320-close aria-label="Close dialog"><i data-lucide="x"></i></button></header><div class="v320-dialog-content" id="v320-dialog-content" aria-live="polite"></div></dialog>
+  <div class="v322-toast" role="status" aria-live="polite" hidden></div>
+</main>
+<script defer src="{% static 'app_bch_flow/js/merchant-wallet-v2.js' %}"></script>
+<script defer src="{% static 'app_bch_flow/js/wallet-shell-v322.js' %}?v=322"></script>
+<script defer src="{% static 'app_bch_flow/js/wallet-craft-v321.js' %}?v=321"></script>
+{% endblock %}

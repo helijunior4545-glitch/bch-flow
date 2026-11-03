@@ -1,0 +1,14 @@
+{
+  "version": "V306",
+  "original": {
+    "static/bch_wallet_v301/wallet.css": "366aadf6e731078df6c2f27c661b5d8b31a3e5566355cbf809fb82c5fe0904f0",
+    "static/bch_wallet_v301/wallet.js": "6078b6246b52c9dcb2d3d93968606a1d9a333e29e76d82f331883a0ad3253ddb",
+    "templates/bch_wallet_v301/wallet.html": "13c56fbc0b0aef4f7123547e4dfbb58236a84e9416415911b42b9e2ad1b850b7"
+  },
+  "installed": {
+    "static/bch_wallet_v301/wallet.css": "de03d65a4cc6cf63ead505333da923c1606408b531fb7dee7ad2827baa9cf309",
+    "static/bch_wallet_v301/wallet.js": "59edd2dbca9c1bb5c359323e2a398b94a05fd589f60b708f14ac2b0ea5fb7990",
+    "templates/bch_wallet_v301/wallet.html": "22571d732d628753aaf99bbdff94b6252c6f2aa2552731e7294e5939caf6837c"
+  },
+  "backup": "/home/farcry/Downloads/bchflow-v306-minimal-modal-backup"
+}

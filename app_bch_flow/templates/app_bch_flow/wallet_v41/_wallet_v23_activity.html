@@ -1,0 +1,31 @@
+<!-- BCH_FLOW_V24_UNIFIED_EVIDENCE -->
+{# BCH FLOW V2.3: organization-scoped request history and opt-in blockchain observation. #}
+<nav class="mw23-nav" aria-label="Wallet sections">
+  <a href="#mw-balance-label">Overview</a>
+  <a href="#mw23-receive">Receive</a>
+  <a href="#mw23-history">History</a>
+  <a href="#mw23-chain">Blockchain</a>
+  <a href="#mw23-security">Security</a>
+</nav>
+<section class="mw-panel mw23-panel" id="mw23-history" aria-labelledby="mw23-history-title">
+  <div class="mw-panel-head"><div><span class="mw-eyebrow">ACTIVITY / REQUEST RECORDS</span><h2 id="mw23-history-title">Payment request history</h2></div><span class="mw-tag">NOT SETTLEMENT</span></div>
+  <p>These records are requests stored by your organization. Their status is not evidence of a verified on-chain transfer.</p>
+  <div class="mw23-scroll"><table class="mw23-table"><thead><tr><th>Request</th><th>Amount</th><th>Network</th><th>Stored status</th><th>Details</th><th>Evidence</th></tr></thead><tbody>
+  {% for invoice in invoices %}<tr><td><code>{{ invoice.id|truncatechars:16 }}</code></td><td>{{ invoice.amount_satoshis }} sat</td><td>{{ invoice.network|upper }}</td><td>{{ invoice.status }}</td><td><a href="{% url 'bch_flow:v3_invoice' member.organization_id invoice.id %}">View request ↗</a></td><td><a href="{% url 'bch_flow:wallet_v24_evidence' member.organization_id invoice.id %}">Inspect ↗</a></td></tr>
+  {% empty %}<tr><td colspan="6">No payment requests recorded yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+  <p class="mw23-note">Showing up to 20 recent requests. This is not a blockchain transaction history.</p>
+</section>
+<section class="mw-panel mw23-panel" id="mw23-chain" aria-labelledby="mw23-chain-title">
+  <div class="mw-panel-head"><div><span class="mw-eyebrow">BLOCKCHAIN / MANUAL INSPECTION</span><h2 id="mw23-chain-title">Observe receiving addresses</h2></div><span class="mw-tag">OPT-IN</span></div>
+  <p>Use the existing address monitor to request an external UTXO snapshot for an invoice address registered to this organization. Clicking a link initiates an external read. No background polling occurs.</p>
+  {% if invoice_addresses %}<div class="mw23-addresses">
+  {% for item in invoice_addresses %}
+    <div class="mw23-address"><div><span class="mw23-kicker">{{ item.network|upper }} · REGISTERED INVOICE ADDRESS</span><code>{{ item.receiving_cashaddr }}</code></div>
+      {% if item.network == 'mainnet' %}<a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}?address={{ item.receiving_cashaddr|urlencode }}" aria-label="Inspect mainnet address {{ item.receiving_cashaddr }}">Inspect snapshot ↗</a>{% else %}<span class="mw23-muted">Mainnet monitor only</span>{% endif %}
+    </div>
+  {% endfor %}</div>
+  {% else %}<div class="mw23-empty">No receiving addresses recorded in payment requests.</div>{% endif %}
+  <div class="mw23-footer"><a href="{% url 'bch_flow:wallet_v43_monitor' member.organization_id %}">Open manual address monitor ↗</a><a href="{% url 'bch_flow:wallet_v42_diagnostic' member.organization_id %}">Transaction diagnostic ↗</a></div>
+  <p class="mw23-note">External provider reports are not independent proof of ownership, finality, spendability, or settlement. No invoice status is changed.</p>
+</section>

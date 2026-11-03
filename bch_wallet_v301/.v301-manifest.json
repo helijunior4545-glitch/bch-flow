@@ -1,0 +1,9 @@
+{
+  "templates/bch_wallet_v301/wallet.html": "ba9b8559dd89951c440b3e8efd6e2e926d77a5fa5031e8322df049a835e881e0",
+  "static/bch_wallet_v301/wallet.css": "61e8b0a1ca42aed00c099a7f932dfaa57a34eb9145be4efdc23f8f77f460b4df",
+  "static/bch_wallet_v301/wallet.js": "ac827f69066a19bd44cf77e1b29a77795577be8fabf47c3bb71bbe01dd3ce9cf",
+  "views.py": "f23b646cdcb7af1b2fdeed25a97f9e2e3f9bf30b78a3e370de6723781ef285c1",
+  "urls.py": "e4e934638b926f5e7c8f631101d23ccc0da51dbef9ced9dabb74f6e2ccd90c91",
+  "apps.py": "3e985779356fc02679c73d02919740324c42e4264b70c9cf506917bbe0ffcf53",
+  "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

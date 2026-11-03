@@ -1,0 +1,45 @@
+{% extends 'app_bch_flow/base.html' %}
+{% load static %}
+{% block title %}Payment evidence · BCH Flow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-v41.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-v24.css' %}">
+<main id="main" class="mw"><header class="mw-top"><a class="mw-brand" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">BCH<span>Flow</span></a><a class="mw-back" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}#mw23-history">← Wallet</a></header>
+<div class="mw-container"><span class="mw-eyebrow">BLOCKCHAIN / READ-ONLY EVIDENCE</span><h1>Payment evidence.<br><em>Not settlement.</em></h1>
+<section class="mw-panel"><div class="mw-panel-head"><div><span class="mw-eyebrow">REQUEST</span><h2>{{ invoice.id }}</h2></div><span class="mw-tag">{{ invoice.status|upper }}</span></div>
+<dl class="ev24-grid"><div><dt>Requested</dt><dd>{{ invoice.amount_satoshis }} sat</dd></div><div><dt>Network</dt><dd>{{ invoice.network|upper }}</dd></div><div><dt>Address attribution</dt><dd>{% if shared %}SHARED / AMBIGUOUS{% else %}No duplicate found in stored invoices{% endif %}</dd></div><div><dt>Payment verification</dt><dd>NOT VERIFIED</dd></div></dl>
+<p class="ev24-address">{{ invoice.receiving_cashaddr }}</p>
+{% if shared %}<div class="mw-notice" role="status">This receiving address is also registered on another request. Outputs cannot be uniquely attributed to this invoice.</div>{% endif %}
+<p>Manual, read-only observation across explicitly configured BCH mainnet Blockbook providers. UTXOs are not complete payment history, verified ownership, or settlement.</p>
+
+<section class="mw-panel" aria-label="Blockchain provider configuration"><div class="mw-panel-head"><div><span class="mw-eyebrow">PROVIDER READINESS</span><h2>{{ provider_preflight.state }}</h2></div></div>
+<p>Configuration checks are local only. CONFIGURED_NOT_TESTED does not mean reachable, synchronized or independently validated.</p>
+<dl class="ev24-grid">{% for provider in provider_preflight.providers %}<div><dt>{{ provider.name }}</dt><dd>{{ provider.state }}</dd></div>{% endfor %}</dl>
+{% if provider_preflight.state == 'INCOMPLETE_CONFIGURATION' %}<p role="status">Two distinct HTTPS Blockbook origins are required. No external request was made.</p>{% endif %}
+</section>
+{% if invoice.network == 'mainnet' %}<a class="mw-cta" href="?inspect=1">Inspect configured providers ↗</a>{% else %}<p>External inspection is not available for this network.</p>{% endif %}
+{% if error %}<div class="mw-notice" role="alert">{{ error }}</div>{% endif %}
+{% if engine_result %}
+<section class="ev27-result" aria-label="Blockchain observation result">
+<h3>Blockchain observation · {{ engine_result.state }}</h3>
+<p><strong>Payment verification: NOT VERIFIED.</strong> Invoice status unchanged. Provider agreement is not chain verification.</p>
+<dl class="ev24-grid">
+<div><dt>Successful sources</dt><dd>{{ engine_result.snapshots|length }}</dd></div>
+<div><dt>Matching sources</dt><dd>{{ engine_result.matching_providers|length }}</dd></div>
+<div><dt>Provider consistency</dt><dd>{% if engine_result.provider_agreement %}MATCH{% else %}NOT ESTABLISHED{% endif %}</dd></div>
+<div><dt>Provider errors</dt><dd>{{ engine_result.errors|length }}</dd></div>
+</dl>
+{% if engine_result.state == 'DISABLED' %}<p>Observation is disabled by configuration.</p>{% elif engine_result.state == 'UNAVAILABLE' %}<p>No usable external observation. Check provider configuration and connectivity.</p>{% elif engine_result.state == 'CONFLICT' %}<p>Sources disagree. Do not infer payment or balance from this result.</p>{% elif engine_result.state == 'DEGRADED' %}<p>Insufficient independent agreement. These results are provisional.</p>{% endif %}
+{% for snapshot in engine_result.snapshots %}
+<h4>Source: {{ snapshot.provider }}</h4>
+<dl class="ev24-grid"><div><dt>Unspent outputs</dt><dd>{{ snapshot.outpoints|length }}</dd></div><div><dt>Network</dt><dd>{{ snapshot.network|upper }}</dd></div></dl>
+<div class="ev24-scroll"><table><thead><tr><th>TXID</th><th>vout</th><th>Satoshis</th><th>Provider-reported confirmations</th></tr></thead><tbody>
+{% for item in snapshot.outpoints %}<tr><td><code>{{ item.txid }}</code></td><td>{{ item.vout }}</td><td>{{ item.satoshis }}</td><td>{{ item.confirmations }}</td></tr>{% empty %}<tr><td colspan="4">No unspent outputs reported by this source. This does not prove non-payment.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endfor %}
+{% if engine_result.errors %}<h4>Source diagnostics</h4><ul>{% for name, code in engine_result.errors %}<li>{{ name }}: {{ code }}</li>{% endfor %}</ul>{% endif %}
+</section>
+{% endif %}
+<p class="mw-caption">No invoice updates, evidence journal writes, background polling, signing, broadcasting, or settlement. A verified reconciliation pipeline requires full transaction-output history, chain validation, address allocation policy and independent verification.</p>
+</section></div></main>
+{% endblock %}

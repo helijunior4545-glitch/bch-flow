@@ -1,0 +1,18 @@
+{
+  "version": "V303",
+  "backup": "/home/farcry/Downloads/bchflow-v303-centered-backup",
+  "files": {
+    "templates/bch_wallet_v301/wallet.html": {
+      "before": "0e9ccb3fa70f5114aca4c4238f91a941f816578e1258f0cda24e9e32132bb449",
+      "after": "13c56fbc0b0aef4f7123547e4dfbb58236a84e9416415911b42b9e2ad1b850b7"
+    },
+    "static/bch_wallet_v301/wallet.css": {
+      "before": "e691d7fddfcea6389a4661058d45cb5137462dd91e957bcf270ae64bf401342d",
+      "after": "632e24c557d939d8ef95011d3620da275d0d56f9b9a5e8b1e2cd947f6402c12d"
+    },
+    "static/bch_wallet_v301/wallet.js": {
+      "before": "4310b2336eac2847643ba07986d190427d82d3330e453d4303609a5e2a565710",
+      "after": "2f8af2605c98b9350cb94f7fead65aa4e4d171ecb2110f20c8c89f220a4bf453"
+    }
+  }
+}

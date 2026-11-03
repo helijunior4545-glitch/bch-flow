@@ -1,0 +1,38 @@
+/* BCH FLOW V315 — Wallet object and contextual panels. Isolated to real wallet. */
+.bwallet{--bw315-gold:#d8b676;--bw315-border:#54422d}
+.bwallet .bw-hero-grid{align-items:center;gap:clamp(20px,3vw,45px)}
+.bwallet .bw-leather-wallet{position:relative;padding:31px 24px 23px;background:radial-gradient(ellipse at 60% 5%,#48403a 0%,transparent 65%),repeating-linear-gradient(106deg,#242322 0,#242322 2px,#272625 3px,#242322 5px);border:1px solid #69553b;border-radius:7px;box-shadow:inset 0 2px 2px #ffffff18,inset 0 -7px 14px #0008,0 28px 50px #0007;isolation:isolate}
+.bwallet .bw-leather-wallet:before{content:"";position:absolute;inset:7px;border:1px dashed #9e845344;border-radius:4px;pointer-events:none;z-index:1}
+.bwallet .bw-leather-wallet:after{content:"";position:absolute;left:12%;right:12%;bottom:5px;height:8px;border-radius:50%;background:#0009;filter:blur(8px);pointer-events:none}
+.bwallet .bw-leather-spine{position:absolute;top:13px;bottom:13px;left:13px;width:9px;border-left:2px solid #b3915955;border-right:1px solid #0009;border-radius:4px;opacity:.9}
+.bwallet .bw-leather-flap{position:relative;display:flex;justify-content:space-between;gap:12px;padding:0 5px 18px;color:#d4b989;font-size:9px;font-weight:700;letter-spacing:2px;z-index:2}
+.bwallet .bw-leather-flap span:last-child{color:#8f8577;letter-spacing:1px}
+.bwallet .bw-leather-wallet .bw-wallet-card{position:relative;z-index:2;border:1px solid #c8a76b88!important;border-radius:7px!important;box-shadow:0 14px 26px #0008,inset 0 1px #fff2!important;transform:rotate(-1.3deg);transition:transform .25s ease,box-shadow .25s ease}
+@media(hover:hover){.bwallet .bw-leather-wallet:hover .bw-wallet-card{transform:rotate(0deg) translateY(-3px);box-shadow:0 22px 40px #000a,inset 0 1px #fff2!important}}
+.bwallet .bw-leather-wallet .bw-card-chip{border-radius:7px}
+.bwallet .bw-leather-wallet .bw-card-amount{font-size:clamp(26px,3.2vw,41px)}
+.bwallet :is(.bw-action,.bw-feature,.bw-integrated,.bw-status-strip,.bw-outline-badge,.bw-wallet-card,.bw-quick-panel){border-radius:7px!important}
+.bwallet .bw-integrated{scroll-margin-top:70px}
+.bwallet .bw315-dialog{border:1px solid #9a7b4a88;border-radius:7px;background:#171719;color:#f6f1e7;box-shadow:0 40px 110px #000d;width:min(800px,calc(100vw - 24px));max-height:min(88dvh,900px);padding:0;overflow:hidden}
+.bwallet .bw315-dialog::backdrop{background:#020203b8;backdrop-filter:blur(9px)}
+.bwallet .bw315-dialog[open]{display:flex;flex-direction:column;animation:bw315-in .19s ease-out}
+.bwallet .bw315-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 26px 18px;border-bottom:1px solid #ffffff18}
+.bwallet .bw315-dialog-kicker{color:#c9a76d;font-size:10px;letter-spacing:2px}
+.bwallet .bw315-dialog-head h2{margin:6px 0 0;font-size:22px;color:#f6f1e7}
+.bwallet .bw315-close{display:grid;place-items:center;width:35px;height:35px;border:1px solid #ffffff30;border-radius:7px;background:#2c2b2b;color:#f5e4c5;font-size:24px;cursor:pointer}
+.bwallet .bw315-dialog-body{overflow-y:auto;min-height:0;padding:10px 25px 20px;overscroll-behavior:contain}
+.bwallet .bw315-dialog-body .bw-section-heading{margin-top:6px}
+.bwallet .bw315-dialog-body .bw-integrated{margin:0}
+.bwallet .bw315-dialog-body :is(.mw-panel,.mw-v2){margin:10px 0}
+.bwallet .bw315-dialog-body .mw23-nav{display:none}
+.bwallet .bw315-dialog-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 25px;border-top:1px solid #ffffff18;color:#bfa779;font-size:10px;letter-spacing:1.3px}
+.bwallet .bw315-dialog-foot button{border:1px solid #caa76e;background:linear-gradient(120deg,#e2c18b,#bd9454);color:#1b1711;border-radius:7px;padding:10px 23px;font-weight:750;cursor:pointer}
+.bwallet .bw315-dialog :is(button,a):focus-visible{outline:2px solid #e2c18b;outline-offset:3px}
+.bwallet.bw315-enhanced .bw315-collapsed{display:none!important}
+.bwallet.bw315-enhanced .bw315-section-preview{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:22px;border:1px solid #51432e;border-radius:7px;background:linear-gradient(120deg,#252326,#19191b);margin:12px 0 25px}
+.bwallet .bw315-section-preview strong{font-size:14px;color:#f5e9d2}
+.bwallet .bw315-section-preview p{margin:5px 0 0;font-size:12px;color:#a9a39a}
+.bwallet .bw315-section-preview button{flex:none;padding:11px 15px;background:#292723;color:#e7c58c;border:1px solid #9d7946;border-radius:7px;font-size:12px;cursor:pointer}
+@keyframes bw315-in{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:760px){.bwallet .bw-leather-wallet{padding:24px 15px 17px}.bwallet .bw-leather-flap{font-size:8px;letter-spacing:1px}.bwallet .bw315-dialog{width:100vw;max-width:100vw;max-height:90dvh;margin:auto 0 0;border-radius:7px 7px 0 0}.bwallet .bw315-dialog-head{padding:17px}.bwallet .bw315-dialog-body{padding:10px 14px}.bwallet .bw315-dialog-foot{padding:13px 17px}.bwallet .bw315-section-preview{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.bwallet .bw315-dialog[open]{animation:none}.bwallet .bw-leather-wallet .bw-wallet-card{transition:none}}

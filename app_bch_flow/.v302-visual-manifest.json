@@ -1,0 +1,18 @@
+{
+  "version": "V302",
+  "files": {
+    "templates/bch_wallet_v301/wallet.html": {
+      "before": "ba9b8559dd89951c440b3e8efd6e2e926d77a5fa5031e8322df049a835e881e0",
+      "after": "0e9ccb3fa70f5114aca4c4238f91a941f816578e1258f0cda24e9e32132bb449"
+    },
+    "static/bch_wallet_v301/wallet.css": {
+      "before": "61e8b0a1ca42aed00c099a7f932dfaa57a34eb9145be4efdc23f8f77f460b4df",
+      "after": "e691d7fddfcea6389a4661058d45cb5137462dd91e957bcf270ae64bf401342d"
+    },
+    "static/bch_wallet_v301/wallet.js": {
+      "before": "ac827f69066a19bd44cf77e1b29a77795577be8fabf47c3bb71bbe01dd3ce9cf",
+      "after": "4310b2336eac2847643ba07986d190427d82d3330e453d4303609a5e2a565710"
+    }
+  },
+  "backup": "/home/farcry/Downloads/bchflow-v302-visual-backup"
+}

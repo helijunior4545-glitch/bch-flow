@@ -1,0 +1,13 @@
+/* BCH Flow merchant wallet V2.1/V2.2 — additive scoped UI */
+.mw-v2 .mw-v2-merchant,.mw-v2 .mw-v2-item,.mw-v2 .mw-v2-empty{padding:18px;border:1px solid var(--line);border-radius:14px;background:#f9fbf9;margin:12px 0}
+.mw-v2-merchant{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.mw-v2-network,.mw-v2-itemhead span{font-size:11px;color:var(--muted)}
+.mw-v2-address{display:block;width:100%;overflow-wrap:anywhere;word-break:break-word;font-size:12px;line-height:1.6;color:var(--ink);user-select:all}
+.mw-v2-copy{background:#e6f3ea;color:#126f4a;border:1px solid #badbc6;border-radius:9px;padding:9px 13px;font:inherit;font-size:12px;font-weight:750;cursor:pointer}
+.mw-v2-copy:focus-visible{outline:3px solid #126f4a;outline-offset:2px}
+.mw-v2-subtitle{font-size:14px;margin:24px 0 8px}.mw-v2-list{display:grid;gap:10px}
+.mw-v2-itemhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:12px}
+.mw-v2-footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:18px;margin-top:20px;font-size:12px}
+.mw-v2-footer a{color:var(--accent);font-weight:750}.mw-v2-footer span{color:var(--muted)}
+.mw-v2-feedback{min-height:1.3em}
+@media(min-width:760px){.mw-v2-list{grid-template-columns:repeat(2,minmax(0,1fr))}}

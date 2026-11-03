@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1050" preserveAspectRatio="xMidYMid slice">
+<defs>
+<radialGradient id="base"><stop stop-color="#353537"/><stop offset=".64" stop-color="#202022"/><stop offset="1" stop-color="#09090a"/></radialGradient>
+<linearGradient id="ribbon" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#555558"/><stop offset=".48" stop-color="#171719"/><stop offset="1" stop-color="#080809"/></linearGradient>
+<linearGradient id="gold"><stop stop-color="#694a20" stop-opacity="0"/><stop offset=".45" stop-color="#f4c56e"/><stop offset=".55" stop-color="#ffe2a0"/><stop offset="1" stop-color="#684417" stop-opacity="0"/></linearGradient>
+<filter id="glow"><feGaussianBlur stdDeviation="7"/></filter>
+</defs>
+<rect width="1600" height="1050" fill="url(#base)"/>
+<path d="M-200 360 Q140 220 360 -90 L-150 -120Z" fill="url(#ribbon)"/>
+<path d="M-130 430 Q150 300 400 -70" fill="none" stroke="#d9a455" stroke-width="4" opacity=".9"/>
+<path d="M-130 430 Q150 300 400 -70" fill="none" stroke="#e9b85f" stroke-width="13" opacity=".18" filter="url(#glow)"/>
+<path d="M-200 710 Q100 510 290 770 T900 1120 L-180 1120Z" fill="url(#ribbon)" opacity=".85"/>
+<path d="M-180 790 Q110 605 315 860 T940 1110" fill="none" stroke="#e5b15c" stroke-width="2" opacity=".66"/>
+<path d="M1800 360 Q1400 260 1280 550 T940 1050 L1800 1050Z" fill="url(#ribbon)" opacity=".96"/>
+<path d="M1750 410 Q1450 310 1320 610 T950 1060" fill="none" stroke="#f0bf6a" stroke-width="3" opacity=".85"/>
+<path d="M1750 410 Q1450 310 1320 610 T950 1060" fill="none" stroke="#eeb65e" stroke-width="16" opacity=".13" filter="url(#glow)"/>
+<path d="M1600 740 Q1320 750 1090 1040" fill="none" stroke="#858588" stroke-width="2" opacity=".6"/>
+</svg>

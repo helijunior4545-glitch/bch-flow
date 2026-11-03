@@ -1,0 +1,2 @@
+{% extends 'app_bch_flow/base.html' %}{% block title %}Sign in · BCH Flow{% endblock %}
+{% block content %}<main class="bch-auth"><section class="bch-card"><p class="eyebrow">BCH FLOW</p><h1>Welcome back</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="button" type="submit">Sign in</button></form><p>New here? <a href="{% url 'bch_flow:register' %}">Create account</a></p></section></main>{% endblock %}

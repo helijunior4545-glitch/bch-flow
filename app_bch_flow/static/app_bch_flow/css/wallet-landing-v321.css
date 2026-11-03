@@ -1,0 +1,13 @@
+
+/* V321 landing — tactile product rendering and controlled emerald highlights */
+body:has(.v320-landing){background:radial-gradient(ellipse at 80% 5%,#1b3428,transparent 44%),#101513!important}
+.v320-landing .v320-land-wallet{isolation:isolate;transform-style:preserve-3d;background:repeating-linear-gradient(112deg,#ffffff04 0 1px,transparent 1px 6px),linear-gradient(140deg,#41483e,#222c25 65%,#121b16)!important;border:1px solid #73755e!important;box-shadow:0 45px 95px #000b,inset 0 2px #ffffff19!important}
+.v320-landing .v320-land-wallet::before{content:"";position:absolute;top:-22px;left:4%;width:92%;height:43%;border:1px solid #777e6b;border-bottom:2px solid #aa9061;border-radius:7px 7px 25px 25px;background:linear-gradient(145deg,#50594c,#27352c);box-shadow:0 10px 28px #0007;z-index:-1}
+.v320-landing .v320-land-wallet::after{content:"";position:absolute;inset:12px;border:1px dashed #d5b57970;border-radius:5px;pointer-events:none}
+.v320-landing .v320-land-card{background:radial-gradient(circle at 80% 12%,#b8955055,transparent 55%),linear-gradient(120deg,#475044,#222d26)!important;box-shadow:0 25px 40px #0009,0 0 0 1px #e0b85e55!important;transition:transform .55s,box-shadow .55s!important}
+.v320-landing .v320-land-wallet:hover .v320-land-card{transform:translateY(-12px) rotate(-1deg);box-shadow:0 38px 52px #000b!important}
+.v320-landing .v320-land-tag{color:#62d9a0!important}
+.v320-landing .v320-land-cta{background:#e0b85e!important}
+.v320-landing a:focus-visible{outline:2px solid #62d9a0;outline-offset:5px}
+.v320-landing .v320-land-features{background:linear-gradient(150deg,#1b2720,#181e1a)!important}
+@media(prefers-reduced-motion:reduce){.v320-landing *{animation:none!important;transition:none!important;transform:none!important}}
