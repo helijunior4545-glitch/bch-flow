@@ -200,7 +200,7 @@ class PaymentCoreTests(PaymentFixture):
         path = checkout_url(charge)
         self.client.cookies.clear()
         response = self.client.get(path)
-        self.assertContains(response, "não envie dinheiro real")
+        self.assertContains(response, "do not send real money")
         self.assertNotContains(response, self.owner.email)
         self.assertEqual(response["Referrer-Policy"], "no-referrer")
         self.assertEqual(self.client.post(path).status_code, 405)

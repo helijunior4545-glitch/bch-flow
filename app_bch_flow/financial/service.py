@@ -4,6 +4,9 @@ Sandbox is executable without credentials. Live operations require explicit serv
 configuration; legacy watch-only observations cannot credit these accounts.
 """
 
+from django.utils.translation import gettext as _
+
+
 import hashlib
 import json
 import re
@@ -27,6 +30,7 @@ from app_bch_flow.models import (
 )
 from .amounts import PaymentError, ProviderUnavailable, MAX_UNITS, units
 from .providers import CoreNode, MercadoPago, provider_config
+from .assets import ASSET_INFO, SANDBOX_ONLY
 
 WRITE_ROLES = ("owner", "admin", "operator")
 APPROVE_ROLES = ("owner", "admin")
@@ -38,13 +42,16 @@ def membership(actor, organization, roles=WRITE_ROLES):
         or not actor.is_active
         or not BCHMembership.objects.filter(
             identity=actor,
+            identity__is_active=True,
             organization_id=organization,
             role__in=roles,
             is_active=True,
             organization__is_active=True,
         ).exists()
     ):
-        raise PaymentError("Acesso não autorizado à organização ou à operação.")
+        raise PaymentError(
+            _("You are not authorized for this organization or operation.")
+        )
 
 
 def fingerprint(data):
@@ -55,26 +62,32 @@ def fingerprint(data):
 
 def check_key(key):
     if not isinstance(key, str) or not re.fullmatch(r"[a-zA-Z0-9_-]{12,80}", key):
-        raise PaymentError("Chave de operação inválida. Atualize o formulário.")
+        raise PaymentError(_("Invalid operation key. Refresh the form."))
 
 
 def ensure_account(actor, org_id, asset, environment):
     membership(actor, org_id)
-    if asset not in ("BTC", "BCH", "BRL") or environment not in (
+    if asset not in ASSET_INFO or environment not in (
         "sandbox",
         "testnet",
         "mercadopago_test",
         "live",
     ):
-        raise PaymentError("Ativo ou ambiente inválido.")
+        raise PaymentError(_("Invalid asset or environment."))
     if (environment == "testnet" and asset == "BRL") or (
         environment == "mercadopago_test" and asset != "BRL"
     ):
-        raise PaymentError("Ambiente incompatível com o ativo.")
+        raise PaymentError(_("This environment does not support the selected asset."))
     if environment == "sandbox" and not getattr(
         settings, "FLOW_PAYMENTS_SANDBOX_ENABLED", False
     ):
-        raise ProviderUnavailable("O laboratório está desabilitado nesta instalação.")
+        raise ProviderUnavailable(_("Sandbox is disabled in this installation."))
+    if asset in SANDBOX_ONLY and environment != "sandbox":
+        raise ProviderUnavailable(
+            _(
+                "USD and EUR accounts currently support sandbox only. Connect a supported fiat provider before accepting real payments."
+            )
+        )
     candidate = FlowAccount(
         organization_id=org_id, asset=asset, environment=environment
     )
@@ -82,7 +95,7 @@ def ensure_account(actor, org_id, asset, environment):
         provider_config(candidate)
         # Validate credentials and endpoint configuration before persisting an account.
         MercadoPago(candidate) if asset == "BRL" else CoreNode(candidate)
-    account, _ = FlowAccount.objects.get_or_create(
+    account, _created_or_unused = FlowAccount.objects.get_or_create(
         organization_id=org_id, asset=asset, environment=environment
     )
     return account
@@ -91,22 +104,24 @@ def ensure_account(actor, org_id, asset, environment):
 def _locked(account_id):
     account = FlowAccount.objects.select_for_update().get(pk=account_id)
     if account.frozen:
-        raise PaymentError("Conta em revisão. Novas operações estão bloqueadas.")
+        raise PaymentError(
+            _("This account is under review. New operations are blocked.")
+        )
     return account
 
 
 def _move(account, debit, credit, amount, key, reference, actor=None):
     if type(amount) is not int or not 0 < amount <= MAX_UNITS:
-        raise PaymentError("Movimentação inválida.")
+        raise PaymentError(_("Invalid movement."))
     if FlowJournal.objects.filter(account=account, key=key).exists():
-        raise PaymentError("Movimentação já registrada.")
+        raise PaymentError(_("Movement already recorded."))
     # Debit increases the asset bucket; credit reduces it. External is clearing.
     for bucket, sign in ((debit, 1), (credit, -1)):
         if bucket != "external":
             field = bucket + "_units"
             value = getattr(account, field) + sign * amount
             if not 0 <= value <= MAX_UNITS:
-                raise PaymentError("Saldo insuficiente ou limite excedido.")
+                raise PaymentError(_("Insufficient balance or limit exceeded."))
             setattr(account, field, value)
     FlowJournal.objects.create(
         account=account,
@@ -128,12 +143,12 @@ def create_request(actor, account, amount_units, description, key, payer_email="
         or not 0 < amount_units <= MAX_UNITS
         or len(description) > 160
     ):
-        raise PaymentError("Valor ou descrição inválido.")
+        raise PaymentError(_("Invalid amount or description."))
     if account.asset == "BRL" and account.environment != "sandbox":
         try:
             validate_email(payer_email)
         except ValidationError:
-            raise PaymentError("Email do pagador inválido.") from None
+            raise PaymentError(_("Invalid payer email.")) from None
     digest = fingerprint([amount_units, description, payer_email])
     with transaction.atomic():
         locked = _locked(account.pk)
@@ -142,7 +157,9 @@ def create_request(actor, account, amount_units, description, key, payer_email="
         ).first()
         if existing:
             if existing.payload_hash != digest:
-                raise PaymentError("Esta chave já foi usada para outra cobrança.")
+                raise PaymentError(
+                    _("This key was already used for another payment request.")
+                )
             return existing
         identifier = uuid.uuid4()
         request = FlowRequest.objects.create(
@@ -169,7 +186,7 @@ def prepare_request(request):
             pk=request.pk, account=account
         )
         if request.expires_at <= timezone.now():
-            raise PaymentError("Cobrança expirada. Crie uma nova cobrança.")
+            raise PaymentError(_("This request expired. Create a new request."))
         if not request.address.startswith("pending:"):
             return request
         if account.environment == "sandbox":
@@ -192,11 +209,13 @@ def _receipt(account, request, source, amount, confirmations, required):
         or not 0 < amount <= MAX_UNITS
         or type(confirmations) is not int
     ):
-        raise PaymentError("Evidência de pagamento inválida.")
+        raise PaymentError(_("Invalid payment evidence."))
     receipt = FlowReceipt.objects.filter(source_key=source).first()
     if receipt and (receipt.request_id != request.pk or receipt.amount_units != amount):
         raise PaymentError(
-            "Este pagamento já pertence a outra cobrança ou possui valor divergente."
+            _(
+                "This payment already belongs to another request or has a different amount."
+            )
         )
     if not receipt:
         receipt = FlowReceipt.objects.create(
@@ -251,7 +270,7 @@ def simulate_receipt(actor, request, amount, key):
         )
         if account.environment != "sandbox":
             raise PaymentError(
-                "Simulação não é permitida em contas conectadas a provedores."
+                _("Simulation is not allowed in provider-connected accounts.")
             )
         return _receipt(account, request, f"sandbox:{account.pk}:{key}", amount, 1, 1)
 
@@ -259,7 +278,7 @@ def simulate_receipt(actor, request, amount, key):
 def reconcile_request(request, txid=None):
     account = request.account
     if account.environment == "sandbox":
-        raise PaymentError("Use a ação explícita de simulação neste ambiente.")
+        raise PaymentError(_("Use the explicit simulation action in this environment."))
     if request.address.startswith("pending:"):
         return prepare_request(request)
     if account.asset == "BRL":
@@ -297,13 +316,15 @@ def reconcile_request(request, txid=None):
         # Change from our own outgoing transaction is not a new external receipt.
         if FlowWithdrawal.objects.filter(account=account, txid=txid.lower()).exists():
             raise PaymentError(
-                "Troco de uma saída própria não pode ser creditado como recebimento."
+                _(
+                    "Change from your own withdrawal cannot be credited as a new receipt."
+                )
             )
         observations = []
         for out in outputs:
             if node.output_address(out) == request.address:
                 if type(out.get("n")) is not int or out["n"] < 0:
-                    raise PaymentError("Índice de saída inválido.")
+                    raise PaymentError(_("Invalid output index."))
                 observations.append(
                     (
                         f"{account.asset}:{account.environment}:{txid.lower()}:{out['n']}",
@@ -313,12 +334,24 @@ def reconcile_request(request, txid=None):
                 )
         required = node.confirmations
         if not observations:
-            raise PaymentError("Esta transação não paga o endereço da cobrança.")
+            raise PaymentError(_("This transaction does not pay the request address."))
     with transaction.atomic():
         account = _locked(account.pk)
         request = FlowRequest.objects.select_for_update().get(
             pk=request.pk, account=account
         )
+        if account.asset == "BRL":
+            from app_bch_flow.models import FlowProviderConnection
+
+            managed = FlowProviderConnection.objects.filter(
+                organization_id=account.organization_id,
+                provider="mercadopago",
+                environment=account.environment,
+            ).first()
+            if managed is not None and managed.status != "connected":
+                raise ProviderUnavailable(
+                    _("Mercado Pago is disconnected. Connect it in Integrations.")
+                )
         for source, amount, confirmations in observations:
             _receipt(account, request, source, amount, confirmations, required)
     return request
@@ -335,17 +368,17 @@ def create_withdrawal(actor, account, destination, amount, fee_limit, key):
         or not destination
         or len(destination) > 180
     ):
-        raise PaymentError("Dados de saída inválidos.")
+        raise PaymentError(_("Invalid withdrawal data."))
     if account.environment != "sandbox":
         if account.asset == "BRL":
             raise ProviderUnavailable(
-                "Saída Pix depende de um produto de transferências contratado; Checkout API não é autorização de saque."
+                _(
+                    "Pix payouts require a contracted transfer product; Checkout API does not authorize payouts."
+                )
             )
         destination = CoreNode(account).validate_address(destination)
     elif not destination.startswith("sandbox:"):
-        raise PaymentError(
-            "No laboratório, use um destino sandbox: para evitar confusão com uma transferência real."
-        )
+        raise PaymentError(_("Use a sandbox: destination for simulated transfers."))
     digest = fingerprint([destination, amount, fee_limit])
     with transaction.atomic():
         account = _locked(account.pk)
@@ -354,7 +387,9 @@ def create_withdrawal(actor, account, destination, amount, fee_limit, key):
         ).first()
         if existing:
             if existing.payload_hash != digest:
-                raise PaymentError("Esta chave já foi usada para outra saída.")
+                raise PaymentError(
+                    _("This key was already used for another withdrawal.")
+                )
             return existing
         withdrawal = FlowWithdrawal.objects.create(
             account=account,
@@ -402,13 +437,15 @@ def approve_withdrawal(actor, withdrawal, password):
             )
     if not allowed:
         raise PaymentError(
-            "Senha inválida ou muitas tentativas. Aguarde antes de autorizar novamente."
+            _("Invalid password or too many attempts. Wait before authorizing again.")
         )
     with transaction.atomic():
         _locked(withdrawal.account_id)
         withdrawal = FlowWithdrawal.objects.select_for_update().get(pk=withdrawal.pk)
         if withdrawal.status not in ("pending", "approved"):
-            raise PaymentError("Esta saída não pode ser autorizada neste estado.")
+            raise PaymentError(
+                _("This withdrawal cannot be authorized in its current state.")
+            )
         withdrawal.status, withdrawal.approved_by = "approved", actor
         withdrawal.approved_until = timezone.now() + timedelta(minutes=5)
         withdrawal.save(update_fields=["status", "approved_by", "approved_until"])
@@ -424,7 +461,7 @@ def cancel_withdrawal(actor, withdrawal):
             return withdrawal
         if withdrawal.status not in ("pending", "approved"):
             raise PaymentError(
-                "Não cancele uma saída transmitida ou com resultado desconhecido."
+                _("Do not cancel a broadcast withdrawal or one with an unknown result.")
             )
         _move(
             account,
@@ -455,7 +492,7 @@ def submit_withdrawal(actor, withdrawal, raw=""):
             or not withdrawal.approved_until
             or withdrawal.approved_until <= timezone.now()
         ):
-            raise PaymentError("Autorize novamente a saída antes de transmitir.")
+            raise PaymentError(_("Authorize the withdrawal again before broadcasting."))
         if account.environment == "sandbox":
             txid, fee, inputs = (
                 hashlib.sha256(str(withdrawal.pk).encode()).hexdigest(),
@@ -464,11 +501,11 @@ def submit_withdrawal(actor, withdrawal, raw=""):
             )
         else:
             if account.asset == "BRL":
-                raise ProviderUnavailable("Transferências Pix não estão configuradas.")
+                raise ProviderUnavailable(_("Pix payouts are not configured."))
             node = CoreNode(account)
             txid, fee, inputs = node.inspect_signed(withdrawal, raw)
             for item in inputs:
-                claim, _ = FlowSpend.objects.get_or_create(
+                claim, _created_or_unused = FlowSpend.objects.get_or_create(
                     asset=account.asset,
                     environment=account.environment,
                     txid=item["txid"],
@@ -477,7 +514,7 @@ def submit_withdrawal(actor, withdrawal, raw=""):
                 )
                 if claim.withdrawal_id != withdrawal.pk:
                     raise PaymentError(
-                        "Uma entrada já está reservada para outra saída."
+                        _("An input is already reserved for another withdrawal.")
                     )
         withdrawal.txid, withdrawal.actual_fee_units = txid, fee
         withdrawal.status = "submitting"
@@ -487,7 +524,7 @@ def submit_withdrawal(actor, withdrawal, raw=""):
     if node:
         try:
             if node.rpc("sendrawtransaction", raw) != txid:
-                raise ProviderUnavailable("O nó retornou um TXID divergente.")
+                raise ProviderUnavailable(_("The node returned an unexpected TXID."))
         except ProviderUnavailable:
             FlowWithdrawal.objects.filter(pk=withdrawal.pk, status="submitting").update(
                 status="unknown"
@@ -508,7 +545,7 @@ def finish_withdrawal(withdrawal_id):
             or withdrawal.actual_fee_units is None
         ):
             raise PaymentError(
-                "A saída não está em fase de confirmação de transmissão."
+                _("The withdrawal is not awaiting broadcast verification.")
             )
         spent = withdrawal.amount_units + withdrawal.actual_fee_units
         _move(
@@ -539,7 +576,7 @@ def finish_withdrawal(withdrawal_id):
 def recover_withdrawal(actor, withdrawal):
     membership(actor, withdrawal.account.organization_id, APPROVE_ROLES)
     if withdrawal.status not in ("unknown", "submitting") or not withdrawal.txid:
-        raise PaymentError("Não há transmissão pendente para consultar.")
+        raise PaymentError(_("No pending broadcast to check."))
     if withdrawal.account.environment == "sandbox":
         return finish_withdrawal(withdrawal.pk)
     node = CoreNode(withdrawal.account)
@@ -548,7 +585,7 @@ def recover_withdrawal(actor, withdrawal):
     decoded = node.rpc("decoderawtransaction", tx["hex"])
     if decoded.get("txid") != withdrawal.txid or tx.get("confirmations", -1) < 0:
         raise PaymentError(
-            "Transmissão ainda não comprovada pelo nó. O valor continua reservado."
+            _("Broadcast is not yet verified by the node. Funds remain reserved.")
         )
     return finish_withdrawal(withdrawal.pk)
 
@@ -568,15 +605,19 @@ def prepare_signing(actor, withdrawal):
         withdrawal = FlowWithdrawal.objects.select_for_update().get(pk=withdrawal.pk)
         if account.environment == "sandbox" or account.asset == "BRL":
             raise PaymentError(
-                "Pacote de assinatura é exclusivo de saídas BTC/BCH conectadas a um nó."
+                _(
+                    "Signing packages are only available for node-connected BTC/BCH withdrawals."
+                )
             )
         if withdrawal.status not in ("pending", "approved"):
-            raise PaymentError("Esta saída não pode receber um pacote de assinatura.")
+            raise PaymentError(
+                _("A signing package cannot be prepared for this withdrawal.")
+            )
         if withdrawal.signing_payload:
             return withdrawal
         payload = CoreNode(account).prepare_unsigned(withdrawal)
         for item in payload["inputs"]:
-            claim, _ = FlowSpend.objects.get_or_create(
+            claim, _created_or_unused = FlowSpend.objects.get_or_create(
                 asset=account.asset,
                 environment=account.environment,
                 txid=item["txid"],
@@ -584,7 +625,7 @@ def prepare_signing(actor, withdrawal):
                 defaults={"withdrawal": withdrawal},
             )
             if claim.withdrawal_id != withdrawal.pk:
-                raise PaymentError("Uma entrada já pertence a outra saída.")
+                raise PaymentError(_("An input already belongs to another withdrawal."))
         withdrawal.signing_payload = payload
         withdrawal.save(update_fields=["signing_payload"])
         return withdrawal

@@ -23,6 +23,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'app_bch_flow.localization.ExplicitLocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -37,6 +38,7 @@ TEMPLATES = [{
     'OPTIONS': {'context_processors': [
         'django.template.context_processors.debug',
         'django.template.context_processors.request',
+        'django.template.context_processors.i18n',
         'django.contrib.auth.context_processors.auth',
         'django.contrib.messages.context_processors.messages',
     ]},
@@ -68,7 +70,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
-LANGUAGE_CODE = 'pt-br'
+LANGUAGE_CODE = 'en'
+LANGUAGES = [('en','English'),('pt-br','Português'),('es','Español'),('fr','Français'),('de','Deutsch'),('zh-hans','简体中文'),('ja','日本語'),('ar','العربية'),('hi','हिन्दी')]
+LOCALE_PATHS = [BASE_DIR / 'locale']
+LANGUAGE_COOKIE_NAME = 'bchflow_language'
+LANGUAGE_COOKIE_AGE = 31536000
+LANGUAGE_COOKIE_HTTPONLY = True
+LANGUAGE_COOKIE_SAMESITE = 'Lax'
 TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
@@ -89,3 +97,14 @@ _provider_file = env('FLOW_PROVIDER_CONFIG_FILE', default='')
 if _provider_file:
     with open(_provider_file, encoding='utf-8') as _provider_stream:
         FLOW_PAYMENT_PROVIDERS = _json.load(_provider_stream)
+
+
+# Merchant credentials are encrypted with a separately managed key, never SECRET_KEY.
+FLOW_CREDENTIAL_ENCRYPTION_KEYS = env.list('FLOW_CREDENTIAL_ENCRYPTION_KEYS', default=[])
+FLOW_CREDENTIAL_KEY_FILE = env('FLOW_CREDENTIAL_KEY_FILE', default='')
+FLOW_MP_OAUTH = {
+    'client_id': env('MP_CLIENT_ID', default=''),
+    'client_secret_env': 'MP_CLIENT_SECRET',
+    'redirect_uri': env('MP_REDIRECT_URI', default=''),
+    'webhook_secret_file': env('MP_WEBHOOK_SECRET_FILE', default=''),
+}

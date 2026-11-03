@@ -30,3 +30,18 @@ urlpatterns = [
         name="financial_mp_webhook",
     ),
 ]
+
+from . import integration_views
+
+urlpatterns += [
+    path(
+        "dashboard/organizations/<uuid:org_id>/integrations/",
+        integration_views.home,
+        name="merchant_integrations",
+    ),
+    path(
+        "integrations/mercadopago/callback/",
+        integration_views.oauth_callback,
+        name="merchant_mp_callback",
+    ),
+]

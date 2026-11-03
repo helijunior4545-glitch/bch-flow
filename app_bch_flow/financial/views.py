@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 import uuid
 from urllib.parse import urlencode
 from django.core import signing
@@ -21,30 +22,31 @@ from app_bch_flow.views.authentication import current_identity
 from . import service
 from .amounts import PaymentError, ProviderUnavailable, display, units
 from .forms import RequestForm, WithdrawalForm
-from .providers import provider_config, validate_mp_signature, local_secret
+from .assets import ASSET_INFO, SANDBOX_ONLY
+from .providers import validate_mp_signature
 
 SALT = "flow-payment-checkout-v1"
 LABELS = {
-    "sandbox": "Laboratório · sem dinheiro real",
-    "testnet": "Rede de testes · sem valor monetário",
-    "mercadopago_test": "Mercado Pago · credenciais de teste",
-    "live": "Produção · pagamentos reais",
+    "sandbox": _("Sandbox · no real money"),
+    "testnet": _("Test network · no monetary value"),
+    "mercadopago_test": _("Mercado Pago · test credentials"),
+    "live": _("Production · real payments"),
 }
 
 
 STATUS_LABELS = {
-    "open": "Aguardando pagamento",
-    "partial": "Recebido parcialmente",
-    "paid": "Recebido",
-    "overpaid": "Recebido acima do valor",
-    "expired": "Expirada",
-    "review": "Em revisão",
-    "pending": "Aguardando autorização",
-    "approved": "Autorizada",
-    "submitting": "Transmitindo",
-    "submitted": "Transmitida",
-    "cancelled": "Cancelada",
-    "unknown": "Verificação pendente",
+    "open": _("Awaiting payment"),
+    "partial": _("Partially received"),
+    "paid": _("Received"),
+    "overpaid": _("Overpaid"),
+    "expired": _("Expired"),
+    "review": _("Under review"),
+    "pending": _("Awaiting authorization"),
+    "approved": _("Authorized"),
+    "submitting": _("Broadcasting"),
+    "submitted": _("Broadcast"),
+    "cancelled": _("Cancelled"),
+    "unknown": _("Verification pending"),
 }
 
 
@@ -92,7 +94,9 @@ def home(request, org_id):
         return redirect("bch_flow:login")
     asset = request.GET.get("asset", "BCH")
     environment = request.GET.get("environment", "sandbox")
-    if asset not in ("BTC", "BCH", "BRL") or environment not in LABELS:
+    if asset not in ASSET_INFO or environment not in LABELS:
+        raise Http404
+    if asset in SANDBOX_ONLY and environment != "sandbox":
         raise Http404
     account = FlowAccount.objects.filter(
         organization_id=org_id, asset=asset, environment=environment
@@ -131,7 +135,7 @@ def home(request, org_id):
                 wf = WithdrawalForm(request.POST, asset=asset, prefix="send")
                 if wf.is_valid():
                     if account is None:
-                        raise PaymentError("Esta conta ainda não possui recebimentos.")
+                        raise PaymentError(_("This account has no receipts yet."))
                     service.create_withdrawal(
                         member.identity,
                         account,
@@ -167,11 +171,11 @@ def home(request, org_id):
                     service.cancel_withdrawal(member.identity, withdrawal)
                 return redirect(_url(member, asset, environment))
             else:
-                raise PaymentError("Operação inválida.")
+                raise PaymentError(_("Invalid operation."))
         except PaymentError as exc:
             error = str(exc)
         except (IntegrityError, ValueError, ValidationError):
-            error = "A operação conflitou com outro registro. Atualize e consulte o status antes de repetir."
+            error = "The operation conflicted with another record. Refresh and check its status before retrying."
     if account:
         account.refresh_from_db()
     requests = (
@@ -194,6 +198,10 @@ def home(request, org_id):
         "app_bch_flow/financial/home.html",
         {
             "member": member,
+            "asset_options": [
+                {"code": code, **meta} for code, meta in ASSET_INFO.items()
+            ],
+            "sandbox_only": asset in SANDBOX_ONLY,
             "asset": asset,
             "environment": environment,
             "environment_label": LABELS[environment],
@@ -248,14 +256,16 @@ def request_detail(request, org_id, request_id):
             elif action == "prepare":
                 service.prepare_request(charge)
             else:
-                raise PaymentError("Operação inválida.")
+                raise PaymentError(_("Invalid operation."))
             return redirect(
                 "bch_flow:financial_request", org_id=org_id, request_id=request_id
             )
         except PaymentError as exc:
             error = str(exc)
         except IntegrityError:
-            error = "Este pagamento já foi registrado. Consulte o histórico antes de repetir."
+            error = (
+                "This payment was already recorded. Check the history before retrying."
+            )
     charge.refresh_from_db()
     return render(
         request,
@@ -294,7 +304,7 @@ def _secure(response):
     response["Referrer-Policy"] = "no-referrer"
     response["X-Robots-Tag"] = "noindex, nofollow"
     response["Content-Security-Policy"] = (
-        "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+        "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
     )
     return response
 
@@ -364,8 +374,9 @@ def mercado_webhook(request, org_id, environment):
     if account is None:
         return JsonResponse({"error": "not_configured"}, status=503)
     try:
-        config = provider_config(account)
-        secret = local_secret(config, "webhook_secret")
+        from .integrations import merchant_webhook_secret
+
+        secret = merchant_webhook_secret(account)
         validate_mp_signature(
             request.headers.get("x-signature"),
             request.headers.get("x-request-id"),
@@ -373,8 +384,12 @@ def mercado_webhook(request, org_id, environment):
             secret,
         )
         with transaction.atomic():
-            inbox, _ = FlowInbox.objects.select_for_update().get_or_create(
-                organization_id=org_id, environment=environment, resource_id=resource
+            inbox, _created_or_unused = (
+                FlowInbox.objects.select_for_update().get_or_create(
+                    organization_id=org_id,
+                    environment=environment,
+                    resource_id=resource,
+                )
             )
             if inbox.status in ("done", "failed"):
                 inbox.status, inbox.attempts = "pending", 0

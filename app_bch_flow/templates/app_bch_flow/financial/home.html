@@ -1,6 +1,6 @@
 {% extends "app_bch_flow/base.html" %}
-{% load static %}
-{% block title %}Carteira · {{ member.organization.name }}{% endblock %}
+{% load static i18n %}
+{% block title %}{% trans "Wallet ·" %} {{ member.organization.name }}{% endblock %}
 {% block content %}
   <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
   <main id="main" class="pay-app" data-payment-app>
@@ -9,7 +9,7 @@
         <span>
           <i data-lucide="wallet">
           </i>
-        </span>BCH <strong>FLOW</strong>
+        </span>{% trans "BCH" %} <strong>{% trans "FLOW" %}</strong>
       </a>
       <a href="{% url 'bch_flow:v3_workspace' member.organization_id %}">
         <i data-lucide="building-2">
@@ -17,26 +17,27 @@
         </i>
       </a>
     </header>
+    {% if can_approve %}<a class="pay-integrations-link" href="{% url 'bch_flow:merchant_integrations' member.organization_id %}"><i data-lucide="plug-zap"></i> {% trans "Integrations · Mercado Pago" %}</a>{% endif %}
     <div class="pay-heading">
       <div>
-        <p class="pay-eyebrow">SEU ESPAÇO FINANCEIRO</p>
-        <h1>Uma carteira.<br>
-          <span>Novas possibilidades.</span>
+        <p class="pay-eyebrow">{% trans "YOUR FINANCIAL SPACE" %}</p>
+        <h1>{% trans "One wallet." %}<br>
+          <span>{% trans "New possibilities." %}</span>
         </h1>
       </div>
       <form method="get" class="pay-environment">
         <input type="hidden" name="asset" value="{{ asset }}">
-        <label for="environment">Ambiente</label>
+        <label for="environment">{% trans "Environment" %}</label>
         <select id="environment" name="environment">
-          <option value="sandbox" {% if environment == 'sandbox' %}selected{% endif %}>Laboratório</option>
-          {% if asset == "BRL" %}
-            <option value="mercadopago_test" {% if environment == 'mercadopago_test' %}selected{% endif %}>Mercado Pago · teste</option>
+          <option value="sandbox" {% if environment == 'sandbox' %}selected{% endif %}>{% trans "Sandbox" %}</option>
+          {% if not sandbox_only %}{% if asset == "BRL" %}
+            <option value="mercadopago_test" {% if environment == 'mercadopago_test' %}selected{% endif %}>{% trans "Mercado Pago · test" %}</option>
           {% else %}
-            <option value="testnet" {% if environment == 'testnet' %}selected{% endif %}>Rede de testes</option>
+            <option value="testnet" {% if environment == 'testnet' %}selected{% endif %}>{% trans "Test network" %}</option>
           {% endif %}
-          <option value="live" {% if environment == 'live' %}selected{% endif %}>Produção</option>
+          {% endif %}{% if not sandbox_only %}<option value="live" {% if environment == 'live' %}selected{% endif %}>{% trans "Production" %}</option>{% endif %}
         </select>
-        <button type="submit" class="pay-small-button">Abrir</button>
+        <button type="submit" class="pay-small-button">{% trans "Open" %}</button>
       </form>
     </div>
     <div class="pay-mode {% if is_sandbox %}pay-mode-sandbox{% endif %}" role="note">
@@ -44,7 +45,7 @@
       </i>
       <strong>{{ environment_label }}</strong>
       <span>
-        {% if is_sandbox %}Valores simulados. Nenhuma operação desta conta movimenta dinheiro real.{% else %}Cada organização usa sua própria integração. Valores refletem recebimentos reconciliados, não o saldo total da carteira ou do banco.{% endif %}
+        {% if is_sandbox %}{% trans "Simulated balances. Operations in this account do not move real money." %}{% else %}{% trans "Each organization uses its own integration. Balances reflect reconciled receipts, not the total wallet or bank balance." %}{% endif %}
       </span>
     </div>
     {% if error %}
@@ -53,35 +54,14 @@
         </i>{{ error }}</div>
     {% endif %}
     {% if account.frozen %}
-      <div class="pay-error" role="alert">Conta em revisão: foi detectada uma divergência. Novas operações estão bloqueadas.</div>
+      <div class="pay-error" role="alert">{% trans "A discrepancy was detected. This account is under review and new operations are blocked." %}</div>
     {% endif %}
-    <nav class="pay-assets" aria-label="Escolha o ativo">
-      <a href="?asset=BTC&amp;environment=sandbox" {% if asset == 'BTC' %}aria-current="page"{% endif %}>
-        <span class="pay-coin pay-btc">
-          <i data-lucide="bitcoin">
-          </i>
-        </span>
-        <span>Bitcoin<small>BTC</small>
-        </span>
-      </a>
-      <a href="?asset=BCH&amp;environment=sandbox" {% if asset == 'BCH' %}aria-current="page"{% endif %}>
-        <span class="pay-coin">
-          <i data-lucide="bitcoin">
-          </i>
-        </span>
-        <span>Bitcoin Cash<small>BCH</small>
-        </span>
-      </a>
-      <a href="?asset=BRL&amp;environment=sandbox" {% if asset == 'BRL' %}aria-current="page"{% endif %}>
-        <span class="pay-coin pay-brl">
-          <i data-lucide="scan-line">
-          </i>
-        </span>
-        <span>Real / Pix<small>BRL</small>
-        </span>
-      </a>
+    <nav class="pay-assets" aria-label="{% trans "Choose currency" %}">
+      {% for option in asset_options %}<a href="?asset={{ option.code }}&amp;environment=sandbox" {% if asset == option.code %}aria-current="page"{% endif %}><span class="pay-coin"><i data-lucide="{{ option.icon }}"></i></span><span>{{ option.name }}<small>{{ option.code }}</small></span></a>{% endfor %}
     </nav>
-    <section class="pay-wallet-area" aria-label="Saldo e operações">
+    {% if sandbox_only %}<p class="pay-pending">{% trans "USD and EUR are separate fiat balances in sandbox. Real deposits and payouts require a supported provider. No currency conversion is performed." %}</p>{% endif %}
+
+    <section class="pay-wallet-area" aria-label="{% trans "Balances and operations" %}">
       <div class="pay-leather">
         <div class="pay-wallet-label">
           <span>{{ member.organization.name }}</span>
@@ -90,9 +70,9 @@
         </div>
         <div class="pay-balance-card">
           <div class="pay-balance-top">
-            <span>{{ asset }} · {% if is_sandbox %}SALDO SIMULADO{% else %}RECEBIMENTOS RECONCILIADOS{% endif %}
+            <span>{{ asset }} · {% if is_sandbox %}{% trans "SIMULATED BALANCE" %}{% else %}{% trans "RECONCILED RECEIPTS" %}{% endif %}
             </span>
-            <button type="button" data-balance-toggle aria-label="Ocultar valores" aria-pressed="false">
+            <button type="button" data-balance-toggle aria-label="{% trans "Hide balances" %}" aria-pressed="false">
               <i data-lucide="eye">
               </i>
             </button>
@@ -102,41 +82,41 @@
             <small>{{ asset }}</small>
           </div>
           <p>
-            {% if asset == "BRL" and not is_sandbox %}Total bruto conciliado · tarifas e disponibilidade no provedor{% else %}Disponível nesta conta{% endif %}
+            {% if asset == "BRL" and not is_sandbox %}{% trans "Gross reconciled receipts · fees and availability are determined by the provider" %}{% else %}{% trans "Available in this account" %}{% endif %}
           </p>
           <div class="pay-reserved">
             <i data-lucide="lock-keyhole">
             </i>
-            <span data-private-value>{{ reserved }}</span> {{ asset }} reservado em saídas</div>
+            <span data-private-value>{{ reserved }}</span> {{ asset }} {% trans "reserved for withdrawals" %}</div>
           <div class="pay-card-footer">
             <span>
               <span class="pay-dot">
               </span>{{ environment_label }}</span>
             <span>
-              {% if account.frozen %}EM REVISÃO{% elif account %}CONTA CRIADA{% else %}SEM MOVIMENTAÇÕES{% endif %}
+              {% if account.frozen %}{% trans "UNDER REVIEW" %}{% elif account %}{% trans "ACCOUNT CREATED" %}{% else %}{% trans "NO ACTIVITY" %}{% endif %}
             </span>
           </div>
         </div>
       </div>
       <div class="pay-actions">
-        <p class="pay-eyebrow">SEU DINHEIRO EM MOVIMENTO</p>
-        <h2>Receba com clareza.<br>
-          <span>Envie com controle.</span>
+        <p class="pay-eyebrow">{% trans "YOUR MONEY IN MOTION" %}</p>
+        <h2>{% trans "Receive with clarity." %}<br>
+          <span>{% trans "Send with control." %}</span>
         </h2>
-        <p>Uma confirmação para cada etapa. Um registro para cada movimento.</p>
+        <p>{% trans "A confirmation for each step. A record for every movement." %}</p>
         <div class="pay-action-buttons">
           {% if can_write %}
             <button type="button" data-open-dialog="receive-dialog" class="pay-primary">
               <i data-lucide="arrow-down-left">
-              </i>Receber</button>
+              </i>{% trans "Receive" %}</button>
             <button type="button" data-open-dialog="send-dialog" class="pay-secondary">
               <i data-lucide="arrow-up-right">
-              </i>Enviar</button>
+              </i>{% trans "Send" %}</button>
           {% else %}
-            <p>Seu perfil permite consultar esta carteira. Solicite a um operador uma nova cobrança.</p>
+            <p>{% trans "Your role allows viewing this wallet. Ask an operator to create a payment request." %}</p>
           {% endif %}
         </div>
-        <a class="pay-legacy" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">Ferramentas de observação BCH <i data-lucide="arrow-up-right">
+        <a class="pay-legacy" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">{% trans "BCH observation tools" %} <i data-lucide="arrow-up-right">
           </i>
         </a>
       </div>
@@ -144,10 +124,10 @@
     <section class="pay-section">
       <div class="pay-section-heading">
         <div>
-          <p class="pay-eyebrow">ENTRADAS</p>
-          <h2>Suas cobranças</h2>
+          <p class="pay-eyebrow">{% trans "INCOMING" %}</p>
+          <h2>{% trans "Your payment requests" %}</h2>
         </div>
-        <span>Últimos 20 registros</span>
+        <span>{% trans "Latest 20 records" %}</span>
       </div>
       <div class="pay-list">
         {% for charge in requests %}
@@ -157,7 +137,7 @@
               </i>
             </span>
             <span class="pay-row-label">
-              <strong>{{ charge.description|default:'Cobrança' }}</strong>
+              <strong>{{ charge.description|default:'Payment request' }}</strong>
               <small>{{ charge.created_at|date:'d/m/Y · H:i' }}</small>
             </span>
             <span class="pay-row-value">
@@ -172,8 +152,8 @@
             <i data-lucide="receipt-text">
             </i>
             <div>
-              <h3>Sua próxima entrada começa aqui.</h3>
-              <p>Crie uma cobrança para acompanhar cada etapa do recebimento.</p>
+              <h3>{% trans "Your next payment starts here." %}</h3>
+              <p>{% trans "Create a request to follow every step of your payment." %}</p>
             </div>
           </div>
         {% endfor %}
@@ -182,10 +162,10 @@
     <section class="pay-section">
       <div class="pay-section-heading">
         <div>
-          <p class="pay-eyebrow">SAÍDAS</p>
-          <h2>Autorizações e envios</h2>
+          <p class="pay-eyebrow">{% trans "OUTGOING" %}</p>
+          <h2>{% trans "Approvals and transfers" %}</h2>
         </div>
-        <span>Reserva → autorização → transmissão</span>
+        <span>{% trans "Reserve → authorize → broadcast" %}</span>
       </div>
       {% for withdrawal in withdrawals %}
         <article class="pay-withdrawal">
@@ -200,7 +180,7 @@
             </span>
             <span class="pay-status" data-state="{{ withdrawal.status }}">{{ withdrawal.friendly_status }}</span>
           </div>
-          <p class="pay-muted">Taxa máxima: {{ withdrawal.formatted_fee_limit }} {{ asset }} · Total reservado: {{ withdrawal.formatted_reservation }} {{ asset }}</p>
+          <p class="pay-muted">{% trans "Maximum fee:" %} {{ withdrawal.formatted_fee_limit }} {{ asset }} {% trans "· Total reserved:" %} {{ withdrawal.formatted_reservation }} {{ asset }}</p>
           {% if withdrawal.txid %}
             <code class="pay-txid">{{ withdrawal.txid }}</code>
           {% endif %}
@@ -210,9 +190,9 @@
                 <form method="post">
                   {% csrf_token %}
                   <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
-                  <button type="submit" name="action" value="prepare_send" class="pay-small-button">Preparar transação para assinatura externa</button>
+                  <button type="submit" name="action" value="prepare_send" class="pay-small-button">{% trans "Prepare transaction for external signing" %}</button>
                   {% if withdrawal.signing_payload %}
-                    <a class="pay-small-button" href="{% url 'bch_flow:financial_signing_package' member.organization_id withdrawal.pk %}">Baixar pacote de assinatura</a>
+                    <a class="pay-small-button" href="{% url 'bch_flow:financial_signing_package' member.organization_id withdrawal.pk %}">{% trans "Download signing package" %}</a>
                   {% endif %}
                 </form>
               {% endif %}
@@ -220,9 +200,9 @@
                 {% csrf_token %}
                 <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
                 <input type="hidden" name="action" value="approve">
-                <label>Confirme sua senha<input type="password" name="password" required autocomplete="current-password" maxlength="200">
+                <label>{% trans "Confirm your password" %}<input type="password" name="password" required autocomplete="current-password" maxlength="200">
                 </label>
-                <button class="pay-small-button" type="submit">Autorizar por 5 minutos</button>
+                <button class="pay-small-button" type="submit">{% trans "Authorize for 5 minutes" %}</button>
               </form>
             {% endif %}
             {% if withdrawal.status == "approved" %}
@@ -231,12 +211,12 @@
                 <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
                 <input type="hidden" name="action" value="submit">
                 {% if not is_sandbox %}
-                  <label>Transação assinada na sua carteira externa<textarea name="raw_transaction" required maxlength="1000000" spellcheck="false" autocomplete="off" placeholder="Hexadecimal da transação assinada; nunca sua chave privada.">
+                  <label>{% trans "Transaction signed in your external wallet" %}<textarea name="raw_transaction" required maxlength="1000000" spellcheck="false" autocomplete="off" placeholder="{% trans "Signed transaction hexadecimal; never your private key." %}">
                     </textarea>
                   </label>
                 {% endif %}
                 <button class="pay-primary" type="submit">
-                  {% if is_sandbox %}Executar envio simulado{% else %}Validar e transmitir{% endif %}
+                  {% if is_sandbox %}{% trans "Execute simulated transfer" %}{% else %}{% trans "Validate and broadcast" %}{% endif %}
                   <i data-lucide="arrow-up-right">
                   </i>
                 </button>
@@ -246,15 +226,15 @@
               <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
-                <button type="submit" name="action" value="cancel" class="pay-text-button">Cancelar e liberar reserva</button>
+                <button type="submit" name="action" value="cancel" class="pay-text-button">{% trans "Cancel and release reservation" %}</button>
               </form>
             {% endif %}
             {% if withdrawal.status == "unknown" or withdrawal.status == "submitting" %}
-              <p class="pay-pending">O resultado da transmissão ainda precisa ser verificado. O valor permanece reservado; não crie outra saída para substituir esta.</p>
+              <p class="pay-pending">{% trans "The broadcast result must be verified. Funds remain reserved; do not create a replacement withdrawal." %}</p>
               <form method="post">
                 {% csrf_token %}
                 <input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
-                <button type="submit" name="action" value="recover" class="pay-small-button">Consultar transmissão no nó</button>
+                <button type="submit" name="action" value="recover" class="pay-small-button">{% trans "Check broadcast on node" %}</button>
               </form>
             {% endif %}
           {% endif %}
@@ -264,8 +244,8 @@
           <i data-lucide="shield-check">
           </i>
           <div>
-            <h3>Você decide quando sai.</h3>
-            <p>Uma saída reserva saldo e exige autorização de um proprietário ou administrador.</p>
+            <h3>{% trans "You decide when funds leave." %}</h3>
+            <p>{% trans "Withdrawals reserve funds and require an owner or administrator to authorize them." %}</p>
           </div>
         </div>
       {% endfor %}
@@ -273,7 +253,7 @@
     <details class="pay-ledger">
       <summary>
         <i data-lucide="book-open-check">
-        </i>Registro financeiro <span>{{ journal|length }} movimentos recentes</span>
+        </i>{% trans "Financial journal" %} <span>{{ journal|length }} {% trans "recent movements" %}</span>
       </summary>
       {% for entry in journal %}
         <div class="pay-row">
@@ -282,30 +262,30 @@
           <strong>{{ entry.formatted_amount }} {{ asset }}</strong>
         </div>
       {% empty %}
-        <p>Nenhum movimento registrado nesta conta.</p>
+        <p>{% trans "No movements recorded in this account." %}</p>
       {% endfor %}
     </details>
     <footer class="pay-footer">
       <i data-lucide="shield-check">
       </i>
-      <span>Dados isolados por organização, ativo e ambiente. Chaves privadas nunca são solicitadas aqui.</span>
+      <span>{% trans "Data is isolated by organization, asset and environment. Private keys are never requested here." %}</span>
     </footer>
     {% if can_write %}
       <dialog id="receive-dialog" class="pay-dialog" aria-labelledby="receive-title" {% if request_form.errors %}data-show-errors{% endif %}>
         <header>
           <span>
             <i data-lucide="arrow-down-left">
-            </i> NOVA ENTRADA</span>
-          <button type="button" data-close-dialog aria-label="Fechar">
+            </i> {% trans "NEW PAYMENT" %}</span>
+          <button type="button" data-close-dialog aria-label="{% trans "Close" %}">
             <i data-lucide="x">
             </i>
           </button>
         </header>
-        <h2 id="receive-title">Receber {{ asset }}</h2>
-        <p>{{ environment_label }}. A cobrança expira em 30 minutos.</p>
+        <h2 id="receive-title">{% trans "Receive" %} {{ asset }}</h2>
+        <p>{{ environment_label }}{% trans ". This request expires in 30 minutes." %}</p>
         <form method="post" data-submit-feedback>
           {% csrf_token %}
-          <input type="hidden" name="action" value="request">{{ request_form.as_p }}<button type="submit" class="pay-primary">Criar cobrança<i data-lucide="arrow-up-right">
+          <input type="hidden" name="action" value="request">{{ request_form.as_p }}<button type="submit" class="pay-primary">{% trans "Create payment request" %}<i data-lucide="arrow-up-right">
             </i>
           </button>
         </form>
@@ -314,19 +294,19 @@
         <header>
           <span>
             <i data-lucide="arrow-up-right">
-            </i> NOVA SAÍDA</span>
-          <button type="button" data-close-dialog aria-label="Fechar">
+            </i> {% trans "NEW WITHDRAWAL" %}</span>
+          <button type="button" data-close-dialog aria-label="{% trans "Close" %}">
             <i data-lucide="x">
             </i>
           </button>
         </header>
-        <h2 id="send-title">Enviar {{ asset }}</h2>
+        <h2 id="send-title">{% trans "Send" %} {{ asset }}</h2>
         <p>
-          {% if is_sandbox %}Use um destino como sandbox:carteira-destino. Nenhum dinheiro real será enviado.{% elif asset == "BRL" %}Transferências Pix dependem de contratação e integração de um produto de saques. Ainda não habilitadas.{% else %}O saldo e a taxa máxima serão reservados. A assinatura acontece na sua carteira externa. O pacote sem assinatura propõe a taxa informada; confira a taxa antes de assinar.{% endif %}
+          {% if is_sandbox %}{% trans "Use a destination such as sandbox:destination-wallet. No real money will be sent." %}{% elif asset == "BRL" %}{% trans "Pix payouts require a contracted transfer product and integration. They are not enabled." %}{% else %}{% trans "The amount and maximum fee will be reserved. Sign in your external wallet. The unsigned package uses the entered fee; review it before signing." %}{% endif %}
         </p>
         <form method="post" data-submit-feedback>
           {% csrf_token %}
-          <input type="hidden" name="action" value="withdraw">{{ withdrawal_form.as_p }}<button type="submit" class="pay-primary">Revisar e reservar<i data-lucide="arrow-right">
+          <input type="hidden" name="action" value="withdraw">{{ withdrawal_form.as_p }}<button type="submit" class="pay-primary">{% trans "Review and reserve" %}<i data-lucide="arrow-right">
             </i>
           </button>
         </form>

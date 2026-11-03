@@ -1,5 +1,8 @@
 """Replay-safe polling and webhook consumption. Run continuously in a supervisor."""
 
+from django.utils.translation import gettext as _
+
+
 from django.db import transaction
 from app_bch_flow.models import FlowInbox, FlowRequest, FlowAccount, FlowReceipt
 from .service import reconcile_request
@@ -11,7 +14,7 @@ def process_inbox(limit=100):
     completed = failed = 0
     # Lock each job for the duration of its authoritative provider lookup. Other
     # workers skip it rather than executing the same job in parallel.
-    for _ in range(limit):
+    for _created_or_unused in range(limit):
         with transaction.atomic():
             item = (
                 FlowInbox.objects.select_for_update(skip_locked=True)
@@ -33,7 +36,7 @@ def process_inbox(limit=100):
             try:
                 if len(requests) != 1:
                     raise PaymentError(
-                        "A cobrança vinculada ainda não está disponível."
+                        _("The linked payment request is not available yet.")
                     )
                 # Savepoint protects the inbox retry counter from a rolled-back mutation.
                 with transaction.atomic():
@@ -63,7 +66,9 @@ def sync_crypto(account):
         if not account.withdrawals.filter(txid=txid).exists():
             FlowAccount.objects.filter(pk=account.pk).update(frozen=True)
             raise PaymentError(
-                "Saída externa não conciliada detectada. A conta foi bloqueada para revisão."
+                _(
+                    "An unreconciled external withdrawal was detected. The account is blocked for review."
+                )
             )
     txids = {
         entry.get("txid")
@@ -97,7 +102,7 @@ def sync_crypto(account):
                     raise
     cursor = changes.get("lastblock", "")
     if not isinstance(cursor, str) or len(cursor) != 64:
-        raise PaymentError("Cursor de sincronização inválido.")
+        raise PaymentError(_("Invalid synchronization cursor."))
     FlowAccount.objects.filter(pk=account.pk).update(sync_cursor=cursor)
     return count
 

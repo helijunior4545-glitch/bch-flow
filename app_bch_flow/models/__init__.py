@@ -8,3 +8,4 @@ from .merchants import BCHMerchant
 from .audit import BCHAuditEvent, BCHFinancialEvent
 from .outpoint_reservations import BCHOutpointReservation
 from .payment_core import FlowAccount, FlowRequest, FlowReceipt, FlowWithdrawal, FlowJournal, FlowSpend, FlowInbox
+from .merchant_integrations import FlowMerchantIdentity, FlowProviderConnection, FlowOAuthGrant

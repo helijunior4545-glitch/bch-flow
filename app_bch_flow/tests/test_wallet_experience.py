@@ -40,7 +40,7 @@ class WalletExperienceTests(TestCase):
         self.assertEqual([bucket['count'] for bucket in buckets], [0, 0, 0, 0, 0, 1, 1])
         self.assertEqual([bucket['height'] for bucket in buckets], [0, 0, 0, 0, 0, 100, 100])
         self.assertNotContains(response, str(foreign.pk))
-        self.assertContains(response, 'não representa pagamentos')
+        self.assertContains(response, 'not payments')
         self.assertNotContains(response, '<aside')
         self.assertFalse(response.context['broadcast_enabled'])
         self.assertFalse(response.context['chain_balance_verified'])
@@ -50,11 +50,11 @@ class WalletExperienceTests(TestCase):
         response = self.client.get(self.url)
         self.assertEqual(sum(bucket['count'] for bucket in response.context['request_activity']), 0)
         self.assertNotContains(response, 'class="wallet-request-chart"')
-        self.assertContains(response, 'Uma nova história começa aqui')
+        self.assertContains(response, 'Your story starts here')
 
     def test_chart_discloses_twenty_record_limit(self):
         for _ in range(21):
             self.invoice(self.org)
         response = self.client.get(self.url)
         self.assertEqual(sum(bucket['count'] for bucket in response.context['request_activity']), 20)
-        self.assertContains(response, 'últimos 20 registros')
+        self.assertContains(response, 'latest 20 records')

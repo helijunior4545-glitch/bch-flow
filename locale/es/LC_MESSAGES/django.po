@@ -1,0 +1,1401 @@
+# BCH Flow UI catalog. English is the fallback for untranslated messages.
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: es\nMIME-Version: 1.0\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "+ Create request"
+msgstr ""
+
+msgid "+ New organization"
+msgstr ""
+
+msgid ". This request expires in 30 minutes."
+msgstr ". Esta solicitud caduca en 30 minutos."
+
+msgid "A Mercado Pago account cannot be shared between organizations."
+msgstr ""
+
+msgid "A confirmation for each step. A record for every movement."
+msgstr "Una confirmación por paso. Un registro por movimiento."
+
+msgid "A discrepancy was detected. This account is under review and new operations are blocked."
+msgstr "Se detectó una discrepancia. La cuenta está en revisión y las nuevas operaciones están bloqueadas."
+
+msgid "A signing package cannot be prepared for this withdrawal."
+msgstr ""
+
+msgid "A wallet, not another dashboard."
+msgstr ""
+
+msgid "ACCOUNT CREATED"
+msgstr "CUENTA CREADA"
+
+msgid "ACTIVITY"
+msgstr ""
+
+msgid "ADDRESS / REFERENCE"
+msgstr "DIRECCIÓN / REFERENCIA"
+
+msgid "About activity"
+msgstr ""
+
+msgid "About receiving addresses"
+msgstr ""
+
+msgid "Access token"
+msgstr "Token de acceso"
+
+msgid "Activity"
+msgstr ""
+
+msgid "Address monitor"
+msgstr ""
+
+msgid "Address ownership unverified"
+msgstr ""
+
+msgid "Addresses"
+msgstr ""
+
+msgid "Advanced tools"
+msgstr ""
+
+msgid "All fields are validated by the existing backend."
+msgstr ""
+
+msgid "Already registered?"
+msgstr ""
+
+msgid "Among the latest 20 records · not payments"
+msgstr ""
+
+msgid "Amount"
+msgstr "Importe"
+
+msgid "An RPC wallet cannot be shared between organizations."
+msgstr ""
+
+msgid "An account-owned change address and external destination are required."
+msgstr ""
+
+msgid "An input already belongs to another withdrawal."
+msgstr ""
+
+msgid "An input is already reserved for another withdrawal."
+msgstr ""
+
+msgid "An unreconciled external withdrawal was detected. The account is blocked for review."
+msgstr ""
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "Approvals and transfers"
+msgstr "Autorizaciones y envíos"
+
+msgid "Authorization was cancelled. No credentials were saved."
+msgstr "Se canceló la autorización. No se guardaron credenciales."
+
+msgid "Authorize for 5 minutes"
+msgstr "Autorizar por 5 minutos"
+
+msgid "Authorize the withdrawal again before broadcasting."
+msgstr ""
+
+msgid "Authorize this application on the official Mercado Pago website."
+msgstr "Autoriza esta aplicación en el sitio oficial de Mercado Pago."
+
+msgid "Authorized"
+msgstr "Autorizada"
+
+msgid "Available in this account"
+msgstr "Disponible en esta cuenta"
+
+msgid "Awaiting authorization"
+msgstr "Esperando autorización"
+
+msgid "Awaiting payment"
+msgstr "Esperando pago"
+
+msgid "BCH"
+msgstr ""
+
+msgid "BCH FLOW"
+msgstr ""
+
+msgid "BCH FLOW / DASHBOARD"
+msgstr ""
+
+msgid "BCH FLOW / PRIVATE EDITION"
+msgstr ""
+
+msgid "BCH FLOW / WALLET"
+msgstr ""
+
+msgid "BCH FLOW · 2026"
+msgstr ""
+
+msgid "BCH Flow account password"
+msgstr "Contraseña de tu cuenta BCH Flow"
+
+msgid "BCH Flow · A wallet you can feel"
+msgstr ""
+
+msgid "BCH observation tools"
+msgstr "Herramientas de observación BCH"
+
+msgid "BITCOIN CASH"
+msgstr ""
+
+msgid "BITCOIN CASH WALLET"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Back to dashboard"
+msgstr "Volver al panel"
+
+msgid "Back to wallet"
+msgstr "Volver a la cartera"
+
+msgid "Balance history is available after a verified connection"
+msgstr ""
+
+msgid "Balances and operations"
+msgstr "Saldos y operaciones"
+
+msgid "Bitcoin"
+msgstr ""
+
+msgid "Bitcoin Cash"
+msgstr ""
+
+msgid "Bitcoin Cash payment requests in a thoughtfully crafted, watch-only wallet workspace. Every detail feels intentional. Every financial claim stays grounded."
+msgstr ""
+
+msgid "Bitcoin Cash · Independent project · Not affiliated with Pix"
+msgstr ""
+
+msgid "Brazilian real / Pix"
+msgstr "Real brasileño / Pix"
+
+msgid "Broadcast"
+msgstr "Transmitida"
+
+msgid "Broadcast is not yet verified by the node. Funds remain reserved."
+msgstr ""
+
+msgid "Broadcasting"
+msgstr "Transmitiendo"
+
+msgid "Cancel and release reservation"
+msgstr "Cancelar y liberar reserva"
+
+msgid "Cancelled"
+msgstr "Cancelada"
+
+msgid "Change from your own withdrawal cannot be credited as a new receipt."
+msgstr ""
+
+msgid "Check broadcast on node"
+msgstr "Consultar transmisión en el nodo"
+
+msgid "Check provider status"
+msgstr "Consultar estado"
+
+msgid "Check with provider"
+msgstr "Verificar con el proveedor"
+
+msgid "Checking for payment updates…"
+msgstr "Buscando actualizaciones del pago…"
+
+msgid "Choose currency"
+msgstr "Elegir moneda"
+
+msgid "Choose language"
+msgstr "Elegir idioma"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Close dialog"
+msgstr ""
+
+msgid "Collapse menu"
+msgstr "Contraer menú"
+
+msgid "Collapse navigation"
+msgstr ""
+
+msgid "Configure an isolated watch-only wallet HTTPS RPC endpoint."
+msgstr ""
+
+msgid "Confirm password"
+msgstr "Confirmar contraseña"
+
+msgid "Confirm your password"
+msgstr "Confirma tu contraseña"
+
+msgid "Connect a Brazilian Mercado Pago merchant account for BRL / Pix."
+msgstr "Conecta una cuenta brasileña Mercado Pago para BRL / Pix."
+
+msgid "Connect with Mercado Pago"
+msgstr "Conectar con Mercado Pago"
+
+msgid "Connect your merchant account to receive Pix. Tokens are encrypted and never shown again. This connection does not enable Pix payouts."
+msgstr "Conecta tu cuenta para recibir Pix. Los tokens se cifran y no se muestran de nuevo. Esta conexión no habilita salidas Pix."
+
+msgid "Connected"
+msgstr "Conectado"
+
+msgid "Connection not completed"
+msgstr "Conexión no completada"
+
+msgid "Copied successfully."
+msgstr "Copiado correctamente."
+
+msgid "Copy"
+msgstr ""
+
+msgid "Copy code"
+msgstr "Copiar código"
+
+msgid "Copy link"
+msgstr "Copiar enlace"
+
+msgid "Copy the payment page address from your browser."
+msgstr "Copia la dirección de la página de pago del navegador."
+
+msgid "Create a draft request to get started."
+msgstr ""
+
+msgid "Create a request to follow every step of your payment."
+msgstr "Crea una solicitud para seguir cada etapa del cobro."
+
+msgid "Create account"
+msgstr "Crear cuenta"
+
+msgid "Create account · BCH Flow"
+msgstr ""
+
+msgid "Create an organization to manage draft payment requests."
+msgstr ""
+
+msgid "Create draft request"
+msgstr ""
+
+msgid "Create organization ↗"
+msgstr ""
+
+msgid "Create payment request"
+msgstr "Crear solicitud"
+
+msgid "Create request ↗"
+msgstr ""
+
+msgid "Create workspace"
+msgstr ""
+
+msgid "Create your account"
+msgstr ""
+
+msgid "Create your workspace ↗"
+msgstr ""
+
+msgid "Creating a request does not move funds or verify a payment."
+msgstr ""
+
+msgid "Credential encryption is not configured. Contact the administrator."
+msgstr "El cifrado de credenciales no está configurado. Contacta al administrador."
+
+msgid "Credentials are scoped to your organization. Private wallet keys are never requested."
+msgstr "Credenciales vinculadas a tu organización. Nunca se solicitan claves privadas de la cartera."
+
+msgid "DESIGNED TO FEEL DIFFERENT"
+msgstr ""
+
+msgid "Dashboard navigation"
+msgstr ""
+
+msgid "Dashboard · BCH Flow"
+msgstr ""
+
+msgid "Data is isolated by organization, asset and environment. Private keys are never requested here."
+msgstr "Datos aislados por organización, activo y entorno. Nunca se solicitan claves privadas."
+
+msgid "Decorative wallet preview"
+msgstr ""
+
+msgid "Description"
+msgstr "Descripción"
+
+msgid "Destination"
+msgstr "Destino"
+
+msgid "Details"
+msgstr ""
+
+msgid "Disconnect account"
+msgstr "Desconectar cuenta"
+
+msgid "Disconnected"
+msgstr "Desconectado"
+
+msgid "Disconnecting stops local processing. Your money stays with Mercado Pago. You can also revoke this application in your Mercado Pago account."
+msgstr "Desconectar detiene el procesamiento local. Tu dinero permanece en Mercado Pago. También puedes revocar la aplicación en tu cuenta."
+
+msgid "Do not cancel a broadcast withdrawal or one with an unknown result."
+msgstr ""
+
+msgid "Do not send real money to this request."
+msgstr "No envíes dinero real a esta solicitud."
+
+msgid "Download signing package"
+msgstr "Descargar paquete de firma"
+
+msgid "Each organization uses its own integration. Balances reflect reconciled receipts, not the total wallet or bank balance."
+msgstr "Cada organización usa su integración. Los saldos reflejan cobros conciliados, no el saldo total de la cartera o banco."
+
+msgid "Early-stage software · No automated settlement or transfers"
+msgstr ""
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Enter a Bitcoin Cash amount and receiving address to create a watch-only draft invoice."
+msgstr ""
+
+msgid "Enter a positive amount with up to 2 decimal places for fiat or 8 for crypto."
+msgstr ""
+
+msgid "Enter credentials from your Mercado Pago application. Never share your password, token or signing secret in chat."
+msgstr "Introduce las credenciales de tu aplicación Mercado Pago. Nunca compartas contraseñas, tokens o secretos en chats."
+
+msgid "Environment"
+msgstr "Entorno"
+
+msgid "Euro"
+msgstr "Euro"
+
+msgid "Every payment,"
+msgstr "Cada pago,"
+
+msgid "Everything you need, one tap away."
+msgstr ""
+
+msgid "Execute simulated transfer"
+msgstr "Ejecutar envío simulado"
+
+msgid "Existing payment history belongs to another receiver. Contact support before changing the merchant account."
+msgstr ""
+
+msgid "Expand menu"
+msgstr "Expandir menú"
+
+msgid "Expired"
+msgstr "Caducada"
+
+msgid "Expires"
+msgstr "Vencimiento"
+
+msgid "Explore the experience ↓"
+msgstr ""
+
+msgid "External transaction signing"
+msgstr ""
+
+msgid "FLOW"
+msgstr ""
+
+msgid "Finance,"
+msgstr ""
+
+msgid "Financial journal"
+msgstr "Registro financiero"
+
+msgid "Flow"
+msgstr ""
+
+msgid "Graphite surfaces, champagne gold, restrained emerald and tactile microinteractions."
+msgstr ""
+
+msgid "Gross reconciled receipts · fees and availability are determined by the provider"
+msgstr "Cobros brutos conciliados · comisiones y disponibilidad según proveedor"
+
+msgid "Hide balances"
+msgstr "Ocultar saldos"
+
+msgid "INCOMING"
+msgstr "ENTRADAS"
+
+msgid "Important before you begin"
+msgstr ""
+
+msgid "Independent account. Wallet connection is not yet enabled."
+msgstr ""
+
+msgid "Input amount differs from the recorded receipt."
+msgstr ""
+
+msgid "Inputs do not belong to available receipts for this organization."
+msgstr ""
+
+msgid "Inputs do not match the reserved signing package."
+msgstr ""
+
+msgid "Inspect"
+msgstr ""
+
+msgid "Insufficient balance or limit exceeded."
+msgstr "Saldo insuficiente o límite superado."
+
+msgid "Integrations"
+msgstr "Integraciones"
+
+msgid "Integrations · Mercado Pago"
+msgstr "Integraciones · Mercado Pago"
+
+msgid "Invalid Pix amount."
+msgstr ""
+
+msgid "Invalid TXID."
+msgstr ""
+
+msgid "Invalid access token."
+msgstr "Token de acceso inválido."
+
+msgid "Invalid address for this account network."
+msgstr ""
+
+msgid "Invalid amount or description."
+msgstr ""
+
+msgid "Invalid asset or environment."
+msgstr ""
+
+msgid "Invalid confirmation policy."
+msgstr ""
+
+msgid "Invalid confirmation response."
+msgstr ""
+
+msgid "Invalid credentials"
+msgstr ""
+
+msgid "Invalid environment or session."
+msgstr ""
+
+msgid "Invalid environment."
+msgstr ""
+
+msgid "Invalid movement."
+msgstr ""
+
+msgid "Invalid operation key. Refresh the form."
+msgstr ""
+
+msgid "Invalid operation."
+msgstr ""
+
+msgid "Invalid or duplicate transaction inputs."
+msgstr ""
+
+msgid "Invalid output index."
+msgstr ""
+
+msgid "Invalid password or too many attempts. Try again later."
+msgstr "Contraseña inválida o demasiados intentos. Inténtalo más tarde."
+
+msgid "Invalid password or too many attempts. Wait before authorizing again."
+msgstr ""
+
+msgid "Invalid payer email."
+msgstr ""
+
+msgid "Invalid payment evidence."
+msgstr ""
+
+msgid "Invalid payment identifier."
+msgstr ""
+
+msgid "Invalid provider resource."
+msgstr ""
+
+msgid "Invalid returned TXID."
+msgstr ""
+
+msgid "Invalid signature or expired notification."
+msgstr ""
+
+msgid "Invalid signed transaction."
+msgstr ""
+
+msgid "Invalid synchronization cursor."
+msgstr ""
+
+msgid "Invalid withdrawal data."
+msgstr ""
+
+msgid "Invoice address"
+msgstr ""
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Last verified"
+msgstr "Última verificación"
+
+msgid "Latest 20 records"
+msgstr "Últimos 20 registros"
+
+msgid "Latest 50 records"
+msgstr ""
+
+msgid "MERCHANT SETTINGS"
+msgstr "AJUSTES DEL COMERCIANTE"
+
+msgid "Make it"
+msgstr ""
+
+msgid "Manage"
+msgstr "Gestionar"
+
+msgid "Manual"
+msgstr ""
+
+msgid "Maximum authorized fee"
+msgstr "Comisión máxima autorizada"
+
+msgid "Maximum fee:"
+msgstr "Comisión máxima:"
+
+msgid "Menu"
+msgstr ""
+
+msgid "Mercado Pago"
+msgstr ""
+
+msgid "Mercado Pago credentials and merchant ID are required."
+msgstr ""
+
+msgid "Mercado Pago is disconnected. Connect it in Integrations."
+msgstr "Mercado Pago está desconectado. Conéctalo en Integraciones."
+
+msgid "Mercado Pago · test"
+msgstr "Mercado Pago · prueba"
+
+msgid "Mercado Pago · test credentials"
+msgstr ""
+
+msgid "Merchant ID"
+msgstr "ID del comerciante"
+
+msgid "Merchant address"
+msgstr ""
+
+msgid "Merchant identity verified. Test webhook delivery and payment acceptance before going live."
+msgstr "Identidad verificada. Prueba notificaciones y recepción de pagos antes de producción."
+
+msgid "Mobile wallet navigation"
+msgstr ""
+
+msgid "Movement already recorded."
+msgstr ""
+
+msgid "NEW PAYMENT"
+msgstr "NUEVO PAGO"
+
+msgid "NEW PAYMENT REQUEST"
+msgstr ""
+
+msgid "NEW WITHDRAWAL"
+msgstr "NUEVA SALIDA"
+
+msgid "NO ACTIVITY"
+msgstr "SIN MOVIMIENTOS"
+
+msgid "NO CUSTODY"
+msgstr ""
+
+msgid "NO KEYS COLLECTED"
+msgstr ""
+
+msgid "NO TRANSACTION WILL BE CREATED"
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid "Network access"
+msgstr ""
+
+msgid "Network broadcast"
+msgstr ""
+
+msgid "Network observations do not authorize payments. The legacy wallet does not execute transfers."
+msgstr ""
+
+msgid "Never enter a recovery phrase or private key into BCH Flow. Future transfers will require compatible external signing and independently validated network checks."
+msgstr ""
+
+msgid "Never enter your private key or recovery phrase."
+msgstr "Nunca introduzcas tu clave privada o frase de recuperación."
+
+msgid "New here?"
+msgstr ""
+
+msgid "New organization"
+msgstr ""
+
+msgid "New organization · BCH Flow"
+msgstr ""
+
+msgid "New possibilities."
+msgstr "Nuevas posibilidades."
+
+msgid "New request · BCH Flow"
+msgstr ""
+
+msgid "No Pix code was returned. Retry with the same operation key."
+msgstr ""
+
+msgid "No addresses recorded."
+msgstr ""
+
+msgid "No automatic settlement"
+msgstr ""
+
+msgid "No merchant account connected."
+msgstr "No hay cuenta de comerciante conectada."
+
+msgid "No movements recorded in this account."
+msgstr "No hay movimientos en esta cuenta."
+
+msgid "No payment requests yet."
+msgstr ""
+
+msgid "No pending broadcast to check."
+msgstr ""
+
+msgid "No provider is configured for this organization, asset and environment."
+msgstr ""
+
+msgid "No requests yet"
+msgstr ""
+
+msgid "No verified signing integration or transaction broadcaster is enabled. This page cannot create, authorize, or transmit a payment."
+msgstr ""
+
+msgid "Not enabled"
+msgstr ""
+
+msgid "Not enough confirmed inputs for the amount, fee and usable change."
+msgstr ""
+
+msgid "OAuth is not configured. Ask the administrator to register the application and HTTPS callback."
+msgstr "OAuth no está configurado. Pide al administrador registrar la aplicación y el callback HTTPS."
+
+msgid "ORGANIZATION /"
+msgstr ""
+
+msgid "OUTGOING"
+msgstr "SALIDAS"
+
+msgid "Observation mode is active"
+msgstr ""
+
+msgid "One continuous experience"
+msgstr ""
+
+msgid "One space for each organization. A clear view of everything."
+msgstr ""
+
+msgid "One wallet."
+msgstr "Una cartera."
+
+msgid "Only an owner or administrator can manage this connection."
+msgstr "Solo el propietario o administrador puede gestionar esta conexión."
+
+msgid "Only use an address you independently control. BCH Flow cannot verify wallet ownership or payment settlement yet."
+msgstr ""
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Open payment page"
+msgstr "Abrir página de pago"
+
+msgid "Open wallet"
+msgstr "Abrir cartera"
+
+msgid "Open your workspace ↗"
+msgstr ""
+
+msgid "Organization-specific credentials"
+msgstr "Credenciales por organización"
+
+msgid "Organizations"
+msgstr "Organizaciones"
+
+msgid "Overpaid"
+msgstr "Pago en exceso"
+
+msgid "Overview"
+msgstr "Resumen"
+
+msgid "PIX · BRL"
+msgstr ""
+
+msgid "Partially received"
+msgstr "Recibido parcialmente"
+
+msgid "Password"
+msgstr "Contraseña"
+
+msgid "Passwords do not match"
+msgstr ""
+
+msgid "Payer email (connected Pix)"
+msgstr "Correo del pagador (Pix conectado)"
+
+msgid "Payer email is required to create a Pix request."
+msgstr ""
+
+msgid "Payment address and amount"
+msgstr "Dirección e importe de pago"
+
+msgid "Payment center · BTC · BCH · Pix"
+msgstr ""
+
+msgid "Payment request"
+msgstr "Solicitud de pago"
+
+msgid "Payment request ·"
+msgstr "Solicitud de pago ·"
+
+msgid "Payment requests"
+msgstr ""
+
+msgid "Payment trail"
+msgstr "Trazabilidad"
+
+msgid "Payment under review. Contact the merchant."
+msgstr "Pago en revisión. Contacta al comerciante."
+
+msgid "Payment verification"
+msgstr ""
+
+msgid "Payment ·"
+msgstr "Pago ·"
+
+msgid "Physical wallet-inspired interface"
+msgstr ""
+
+msgid "Pix payment code"
+msgstr "Código de pago Pix"
+
+msgid "Pix payouts are not configured."
+msgstr ""
+
+msgid "Pix payouts require a contracted transfer product and integration. They are not enabled."
+msgstr "Las salidas Pix requieren un producto de transferencias contratado e integrado. No están habilitadas."
+
+msgid "Pix payouts require a contracted transfer product; Checkout API does not authorize payouts."
+msgstr ""
+
+msgid "Precise by design"
+msgstr ""
+
+msgid "Prepare or recover provider request"
+msgstr "Preparar o recuperar solicitud"
+
+msgid "Prepare transaction for external signing"
+msgstr "Preparar transacción para firma externa"
+
+msgid "Private Wallet · BCH Flow"
+msgstr ""
+
+msgid "Production"
+msgstr "Producción"
+
+msgid "Production is disabled. Configure and validate the integration before enabling it."
+msgstr ""
+
+msgid "Production requires HTTPS, secure cookies and DEBUG disabled."
+msgstr ""
+
+msgid "Production · real payments"
+msgstr ""
+
+msgid "QUICK ACCESS"
+msgstr ""
+
+msgid "RECEIVE ·"
+msgstr "RECIBIR ·"
+
+msgid "RECONCILED RECEIPTS"
+msgstr "COBROS CONCILIADOS"
+
+msgid "REQUESTED AMOUNT"
+msgstr "IMPORTE SOLICITADO"
+
+msgid "RPC credentials are not configured for this organization."
+msgstr ""
+
+msgid "Read-only · Ownership and balance unverified"
+msgstr ""
+
+msgid "Receipt recorded after verification."
+msgstr "Cobro registrado tras verificación."
+
+msgid "Receive"
+msgstr "Recibir"
+
+msgid "Receive with clarity."
+msgstr "Recibe con claridad."
+
+msgid "Receive, addresses and activity stay in context through integrated wallet panels."
+msgstr ""
+
+msgid "Received"
+msgstr "Recibido"
+
+msgid "Received and credited"
+msgstr "Recibido y acreditado"
+
+msgid "Receiving addresses"
+msgstr ""
+
+msgid "Receiving details"
+msgstr ""
+
+msgid "Recent payment requests"
+msgstr ""
+
+msgid "Recent requests"
+msgstr ""
+
+msgid "Records shown here are not proof of on-chain payment or settlement."
+msgstr ""
+
+msgid "Remaining:"
+msgstr "Restante:"
+
+msgid "Request"
+msgstr ""
+
+msgid "Request details"
+msgstr ""
+
+msgid "Request volume · 7 days"
+msgstr ""
+
+msgid "Requests are not confirmed payments"
+msgstr ""
+
+msgid "Requests are not confirmed payments. Private keys are never collected. Transfers remain disabled in the legacy wallet."
+msgstr ""
+
+msgid "Reserve → authorize → broadcast"
+msgstr "Reservar → autorizar → transmitir"
+
+msgid "Review and reserve"
+msgstr "Revisar y reservar"
+
+msgid "SECURITY FIRST"
+msgstr ""
+
+msgid "SEND"
+msgstr ""
+
+msgid "SEND IS DISABLED"
+msgstr ""
+
+msgid "SIMULATED BALANCE"
+msgstr "SALDO SIMULADO"
+
+msgid "Safety without illusion"
+msgstr ""
+
+msgid "Sandbox"
+msgstr "Simulación"
+
+msgid "Sandbox is disabled in this installation."
+msgstr ""
+
+msgid "Sandbox reference"
+msgstr "Referencia de simulación"
+
+msgid "Sandbox · no real money"
+msgstr "Simulación · sin dinero real"
+
+msgid "Sandbox: do not send real money. The operator records simulated confirmation in the sandbox."
+msgstr "Simulación: no envíes dinero real. El operador registra una confirmación simulada."
+
+msgid "Secure transfer authorization will appear here when supported and independently validated."
+msgstr ""
+
+msgid "Security in every detail"
+msgstr ""
+
+msgid "Select and copy the code manually."
+msgstr "Selecciona y copia el código manualmente."
+
+msgid "Send"
+msgstr "Enviar"
+
+msgid "Send BCH"
+msgstr ""
+
+msgid "Send BCH · BCH Flow"
+msgstr ""
+
+msgid "Send with control."
+msgstr "Envía con control."
+
+msgid "Show balances"
+msgstr "Mostrar saldos"
+
+msgid "Sign in"
+msgstr "Iniciar sesión"
+
+msgid "Sign in · BCH Flow"
+msgstr ""
+
+msgid "Sign out"
+msgstr "Cerrar sesión"
+
+msgid "Signed transaction hexadecimal; never your private key."
+msgstr "Hexadecimal de la transacción firmada; nunca tu clave privada."
+
+msgid "Signing packages are only available for node-connected BTC/BCH withdrawals."
+msgstr ""
+
+msgid "Simulate receipt"
+msgstr "Simular recepción"
+
+msgid "Simulated amount"
+msgstr "Importe simulado"
+
+msgid "Simulated balances. Operations in this account do not move real money."
+msgstr "Saldos simulados. Las operaciones de esta cuenta no mueven dinero real."
+
+msgid "Simulated receipt recorded."
+msgstr "Cobro simulado registrado."
+
+msgid "Simulation is not allowed in provider-connected accounts."
+msgstr ""
+
+msgid "Skip to content"
+msgstr "Ir al contenido"
+
+msgid "Status recorded. Continuous verification is active."
+msgstr "Estado registrado. Verificación continua activa."
+
+msgid "Stored status"
+msgstr ""
+
+msgid "Sua carteira"
+msgstr ""
+
+msgid "THE PRIVATE WALLET EXPERIENCE"
+msgstr ""
+
+msgid "TRANSFER / SECURITY GATE"
+msgstr ""
+
+msgid "TRANSFERS DISABLED"
+msgstr ""
+
+msgid "TXID to verify on the node"
+msgstr "TXID para verificar en el nodo"
+
+msgid "Test environment"
+msgstr "Entorno de prueba"
+
+msgid "Test network"
+msgstr "Red de pruebas"
+
+msgid "Test network · no monetary value"
+msgstr ""
+
+msgid "The access token expired. Reconnect Mercado Pago."
+msgstr ""
+
+msgid "The amount and maximum fee will be reserved. Sign in your external wallet. The unsigned package uses the entered fee; review it before signing."
+msgstr "Se reservarán importe y comisión máxima. Firma en tu cartera externa. El paquete usa la comisión indicada; revísala antes de firmar."
+
+msgid "The amount or fee differs from the authorization."
+msgstr ""
+
+msgid "The authorization session is invalid or expired. Connect again."
+msgstr "La sesión de autorización no es válida o caducó. Conecta de nuevo."
+
+msgid "The authorized account does not match the selected environment."
+msgstr "La cuenta autorizada no coincide con el entorno seleccionado."
+
+msgid "The broadcast result must be verified. Funds remain reserved; do not create a replacement withdrawal."
+msgstr "Debe verificarse la transmisión. El saldo sigue reservado; no crees una salida de reemplazo."
+
+msgid "The credential encryption key is invalid."
+msgstr ""
+
+msgid "The linked payment request is not available yet."
+msgstr ""
+
+msgid "The local authentication secret is unavailable."
+msgstr ""
+
+msgid "The merchant is preparing this request."
+msgstr "El comerciante prepara esta solicitud."
+
+msgid "The node did not accept the signed transaction for broadcast."
+msgstr ""
+
+msgid "The node did not return a valid unsigned transaction."
+msgstr ""
+
+msgid "The node is not synchronized, the network is incorrect or the wallet is not watch-only."
+msgstr ""
+
+msgid "The node rejected the request or operation."
+msgstr ""
+
+msgid "The node returned an unexpected TXID."
+msgstr ""
+
+msgid "The payment does not match the request, merchant or expected environment."
+msgstr ""
+
+msgid "The provider did not confirm the operation. Check its status before retrying."
+msgstr ""
+
+msgid "The provider returned an invalid token lifetime."
+msgstr ""
+
+msgid "The provider returned an unexpected merchant identity."
+msgstr ""
+
+msgid "The refreshed credential does not match this merchant."
+msgstr ""
+
+msgid "The returned transaction does not match the TXID."
+msgstr ""
+
+msgid "The stored credential cannot be decrypted. Reconnect the account."
+msgstr ""
+
+msgid "The transaction contains an unauthorized destination or change address."
+msgstr ""
+
+msgid "The withdrawal is not awaiting broadcast verification."
+msgstr ""
+
+msgid "This Mercado Pago account is already assigned to another organization."
+msgstr "Esta cuenta Mercado Pago pertenece a otra organización."
+
+msgid "This account has no receipts yet."
+msgstr ""
+
+msgid "This account is under review. New operations are blocked."
+msgstr ""
+
+msgid "This action records simulated sandbox units without accessing a blockchain or bank."
+msgstr "Esta acción registra unidades simuladas sin acceder a una blockchain o banco."
+
+msgid "This environment does not support the selected asset."
+msgstr ""
+
+msgid "This key was already used for another payment request."
+msgstr ""
+
+msgid "This key was already used for another withdrawal."
+msgstr ""
+
+msgid "This merchant is already linked elsewhere. Refresh and check the connection status."
+msgstr ""
+
+msgid "This payment already belongs to another request or has a different amount."
+msgstr ""
+
+msgid "This request expired. Ask the merchant for a new request."
+msgstr "Esta solicitud caducó. Pide una nueva al comerciante."
+
+msgid "This request expired. Create a new request."
+msgstr ""
+
+msgid "This transaction does not pay the request address."
+msgstr ""
+
+msgid "This withdrawal cannot be authorized in its current state."
+msgstr ""
+
+msgid "Too many inputs. Consolidate your external wallet before continuing."
+msgstr ""
+
+msgid "Total requests"
+msgstr ""
+
+msgid "Track your requests. Legacy payments are not automatically verified or settled."
+msgstr ""
+
+msgid "Transaction diagnostic"
+msgstr ""
+
+msgid "Transaction signed in your external wallet"
+msgstr "Transacción firmada en tu cartera externa"
+
+msgid "Transfers are not enabled yet."
+msgstr ""
+
+msgid "Try receiving a payment"
+msgstr "Probar un cobro"
+
+msgid "UNAVAILABLE"
+msgstr ""
+
+msgid "UNDER REVIEW"
+msgstr "EN REVISIÓN"
+
+msgid "US dollar"
+msgstr "Dólar estadounidense"
+
+msgid "US dollar and euro"
+msgstr "Dólar estadounidense y euro"
+
+msgid "USD and EUR accounts currently support sandbox only. Connect a supported fiat provider before accepting real payments."
+msgstr ""
+
+msgid "USD and EUR are available as independent sandbox balances. Real deposits and payouts require a supported provider. Mercado Pago Pix is used for BRL only. No automatic currency conversion is performed."
+msgstr "USD y EUR tienen saldos independientes en simulación. Los depósitos y salidas reales requieren otro proveedor compatible. Pix Mercado Pago solo usa BRL. No hay conversión automática."
+
+msgid "USD and EUR are separate fiat balances in sandbox. Real deposits and payouts require a supported provider. No currency conversion is performed."
+msgstr "USD y EUR son saldos separados en simulación. Las operaciones reales requieren un proveedor compatible. No hay conversión."
+
+msgid "USD and EUR payments require a supported fiat provider."
+msgstr ""
+
+msgid "Unable to refresh now. The previous status has been kept."
+msgstr "No se puede actualizar ahora. Se conserva el estado anterior."
+
+msgid "Unable to register this email"
+msgstr ""
+
+msgid "Unauthenticated notification."
+msgstr ""
+
+msgid "Unavailable · wallet not connected"
+msgstr ""
+
+msgid "Under review"
+msgstr "En revisión"
+
+msgid "Unexpected provider redirect."
+msgstr ""
+
+msgid "Unsupported asset."
+msgstr ""
+
+msgid "Use a destination such as sandbox:destination-wallet. No real money will be sent."
+msgstr "Usa un destino como sandbox:cartera-destino. No se enviará dinero real."
+
+msgid "Use a production access token for the production environment."
+msgstr "Usa un token de producción en producción."
+
+msgid "Use a sandbox: destination for simulated transfers."
+msgstr ""
+
+msgid "Use a test access token for the test environment."
+msgstr "Usa un token de prueba en el entorno de prueba."
+
+msgid "Use an external wallet as the withdrawal destination."
+msgstr ""
+
+msgid "Use my own application credentials"
+msgstr "Usar credenciales de mi aplicación"
+
+msgid "Use the explicit simulation action in this environment."
+msgstr ""
+
+msgid "VERIFIED ON-CHAIN BALANCE"
+msgstr ""
+
+msgid "Validate and broadcast"
+msgstr "Validar y transmitir"
+
+msgid "Validate and save credentials"
+msgstr "Validar y guardar credenciales"
+
+msgid "Verification pending"
+msgstr "Verificación pendiente"
+
+msgid "View all"
+msgstr ""
+
+msgid "View ↗"
+msgstr ""
+
+msgid "WALLET"
+msgstr ""
+
+msgid "WATCH-ONLY"
+msgstr ""
+
+msgid "WATCH-ONLY MODE"
+msgstr ""
+
+msgid "WATCH-ONLY · UNVERIFIED BALANCE"
+msgstr ""
+
+msgid "WORKSPACE"
+msgstr ""
+
+msgid "Waiting for server confirmation. Automatic updates are active."
+msgstr "Esperando confirmación del servidor. Actualización automática activa."
+
+msgid "Waiting for verifiable payment evidence."
+msgstr "Esperando evidencia verificable del pago."
+
+msgid "Wallet"
+msgstr "Cartera"
+
+msgid "Wallet actions"
+msgstr ""
+
+msgid "Wallet compartments"
+msgstr ""
+
+msgid "Wallet operation"
+msgstr ""
+
+msgid "Wallet ownership proof"
+msgstr ""
+
+msgid "Wallet ·"
+msgstr "Cartera ·"
+
+msgid "Watch-only"
+msgstr ""
+
+msgid "Watch-only requests never masquerade as verified payments or spendable balances."
+msgstr ""
+
+msgid "Webhook signing secret"
+msgstr "Secreto de firma del webhook"
+
+msgid "Welcome back"
+msgstr "Te damos la bienvenida"
+
+msgid "With clarity."
+msgstr "Con claridad."
+
+msgid "Withdrawals reserve funds and require an owner or administrator to authorize them."
+msgstr "Las salidas reservan saldo y requieren autorización del propietario o administrador."
+
+msgid "YOUR ACTIVITY"
+msgstr ""
+
+msgid "YOUR FINANCIAL SPACE"
+msgstr "TU ESPACIO FINANCIERO"
+
+msgid "YOUR MONEY IN MOTION"
+msgstr "TU DINERO EN MOVIMIENTO"
+
+msgid "YOUR SPACES"
+msgstr ""
+
+msgid "You are not authorized for this organization or operation."
+msgstr ""
+
+msgid "You decide when funds leave."
+msgstr "Tú decides cuándo sale."
+
+msgid "Your business."
+msgstr "Tu negocio."
+
+msgid "Your connections."
+msgstr "Tus conexiones."
+
+msgid "Your control."
+msgstr ""
+
+msgid "Your draft invoices and receiving details, all in one place."
+msgstr ""
+
+msgid "Your finances, organized."
+msgstr "Tus finanzas, organizadas."
+
+msgid "Your first workspace starts here"
+msgstr ""
+
+msgid "Your money."
+msgstr ""
+
+msgid "Your next payment starts here."
+msgstr "Tu próximo cobro empieza aquí."
+
+msgid "Your payment requests"
+msgstr "Tus solicitudes de pago"
+
+msgid "Your payment."
+msgstr "Tu pago."
+
+msgid "Your recovery phrase stays private."
+msgstr ""
+
+msgid "Your requests will appear here. No confirmed payments yet."
+msgstr ""
+
+msgid "Your role allows viewing this wallet. Ask an operator to create a payment request."
+msgstr "Tu rol permite consultar la cartera. Pide a un operador crear una solicitud."
+
+msgid "Your story starts here"
+msgstr ""
+
+msgid "clearly tracked."
+msgstr "bien controlado."
+
+msgid "confirmations ·"
+msgstr "confirmaciones ·"
+
+msgid "effortless."
+msgstr ""
+
+msgid "physical soul."
+msgstr ""
+
+msgid "recent movements"
+msgstr "movimientos recientes"
+
+msgid "reserved for withdrawals"
+msgstr "reservado para salidas"
+
+msgid "sat"
+msgstr ""
+
+msgid "with a"
+msgstr ""
+
+msgid "· BCH Flow"
+msgstr ""
+
+msgid "· Bitcoin Cash"
+msgstr ""
+
+msgid "· Total reserved:"
+msgstr "· Total reservado:"
+
+msgid "— BCH"
+msgstr ""
+
+msgid "₿ BCH FLOW"
+msgstr ""
+
+msgid "← Back to workspace"
+msgstr ""
+
+msgid "← Return to wallet"
+msgstr ""
+
+msgid "◈ Merchant wallet ↗"
+msgstr ""

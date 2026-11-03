@@ -1,25 +1,25 @@
-{% load static %}
+{% load static i18n %}{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="{{ LANGUAGE_CODE }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr' }}">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="referrer" content="no-referrer">
-    <title>Pagamento · {{ charge.account.organization.name }}</title>
+    <title>{% trans "Payment ·" %} {{ charge.account.organization.name }}</title>
     <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
     <script src="{% static 'app_bch_flow/vendor/lucide.min.js' %}" defer>
     </script>
     <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
     </script>
-  </head>
-  <body class="pay-checkout-body">
+  <link rel="stylesheet" href="{% static 'app_bch_flow/css/localization.css' %}"></head>
+  <body class="pay-checkout-body">{% include "app_bch_flow/components/language_picker.html" %}{% include "app_bch_flow/components/interaction_messages.html" %}
     <main id="main" class="pay-checkout" data-payment-app data-status-url="{% url 'bch_flow:financial_checkout_status' token %}" data-initial-status="{{ charge.status }}" data-received="{{ received }}" data-expired="{{ expired|yesno:'true,false' }}">
       <div class="pay-checkout-brand">
         <i data-lucide="wallet">
-        </i>BCH FLOW</div>
+        </i>{% trans "BCH FLOW" %}</div>
       <p class="pay-eyebrow">{{ charge.account.organization.name }}</p>
-      <h1>Seu pagamento.<br>
-        <span>Com clareza.</span>
+      <h1>{% trans "Your payment." %}<br>
+        <span>{% trans "With clarity." %}</span>
       </h1>
       <div class="pay-mode">
         <i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}">
@@ -27,7 +27,7 @@
         <strong>{{ environment_label }}</strong>
       </div>
       {% if is_sandbox %}
-        <p class="pay-pending">Demonstração: não envie dinheiro real. A confirmação simulada é feita pelo operador no laboratório.</p>
+        <p class="pay-pending">{% trans "Sandbox: do not send real money. The operator records simulated confirmation in the sandbox." %}</p>
       {% endif %}
       <section class="pay-request-card">
         <span class="pay-status" data-state="{{ charge.status }}">{{ status_label }}</span>
@@ -35,43 +35,43 @@
         </div>
         <p>{{ charge.description }}</p>
         {% if charge.status == "partial" %}
-          <p>Restante: {{ remaining }} {{ charge.account.asset }}</p>
+          <p>{% trans "Remaining:" %} {{ remaining }} {{ charge.account.asset }}</p>
         {% endif %}
         {% if payment_payload %}
           <img class="pay-qr" src="{% url 'bch_flow:financial_qr' token %}" width="220" height="220" alt="{% if is_sandbox %}Código de demonstração, sem valor monetário{% else %}QR code desta cobrança{% endif %}">
           <label for="payment-payload">
-            {% if is_sandbox %}Referência de demonstração{% elif charge.account.asset == "BRL" %}Pix copia e cola{% else %}Endereço e valor para pagamento{% endif %}
+            {% if is_sandbox %}{% trans "Sandbox reference" %}{% elif charge.account.asset == "BRL" %}{% trans "Pix payment code" %}{% else %}{% trans "Payment address and amount" %}{% endif %}
           </label>
           <textarea id="payment-payload" readonly rows="3" spellcheck="false">{{ payment_payload }}</textarea>
           <button type="button" class="pay-primary" data-copy-value="payment-payload">
             <i data-lucide="copy">
-            </i>Copiar código</button>
+            </i>{% trans "Copy code" %}</button>
         {% else %}
           <div class="pay-empty">
             <i data-lucide="{% if charge.status == 'paid' or charge.status == 'overpaid' %}check-check{% else %}clock-3{% endif %}">
             </i>
             <p>
               {% if charge.status == "paid" or charge.status == "overpaid" %}
-                {% if is_sandbox %}Recebimento simulado registrado.{% else %}Recebimento registrado após verificação.{% endif %}
-              {% elif expired %}Cobrança expirada. Solicite uma nova ao recebedor.{% elif charge.status == "review" %}Pagamento em revisão. Entre em contato com o recebedor.{% else %}O recebedor está preparando esta cobrança.{% endif %}
+                {% if is_sandbox %}{% trans "Simulated receipt recorded." %}{% else %}{% trans "Receipt recorded after verification." %}{% endif %}
+              {% elif expired %}{% trans "This request expired. Ask the merchant for a new request." %}{% elif charge.status == "review" %}{% trans "Payment under review. Contact the merchant." %}{% else %}{% trans "The merchant is preparing this request." %}{% endif %}
             </p>
           </div>
         {% endif %}
         <div class="pay-request-meta">
           <div>
-            <span>Recebido e creditado</span>
+            <span>{% trans "Received and credited" %}</span>
             <strong>{{ received }} {{ charge.account.asset }}</strong>
           </div>
           <div>
-            <span>Vencimento</span>
+            <span>{% trans "Expires" %}</span>
             <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
           </div>
         </div>
       </section>
-      <p class="pay-poll-status" role="status" aria-live="polite">Consultando atualizações de pagamento…</p>
+      <p class="pay-poll-status" role="status" aria-live="polite">{% trans "Checking for payment updates…" %}</p>
       <footer class="pay-footer">
         <i data-lucide="lock-keyhole">
-        </i>Nunca informe sua chave privada ou frase de recuperação.</footer>
+        </i>{% trans "Never enter your private key or recovery phrase." %}</footer>
       <div class="pay-toast" hidden role="status" aria-live="polite">
       </div>
     </main>
