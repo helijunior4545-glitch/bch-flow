@@ -7,3 +7,4 @@ from .finance import BCHInvoice, BCHPayment, BCHTransfer, BCHTransaction, BCHExc
 from .merchants import BCHMerchant
 from .audit import BCHAuditEvent, BCHFinancialEvent
 from .outpoint_reservations import BCHOutpointReservation
+from .payment_core import FlowAccount, FlowRequest, FlowReceipt, FlowWithdrawal, FlowJournal, FlowSpend, FlowInbox

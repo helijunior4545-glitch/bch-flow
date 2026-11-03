@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Pagamento · {{ charge.account.organization.name }}</title>
+    <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
+    <script src="{% static 'app_bch_flow/vendor/lucide.min.js' %}" defer>
+    </script>
+    <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
+    </script>
+  </head>
+  <body class="pay-checkout-body">
+    <main id="main" class="pay-checkout" data-payment-app data-status-url="{% url 'bch_flow:financial_checkout_status' token %}" data-initial-status="{{ charge.status }}" data-received="{{ received }}" data-expired="{{ expired|yesno:'true,false' }}">
+      <div class="pay-checkout-brand">
+        <i data-lucide="wallet">
+        </i>BCH FLOW</div>
+      <p class="pay-eyebrow">{{ charge.account.organization.name }}</p>
+      <h1>Seu pagamento.<br>
+        <span>Com clareza.</span>
+      </h1>
+      <div class="pay-mode">
+        <i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}">
+        </i>
+        <strong>{{ environment_label }}</strong>
+      </div>
+      {% if is_sandbox %}
+        <p class="pay-pending">Demonstração: não envie dinheiro real. A confirmação simulada é feita pelo operador no laboratório.</p>
+      {% endif %}
+      <section class="pay-request-card">
+        <span class="pay-status" data-state="{{ charge.status }}">{{ status_label }}</span>
+        <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
+        </div>
+        <p>{{ charge.description }}</p>
+        {% if charge.status == "partial" %}
+          <p>Restante: {{ remaining }} {{ charge.account.asset }}</p>
+        {% endif %}
+        {% if payment_payload %}
+          <img class="pay-qr" src="{% url 'bch_flow:financial_qr' token %}" width="220" height="220" alt="{% if is_sandbox %}Código de demonstração, sem valor monetário{% else %}QR code desta cobrança{% endif %}">
+          <label for="payment-payload">
+            {% if is_sandbox %}Referência de demonstração{% elif charge.account.asset == "BRL" %}Pix copia e cola{% else %}Endereço e valor para pagamento{% endif %}
+          </label>
+          <textarea id="payment-payload" readonly rows="3" spellcheck="false">{{ payment_payload }}</textarea>
+          <button type="button" class="pay-primary" data-copy-value="payment-payload">
+            <i data-lucide="copy">
+            </i>Copiar código</button>
+        {% else %}
+          <div class="pay-empty">
+            <i data-lucide="{% if charge.status == 'paid' or charge.status == 'overpaid' %}check-check{% else %}clock-3{% endif %}">
+            </i>
+            <p>
+              {% if charge.status == "paid" or charge.status == "overpaid" %}
+                {% if is_sandbox %}Recebimento simulado registrado.{% else %}Recebimento registrado após verificação.{% endif %}
+              {% elif expired %}Cobrança expirada. Solicite uma nova ao recebedor.{% elif charge.status == "review" %}Pagamento em revisão. Entre em contato com o recebedor.{% else %}O recebedor está preparando esta cobrança.{% endif %}
+            </p>
+          </div>
+        {% endif %}
+        <div class="pay-request-meta">
+          <div>
+            <span>Recebido e creditado</span>
+            <strong>{{ received }} {{ charge.account.asset }}</strong>
+          </div>
+          <div>
+            <span>Vencimento</span>
+            <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
+          </div>
+        </div>
+      </section>
+      <p class="pay-poll-status" role="status" aria-live="polite">Consultando atualizações de pagamento…</p>
+      <footer class="pay-footer">
+        <i data-lucide="lock-keyhole">
+        </i>Nunca informe sua chave privada ou frase de recuperação.</footer>
+      <div class="pay-toast" hidden role="status" aria-live="polite">
+      </div>
+    </main>
+  </body>
+</html>

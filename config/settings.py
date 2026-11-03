@@ -78,3 +78,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_COOKIE_SECURE = False  # LOCAL HTTP ONLY.
 CSRF_COOKIE_SECURE = False  # LOCAL HTTP ONLY.
 # Existing BCH Flow safety gates must remain active. No live payment enablement.
+
+# Multi-asset orchestration: sandbox is explicit; live integrations are opt-in.
+# The JSON config contains environment-variable NAMES, never credential values.
+import json as _json
+FLOW_PAYMENTS_SANDBOX_ENABLED = env.bool('FLOW_PAYMENTS_SANDBOX_ENABLED', default=DEBUG)
+FLOW_PAYMENTS_ALLOW_LIVE = env.bool('FLOW_PAYMENTS_ALLOW_LIVE', default=False)
+FLOW_PAYMENT_PROVIDERS = {}
+_provider_file = env('FLOW_PROVIDER_CONFIG_FILE', default='')
+if _provider_file:
+    with open(_provider_file, encoding='utf-8') as _provider_stream:
+        FLOW_PAYMENT_PROVIDERS = _json.load(_provider_stream)

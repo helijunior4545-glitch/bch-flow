@@ -66,3 +66,6 @@ urlpatterns = [
 # BCH-FLOW-V320-ROUTE
 from app_bch_flow.views.wallet_shell_v320 import modal as _v320_modal
 urlpatterns = [path('dashboard/organizations/<uuid:org_id>/wallet/modal/<slug:panel>/', _v320_modal, name='wallet_v320_modal')] + urlpatterns
+
+# Tenant-isolated multi-asset orchestration, separate from legacy watch-only tools.
+urlpatterns += [path('', include('app_bch_flow.financial.urls'))]
