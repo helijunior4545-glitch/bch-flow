@@ -1,0 +1,1401 @@
+# BCH Flow UI catalog. English is the fallback for untranslated messages.
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\nLanguage: hi\nMIME-Version: 1.0\nContent-Transfer-Encoding: 8bit\nPlural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "+ Create request"
+msgstr ""
+
+msgid "+ New organization"
+msgstr ""
+
+msgid ". This request expires in 30 minutes."
+msgstr "। यह अनुरोध 30 मिनट में समाप्त होगा।"
+
+msgid "A Mercado Pago account cannot be shared between organizations."
+msgstr ""
+
+msgid "A confirmation for each step. A record for every movement."
+msgstr "हर चरण की पुष्टि। हर गतिविधि का रिकॉर्ड।"
+
+msgid "A discrepancy was detected. This account is under review and new operations are blocked."
+msgstr "अंतर मिला है। खाता समीक्षाधीन है और नए लेनदेन अवरुद्ध हैं।"
+
+msgid "A signing package cannot be prepared for this withdrawal."
+msgstr ""
+
+msgid "A wallet, not another dashboard."
+msgstr ""
+
+msgid "ACCOUNT CREATED"
+msgstr "खाता बनाया गया"
+
+msgid "ACTIVITY"
+msgstr ""
+
+msgid "ADDRESS / REFERENCE"
+msgstr "पता / संदर्भ"
+
+msgid "About activity"
+msgstr ""
+
+msgid "About receiving addresses"
+msgstr ""
+
+msgid "Access token"
+msgstr "ऐक्सेस टोकन"
+
+msgid "Activity"
+msgstr ""
+
+msgid "Address monitor"
+msgstr ""
+
+msgid "Address ownership unverified"
+msgstr ""
+
+msgid "Addresses"
+msgstr ""
+
+msgid "Advanced tools"
+msgstr ""
+
+msgid "All fields are validated by the existing backend."
+msgstr ""
+
+msgid "Already registered?"
+msgstr ""
+
+msgid "Among the latest 20 records · not payments"
+msgstr ""
+
+msgid "Amount"
+msgstr "राशि"
+
+msgid "An RPC wallet cannot be shared between organizations."
+msgstr ""
+
+msgid "An account-owned change address and external destination are required."
+msgstr ""
+
+msgid "An input already belongs to another withdrawal."
+msgstr ""
+
+msgid "An input is already reserved for another withdrawal."
+msgstr ""
+
+msgid "An unreconciled external withdrawal was detected. The account is blocked for review."
+msgstr ""
+
+msgid "Apply"
+msgstr "लागू करें"
+
+msgid "Approvals and transfers"
+msgstr "अनुमोदन और अंतरण"
+
+msgid "Authorization was cancelled. No credentials were saved."
+msgstr "प्राधिकरण रद्द हुआ। कोई क्रेडेंशियल नहीं सहेजा गया।"
+
+msgid "Authorize for 5 minutes"
+msgstr "5 मिनट के लिए अधिकृत करें"
+
+msgid "Authorize the withdrawal again before broadcasting."
+msgstr ""
+
+msgid "Authorize this application on the official Mercado Pago website."
+msgstr "आधिकारिक Mercado Pago वेबसाइट पर इस ऐप को अधिकृत करें।"
+
+msgid "Authorized"
+msgstr "अधिकृत"
+
+msgid "Available in this account"
+msgstr "इस खाते में उपलब्ध"
+
+msgid "Awaiting authorization"
+msgstr "अनुमोदन की प्रतीक्षा"
+
+msgid "Awaiting payment"
+msgstr "भुगतान की प्रतीक्षा"
+
+msgid "BCH"
+msgstr ""
+
+msgid "BCH FLOW"
+msgstr ""
+
+msgid "BCH FLOW / DASHBOARD"
+msgstr ""
+
+msgid "BCH FLOW / PRIVATE EDITION"
+msgstr ""
+
+msgid "BCH FLOW / WALLET"
+msgstr ""
+
+msgid "BCH FLOW · 2026"
+msgstr ""
+
+msgid "BCH Flow account password"
+msgstr "BCH Flow खाते का पासवर्ड"
+
+msgid "BCH Flow · A wallet you can feel"
+msgstr ""
+
+msgid "BCH observation tools"
+msgstr "BCH अवलोकन उपकरण"
+
+msgid "BITCOIN CASH"
+msgstr ""
+
+msgid "BITCOIN CASH WALLET"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "Back to dashboard"
+msgstr "डैशबोर्ड पर लौटें"
+
+msgid "Back to wallet"
+msgstr "वॉलेट पर लौटें"
+
+msgid "Balance history is available after a verified connection"
+msgstr ""
+
+msgid "Balances and operations"
+msgstr "बैलेंस और लेनदेन"
+
+msgid "Bitcoin"
+msgstr ""
+
+msgid "Bitcoin Cash"
+msgstr ""
+
+msgid "Bitcoin Cash payment requests in a thoughtfully crafted, watch-only wallet workspace. Every detail feels intentional. Every financial claim stays grounded."
+msgstr ""
+
+msgid "Bitcoin Cash · Independent project · Not affiliated with Pix"
+msgstr ""
+
+msgid "Brazilian real / Pix"
+msgstr "ब्राज़ीली रियल / Pix"
+
+msgid "Broadcast"
+msgstr "प्रसारित"
+
+msgid "Broadcast is not yet verified by the node. Funds remain reserved."
+msgstr ""
+
+msgid "Broadcasting"
+msgstr "प्रसारण जारी"
+
+msgid "Cancel and release reservation"
+msgstr "रद्द करके आरक्षण छोड़ें"
+
+msgid "Cancelled"
+msgstr "रद्द"
+
+msgid "Change from your own withdrawal cannot be credited as a new receipt."
+msgstr ""
+
+msgid "Check broadcast on node"
+msgstr "नोड पर प्रसारण जाँचें"
+
+msgid "Check provider status"
+msgstr "प्रदाता की स्थिति जाँचें"
+
+msgid "Check with provider"
+msgstr "प्रदाता से जाँचें"
+
+msgid "Checking for payment updates…"
+msgstr "भुगतान अपडेट जाँचे जा रहे हैं…"
+
+msgid "Choose currency"
+msgstr "मुद्रा चुनें"
+
+msgid "Choose language"
+msgstr "भाषा चुनें"
+
+msgid "Close"
+msgstr "बंद करें"
+
+msgid "Close dialog"
+msgstr ""
+
+msgid "Collapse menu"
+msgstr "मेनू समेटें"
+
+msgid "Collapse navigation"
+msgstr ""
+
+msgid "Configure an isolated watch-only wallet HTTPS RPC endpoint."
+msgstr ""
+
+msgid "Confirm password"
+msgstr "पासवर्ड पुष्टि करें"
+
+msgid "Confirm your password"
+msgstr "पासवर्ड पुष्टि करें"
+
+msgid "Connect a Brazilian Mercado Pago merchant account for BRL / Pix."
+msgstr "BRL / Pix के लिए ब्राज़ील का Mercado Pago व्यापारी खाता कनेक्ट करें।"
+
+msgid "Connect with Mercado Pago"
+msgstr "Mercado Pago से कनेक्ट करें"
+
+msgid "Connect your merchant account to receive Pix. Tokens are encrypted and never shown again. This connection does not enable Pix payouts."
+msgstr "Pix प्राप्त करने के लिए व्यापारी खाता कनेक्ट करें। टोकन एन्क्रिप्ट होते हैं और दोबारा नहीं दिखते। इससे Pix निकासी सक्रिय नहीं होती।"
+
+msgid "Connected"
+msgstr "कनेक्ट है"
+
+msgid "Connection not completed"
+msgstr "कनेक्शन पूरा नहीं हुआ"
+
+msgid "Copied successfully."
+msgstr "सफलतापूर्वक कॉपी हुआ।"
+
+msgid "Copy"
+msgstr ""
+
+msgid "Copy code"
+msgstr "कोड कॉपी करें"
+
+msgid "Copy link"
+msgstr "लिंक कॉपी करें"
+
+msgid "Copy the payment page address from your browser."
+msgstr "ब्राउज़र से भुगतान पृष्ठ का पता कॉपी करें।"
+
+msgid "Create a draft request to get started."
+msgstr ""
+
+msgid "Create a request to follow every step of your payment."
+msgstr "भुगतान के प्रत्येक चरण को ट्रैक करने के लिए अनुरोध बनाएँ।"
+
+msgid "Create account"
+msgstr "खाता बनाएँ"
+
+msgid "Create account · BCH Flow"
+msgstr ""
+
+msgid "Create an organization to manage draft payment requests."
+msgstr ""
+
+msgid "Create draft request"
+msgstr ""
+
+msgid "Create organization ↗"
+msgstr ""
+
+msgid "Create payment request"
+msgstr "भुगतान अनुरोध बनाएँ"
+
+msgid "Create request ↗"
+msgstr ""
+
+msgid "Create workspace"
+msgstr ""
+
+msgid "Create your account"
+msgstr ""
+
+msgid "Create your workspace ↗"
+msgstr ""
+
+msgid "Creating a request does not move funds or verify a payment."
+msgstr ""
+
+msgid "Credential encryption is not configured. Contact the administrator."
+msgstr "क्रेडेंशियल एन्क्रिप्शन कॉन्फ़िगर नहीं है। व्यवस्थापक से संपर्क करें।"
+
+msgid "Credentials are scoped to your organization. Private wallet keys are never requested."
+msgstr "क्रेडेंशियल आपके संगठन तक सीमित हैं। वॉलेट की निजी कुंजी कभी नहीं माँगी जाती।"
+
+msgid "DESIGNED TO FEEL DIFFERENT"
+msgstr ""
+
+msgid "Dashboard navigation"
+msgstr ""
+
+msgid "Dashboard · BCH Flow"
+msgstr ""
+
+msgid "Data is isolated by organization, asset and environment. Private keys are never requested here."
+msgstr "डेटा संगठन, परिसंपत्ति और परिवेश के अनुसार अलग है। यहाँ निजी कुंजी कभी नहीं माँगी जाती।"
+
+msgid "Decorative wallet preview"
+msgstr ""
+
+msgid "Description"
+msgstr "विवरण"
+
+msgid "Destination"
+msgstr "गंतव्य"
+
+msgid "Details"
+msgstr ""
+
+msgid "Disconnect account"
+msgstr "खाता डिस्कनेक्ट करें"
+
+msgid "Disconnected"
+msgstr "कनेक्ट नहीं है"
+
+msgid "Disconnecting stops local processing. Your money stays with Mercado Pago. You can also revoke this application in your Mercado Pago account."
+msgstr "डिस्कनेक्ट करने पर स्थानीय प्रोसेसिंग रुकती है। धन Mercado Pago में रहता है। वहाँ भी ऐप की अनुमति रद्द की जा सकती है।"
+
+msgid "Do not cancel a broadcast withdrawal or one with an unknown result."
+msgstr ""
+
+msgid "Do not send real money to this request."
+msgstr "इस अनुरोध पर वास्तविक धन न भेजें।"
+
+msgid "Download signing package"
+msgstr "हस्ताक्षर पैकेज डाउनलोड करें"
+
+msgid "Each organization uses its own integration. Balances reflect reconciled receipts, not the total wallet or bank balance."
+msgstr "प्रत्येक संगठन का अपना एकीकरण है। बैलेंस मिलान किए गए भुगतानों का है, पूरे वॉलेट या बैंक बैलेंस का नहीं।"
+
+msgid "Early-stage software · No automated settlement or transfers"
+msgstr ""
+
+msgid "Email"
+msgstr "ईमेल"
+
+msgid "Enter a Bitcoin Cash amount and receiving address to create a watch-only draft invoice."
+msgstr ""
+
+msgid "Enter a positive amount with up to 2 decimal places for fiat or 8 for crypto."
+msgstr ""
+
+msgid "Enter credentials from your Mercado Pago application. Never share your password, token or signing secret in chat."
+msgstr "अपने Mercado Pago ऐप के क्रेडेंशियल दर्ज करें। चैट में पासवर्ड, टोकन या हस्ताक्षर सीक्रेट साझा न करें।"
+
+msgid "Environment"
+msgstr "परिवेश"
+
+msgid "Euro"
+msgstr "यूरो"
+
+msgid "Every payment,"
+msgstr "हर भुगतान,"
+
+msgid "Everything you need, one tap away."
+msgstr ""
+
+msgid "Execute simulated transfer"
+msgstr "सिमुलेशन अंतरण करें"
+
+msgid "Existing payment history belongs to another receiver. Contact support before changing the merchant account."
+msgstr ""
+
+msgid "Expand menu"
+msgstr "मेनू खोलें"
+
+msgid "Expired"
+msgstr "समाप्त"
+
+msgid "Expires"
+msgstr "समाप्ति"
+
+msgid "Explore the experience ↓"
+msgstr ""
+
+msgid "External transaction signing"
+msgstr ""
+
+msgid "FLOW"
+msgstr ""
+
+msgid "Finance,"
+msgstr ""
+
+msgid "Financial journal"
+msgstr "वित्तीय बही"
+
+msgid "Flow"
+msgstr ""
+
+msgid "Graphite surfaces, champagne gold, restrained emerald and tactile microinteractions."
+msgstr ""
+
+msgid "Gross reconciled receipts · fees and availability are determined by the provider"
+msgstr "मिलान की गई सकल प्राप्तियाँ · शुल्क और उपलब्धता प्रदाता तय करता है"
+
+msgid "Hide balances"
+msgstr "बैलेंस छिपाएँ"
+
+msgid "INCOMING"
+msgstr "आवक"
+
+msgid "Important before you begin"
+msgstr ""
+
+msgid "Independent account. Wallet connection is not yet enabled."
+msgstr ""
+
+msgid "Input amount differs from the recorded receipt."
+msgstr ""
+
+msgid "Inputs do not belong to available receipts for this organization."
+msgstr ""
+
+msgid "Inputs do not match the reserved signing package."
+msgstr ""
+
+msgid "Inspect"
+msgstr ""
+
+msgid "Insufficient balance or limit exceeded."
+msgstr "अपर्याप्त बैलेंस या सीमा पार हो गई।"
+
+msgid "Integrations"
+msgstr "एकीकरण"
+
+msgid "Integrations · Mercado Pago"
+msgstr "एकीकरण · Mercado Pago"
+
+msgid "Invalid Pix amount."
+msgstr ""
+
+msgid "Invalid TXID."
+msgstr ""
+
+msgid "Invalid access token."
+msgstr "अमान्य ऐक्सेस टोकन।"
+
+msgid "Invalid address for this account network."
+msgstr ""
+
+msgid "Invalid amount or description."
+msgstr ""
+
+msgid "Invalid asset or environment."
+msgstr ""
+
+msgid "Invalid confirmation policy."
+msgstr ""
+
+msgid "Invalid confirmation response."
+msgstr ""
+
+msgid "Invalid credentials"
+msgstr ""
+
+msgid "Invalid environment or session."
+msgstr ""
+
+msgid "Invalid environment."
+msgstr ""
+
+msgid "Invalid movement."
+msgstr ""
+
+msgid "Invalid operation key. Refresh the form."
+msgstr ""
+
+msgid "Invalid operation."
+msgstr ""
+
+msgid "Invalid or duplicate transaction inputs."
+msgstr ""
+
+msgid "Invalid output index."
+msgstr ""
+
+msgid "Invalid password or too many attempts. Try again later."
+msgstr "अमान्य पासवर्ड या बहुत अधिक प्रयास। बाद में प्रयास करें।"
+
+msgid "Invalid password or too many attempts. Wait before authorizing again."
+msgstr ""
+
+msgid "Invalid payer email."
+msgstr ""
+
+msgid "Invalid payment evidence."
+msgstr ""
+
+msgid "Invalid payment identifier."
+msgstr ""
+
+msgid "Invalid provider resource."
+msgstr ""
+
+msgid "Invalid returned TXID."
+msgstr ""
+
+msgid "Invalid signature or expired notification."
+msgstr ""
+
+msgid "Invalid signed transaction."
+msgstr ""
+
+msgid "Invalid synchronization cursor."
+msgstr ""
+
+msgid "Invalid withdrawal data."
+msgstr ""
+
+msgid "Invoice address"
+msgstr ""
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Last verified"
+msgstr "अंतिम सत्यापन"
+
+msgid "Latest 20 records"
+msgstr "अंतिम 20 रिकॉर्ड"
+
+msgid "Latest 50 records"
+msgstr ""
+
+msgid "MERCHANT SETTINGS"
+msgstr "व्यापारी सेटिंग"
+
+msgid "Make it"
+msgstr ""
+
+msgid "Manage"
+msgstr "प्रबंधित करें"
+
+msgid "Manual"
+msgstr ""
+
+msgid "Maximum authorized fee"
+msgstr "अधिकतम अधिकृत शुल्क"
+
+msgid "Maximum fee:"
+msgstr "अधिकतम शुल्क:"
+
+msgid "Menu"
+msgstr ""
+
+msgid "Mercado Pago"
+msgstr ""
+
+msgid "Mercado Pago credentials and merchant ID are required."
+msgstr ""
+
+msgid "Mercado Pago is disconnected. Connect it in Integrations."
+msgstr "Mercado Pago डिस्कनेक्ट है। एकीकरण में कनेक्ट करें।"
+
+msgid "Mercado Pago · test"
+msgstr "Mercado Pago · परीक्षण"
+
+msgid "Mercado Pago · test credentials"
+msgstr ""
+
+msgid "Merchant ID"
+msgstr "व्यापारी आईडी"
+
+msgid "Merchant address"
+msgstr ""
+
+msgid "Merchant identity verified. Test webhook delivery and payment acceptance before going live."
+msgstr "व्यापारी पहचान सत्यापित है। वास्तविक उपयोग से पहले Webhook और भुगतान प्राप्ति जाँचें।"
+
+msgid "Mobile wallet navigation"
+msgstr ""
+
+msgid "Movement already recorded."
+msgstr ""
+
+msgid "NEW PAYMENT"
+msgstr "नया भुगतान"
+
+msgid "NEW PAYMENT REQUEST"
+msgstr ""
+
+msgid "NEW WITHDRAWAL"
+msgstr "नई निकासी"
+
+msgid "NO ACTIVITY"
+msgstr "कोई गतिविधि नहीं"
+
+msgid "NO CUSTODY"
+msgstr ""
+
+msgid "NO KEYS COLLECTED"
+msgstr ""
+
+msgid "NO TRANSACTION WILL BE CREATED"
+msgstr ""
+
+msgid "Network"
+msgstr ""
+
+msgid "Network access"
+msgstr ""
+
+msgid "Network broadcast"
+msgstr ""
+
+msgid "Network observations do not authorize payments. The legacy wallet does not execute transfers."
+msgstr ""
+
+msgid "Never enter a recovery phrase or private key into BCH Flow. Future transfers will require compatible external signing and independently validated network checks."
+msgstr ""
+
+msgid "Never enter your private key or recovery phrase."
+msgstr "अपनी निजी कुंजी या रिकवरी वाक्यांश कभी दर्ज न करें।"
+
+msgid "New here?"
+msgstr ""
+
+msgid "New organization"
+msgstr ""
+
+msgid "New organization · BCH Flow"
+msgstr ""
+
+msgid "New possibilities."
+msgstr "नई संभावनाएँ।"
+
+msgid "New request · BCH Flow"
+msgstr ""
+
+msgid "No Pix code was returned. Retry with the same operation key."
+msgstr ""
+
+msgid "No addresses recorded."
+msgstr ""
+
+msgid "No automatic settlement"
+msgstr ""
+
+msgid "No merchant account connected."
+msgstr "कोई व्यापारी खाता कनेक्ट नहीं है।"
+
+msgid "No movements recorded in this account."
+msgstr "इस खाते में कोई गतिविधि दर्ज नहीं है।"
+
+msgid "No payment requests yet."
+msgstr ""
+
+msgid "No pending broadcast to check."
+msgstr ""
+
+msgid "No provider is configured for this organization, asset and environment."
+msgstr ""
+
+msgid "No requests yet"
+msgstr ""
+
+msgid "No verified signing integration or transaction broadcaster is enabled. This page cannot create, authorize, or transmit a payment."
+msgstr ""
+
+msgid "Not enabled"
+msgstr ""
+
+msgid "Not enough confirmed inputs for the amount, fee and usable change."
+msgstr ""
+
+msgid "OAuth is not configured. Ask the administrator to register the application and HTTPS callback."
+msgstr "OAuth कॉन्फ़िगर नहीं है। व्यवस्थापक से ऐप और HTTPS कॉलबैक पंजीकृत करवाएँ।"
+
+msgid "ORGANIZATION /"
+msgstr ""
+
+msgid "OUTGOING"
+msgstr "जावक"
+
+msgid "Observation mode is active"
+msgstr ""
+
+msgid "One continuous experience"
+msgstr ""
+
+msgid "One space for each organization. A clear view of everything."
+msgstr ""
+
+msgid "One wallet."
+msgstr "एक वॉलेट।"
+
+msgid "Only an owner or administrator can manage this connection."
+msgstr "केवल स्वामी या व्यवस्थापक इस कनेक्शन को प्रबंधित कर सकते हैं।"
+
+msgid "Only use an address you independently control. BCH Flow cannot verify wallet ownership or payment settlement yet."
+msgstr ""
+
+msgid "Open"
+msgstr "खोलें"
+
+msgid "Open payment page"
+msgstr "भुगतान पृष्ठ खोलें"
+
+msgid "Open wallet"
+msgstr "वॉलेट खोलें"
+
+msgid "Open your workspace ↗"
+msgstr ""
+
+msgid "Organization-specific credentials"
+msgstr "संगठन-विशिष्ट क्रेडेंशियल"
+
+msgid "Organizations"
+msgstr "संगठन"
+
+msgid "Overpaid"
+msgstr "अधिक भुगतान"
+
+msgid "Overview"
+msgstr "अवलोकन"
+
+msgid "PIX · BRL"
+msgstr ""
+
+msgid "Partially received"
+msgstr "आंशिक रूप से प्राप्त"
+
+msgid "Password"
+msgstr "पासवर्ड"
+
+msgid "Passwords do not match"
+msgstr ""
+
+msgid "Payer email (connected Pix)"
+msgstr "भुगतानकर्ता ईमेल (कनेक्ट किया हुआ Pix)"
+
+msgid "Payer email is required to create a Pix request."
+msgstr ""
+
+msgid "Payment address and amount"
+msgstr "भुगतान पता और राशि"
+
+msgid "Payment center · BTC · BCH · Pix"
+msgstr ""
+
+msgid "Payment request"
+msgstr "भुगतान अनुरोध"
+
+msgid "Payment request ·"
+msgstr "भुगतान अनुरोध ·"
+
+msgid "Payment requests"
+msgstr ""
+
+msgid "Payment trail"
+msgstr "भुगतान का रिकॉर्ड"
+
+msgid "Payment under review. Contact the merchant."
+msgstr "भुगतान समीक्षाधीन है। व्यापारी से संपर्क करें।"
+
+msgid "Payment verification"
+msgstr ""
+
+msgid "Payment ·"
+msgstr "भुगतान ·"
+
+msgid "Physical wallet-inspired interface"
+msgstr ""
+
+msgid "Pix payment code"
+msgstr "Pix भुगतान कोड"
+
+msgid "Pix payouts are not configured."
+msgstr ""
+
+msgid "Pix payouts require a contracted transfer product and integration. They are not enabled."
+msgstr "Pix निकासी के लिए अनुबंधित अंतरण उत्पाद और एकीकरण चाहिए। यह अभी सक्रिय नहीं है।"
+
+msgid "Pix payouts require a contracted transfer product; Checkout API does not authorize payouts."
+msgstr ""
+
+msgid "Precise by design"
+msgstr ""
+
+msgid "Prepare or recover provider request"
+msgstr "प्रदाता अनुरोध तैयार या पुनः प्राप्त करें"
+
+msgid "Prepare transaction for external signing"
+msgstr "बाहरी हस्ताक्षर हेतु लेनदेन तैयार करें"
+
+msgid "Private Wallet · BCH Flow"
+msgstr ""
+
+msgid "Production"
+msgstr "वास्तविक परिवेश"
+
+msgid "Production is disabled. Configure and validate the integration before enabling it."
+msgstr ""
+
+msgid "Production requires HTTPS, secure cookies and DEBUG disabled."
+msgstr ""
+
+msgid "Production · real payments"
+msgstr ""
+
+msgid "QUICK ACCESS"
+msgstr ""
+
+msgid "RECEIVE ·"
+msgstr "प्राप्ति ·"
+
+msgid "RECONCILED RECEIPTS"
+msgstr "मिलान किए गए प्राप्त भुगतान"
+
+msgid "REQUESTED AMOUNT"
+msgstr "अनुरोधित राशि"
+
+msgid "RPC credentials are not configured for this organization."
+msgstr ""
+
+msgid "Read-only · Ownership and balance unverified"
+msgstr ""
+
+msgid "Receipt recorded after verification."
+msgstr "सत्यापन के बाद प्राप्ति दर्ज हुई।"
+
+msgid "Receive"
+msgstr "प्राप्त करें"
+
+msgid "Receive with clarity."
+msgstr "स्पष्टता से प्राप्त करें।"
+
+msgid "Receive, addresses and activity stay in context through integrated wallet panels."
+msgstr ""
+
+msgid "Received"
+msgstr "प्राप्त"
+
+msgid "Received and credited"
+msgstr "प्राप्त और जमा"
+
+msgid "Receiving addresses"
+msgstr ""
+
+msgid "Receiving details"
+msgstr ""
+
+msgid "Recent payment requests"
+msgstr ""
+
+msgid "Recent requests"
+msgstr ""
+
+msgid "Records shown here are not proof of on-chain payment or settlement."
+msgstr ""
+
+msgid "Remaining:"
+msgstr "शेष:"
+
+msgid "Request"
+msgstr ""
+
+msgid "Request details"
+msgstr ""
+
+msgid "Request volume · 7 days"
+msgstr ""
+
+msgid "Requests are not confirmed payments"
+msgstr ""
+
+msgid "Requests are not confirmed payments. Private keys are never collected. Transfers remain disabled in the legacy wallet."
+msgstr ""
+
+msgid "Reserve → authorize → broadcast"
+msgstr "आरक्षित → अधिकृत → प्रसारित"
+
+msgid "Review and reserve"
+msgstr "समीक्षा करके आरक्षित करें"
+
+msgid "SECURITY FIRST"
+msgstr ""
+
+msgid "SEND"
+msgstr ""
+
+msgid "SEND IS DISABLED"
+msgstr ""
+
+msgid "SIMULATED BALANCE"
+msgstr "सिमुलेशन बैलेंस"
+
+msgid "Safety without illusion"
+msgstr ""
+
+msgid "Sandbox"
+msgstr "सिमुलेशन"
+
+msgid "Sandbox is disabled in this installation."
+msgstr ""
+
+msgid "Sandbox reference"
+msgstr "सिमुलेशन संदर्भ"
+
+msgid "Sandbox · no real money"
+msgstr "सिमुलेशन · वास्तविक धन नहीं"
+
+msgid "Sandbox: do not send real money. The operator records simulated confirmation in the sandbox."
+msgstr "सिमुलेशन: वास्तविक धन न भेजें। ऑपरेटर सिमुलेशन पुष्टि दर्ज करता है।"
+
+msgid "Secure transfer authorization will appear here when supported and independently validated."
+msgstr ""
+
+msgid "Security in every detail"
+msgstr ""
+
+msgid "Select and copy the code manually."
+msgstr "कोड चुनकर मैन्युअल रूप से कॉपी करें।"
+
+msgid "Send"
+msgstr "भेजें"
+
+msgid "Send BCH"
+msgstr ""
+
+msgid "Send BCH · BCH Flow"
+msgstr ""
+
+msgid "Send with control."
+msgstr "नियंत्रण के साथ भेजें।"
+
+msgid "Show balances"
+msgstr "बैलेंस दिखाएँ"
+
+msgid "Sign in"
+msgstr "साइन इन"
+
+msgid "Sign in · BCH Flow"
+msgstr ""
+
+msgid "Sign out"
+msgstr "साइन आउट"
+
+msgid "Signed transaction hexadecimal; never your private key."
+msgstr "हस्ताक्षरित लेनदेन का हेक्साडेसिमल; निजी कुंजी कभी नहीं।"
+
+msgid "Signing packages are only available for node-connected BTC/BCH withdrawals."
+msgstr ""
+
+msgid "Simulate receipt"
+msgstr "प्राप्ति का सिमुलेशन"
+
+msgid "Simulated amount"
+msgstr "सिमुलेशन राशि"
+
+msgid "Simulated balances. Operations in this account do not move real money."
+msgstr "सिमुलेशन बैलेंस। इस खाते के लेनदेन वास्तविक धन नहीं भेजते।"
+
+msgid "Simulated receipt recorded."
+msgstr "सिमुलेशन प्राप्ति दर्ज हुई।"
+
+msgid "Simulation is not allowed in provider-connected accounts."
+msgstr ""
+
+msgid "Skip to content"
+msgstr "सामग्री पर जाएँ"
+
+msgid "Status recorded. Continuous verification is active."
+msgstr "स्थिति दर्ज हुई। निरंतर सत्यापन सक्रिय है।"
+
+msgid "Stored status"
+msgstr ""
+
+msgid "Sua carteira"
+msgstr ""
+
+msgid "THE PRIVATE WALLET EXPERIENCE"
+msgstr ""
+
+msgid "TRANSFER / SECURITY GATE"
+msgstr ""
+
+msgid "TRANSFERS DISABLED"
+msgstr ""
+
+msgid "TXID to verify on the node"
+msgstr "नोड पर सत्यापन हेतु TXID"
+
+msgid "Test environment"
+msgstr "परीक्षण परिवेश"
+
+msgid "Test network"
+msgstr "परीक्षण नेटवर्क"
+
+msgid "Test network · no monetary value"
+msgstr ""
+
+msgid "The access token expired. Reconnect Mercado Pago."
+msgstr ""
+
+msgid "The amount and maximum fee will be reserved. Sign in your external wallet. The unsigned package uses the entered fee; review it before signing."
+msgstr "राशि और अधिकतम शुल्क आरक्षित होंगे। बाहरी वॉलेट में हस्ताक्षर करें और पहले दर्ज शुल्क जाँचें।"
+
+msgid "The amount or fee differs from the authorization."
+msgstr ""
+
+msgid "The authorization session is invalid or expired. Connect again."
+msgstr "प्राधिकरण सत्र अमान्य या समाप्त है। फिर कनेक्ट करें।"
+
+msgid "The authorized account does not match the selected environment."
+msgstr "अधिकृत खाता चुने गए परिवेश से मेल नहीं खाता।"
+
+msgid "The broadcast result must be verified. Funds remain reserved; do not create a replacement withdrawal."
+msgstr "प्रसारण परिणाम सत्यापित होना चाहिए। धन आरक्षित है; इसके स्थान पर दूसरी निकासी न बनाएँ।"
+
+msgid "The credential encryption key is invalid."
+msgstr ""
+
+msgid "The linked payment request is not available yet."
+msgstr ""
+
+msgid "The local authentication secret is unavailable."
+msgstr ""
+
+msgid "The merchant is preparing this request."
+msgstr "व्यापारी यह अनुरोध तैयार कर रहा है।"
+
+msgid "The node did not accept the signed transaction for broadcast."
+msgstr ""
+
+msgid "The node did not return a valid unsigned transaction."
+msgstr ""
+
+msgid "The node is not synchronized, the network is incorrect or the wallet is not watch-only."
+msgstr ""
+
+msgid "The node rejected the request or operation."
+msgstr ""
+
+msgid "The node returned an unexpected TXID."
+msgstr ""
+
+msgid "The payment does not match the request, merchant or expected environment."
+msgstr ""
+
+msgid "The provider did not confirm the operation. Check its status before retrying."
+msgstr ""
+
+msgid "The provider returned an invalid token lifetime."
+msgstr ""
+
+msgid "The provider returned an unexpected merchant identity."
+msgstr ""
+
+msgid "The refreshed credential does not match this merchant."
+msgstr ""
+
+msgid "The returned transaction does not match the TXID."
+msgstr ""
+
+msgid "The stored credential cannot be decrypted. Reconnect the account."
+msgstr ""
+
+msgid "The transaction contains an unauthorized destination or change address."
+msgstr ""
+
+msgid "The withdrawal is not awaiting broadcast verification."
+msgstr ""
+
+msgid "This Mercado Pago account is already assigned to another organization."
+msgstr "यह Mercado Pago खाता किसी अन्य संगठन से जुड़ा है।"
+
+msgid "This account has no receipts yet."
+msgstr ""
+
+msgid "This account is under review. New operations are blocked."
+msgstr ""
+
+msgid "This action records simulated sandbox units without accessing a blockchain or bank."
+msgstr "यह कार्रवाई ब्लॉकचेन या बैंक तक पहुँचे बिना सिमुलेशन इकाइयाँ दर्ज करती है।"
+
+msgid "This environment does not support the selected asset."
+msgstr ""
+
+msgid "This key was already used for another payment request."
+msgstr ""
+
+msgid "This key was already used for another withdrawal."
+msgstr ""
+
+msgid "This merchant is already linked elsewhere. Refresh and check the connection status."
+msgstr ""
+
+msgid "This payment already belongs to another request or has a different amount."
+msgstr ""
+
+msgid "This request expired. Ask the merchant for a new request."
+msgstr "अनुरोध समाप्त हो गया। व्यापारी से नया अनुरोध माँगें।"
+
+msgid "This request expired. Create a new request."
+msgstr ""
+
+msgid "This transaction does not pay the request address."
+msgstr ""
+
+msgid "This withdrawal cannot be authorized in its current state."
+msgstr ""
+
+msgid "Too many inputs. Consolidate your external wallet before continuing."
+msgstr ""
+
+msgid "Total requests"
+msgstr ""
+
+msgid "Track your requests. Legacy payments are not automatically verified or settled."
+msgstr ""
+
+msgid "Transaction diagnostic"
+msgstr ""
+
+msgid "Transaction signed in your external wallet"
+msgstr "बाहरी वॉलेट में हस्ताक्षरित लेनदेन"
+
+msgid "Transfers are not enabled yet."
+msgstr ""
+
+msgid "Try receiving a payment"
+msgstr "भुगतान प्राप्ति आज़माएँ"
+
+msgid "UNAVAILABLE"
+msgstr ""
+
+msgid "UNDER REVIEW"
+msgstr "समीक्षाधीन"
+
+msgid "US dollar"
+msgstr "अमेरिकी डॉलर"
+
+msgid "US dollar and euro"
+msgstr "अमेरिकी डॉलर और यूरो"
+
+msgid "USD and EUR accounts currently support sandbox only. Connect a supported fiat provider before accepting real payments."
+msgstr ""
+
+msgid "USD and EUR are available as independent sandbox balances. Real deposits and payouts require a supported provider. Mercado Pago Pix is used for BRL only. No automatic currency conversion is performed."
+msgstr "USD और EUR के अलग सिमुलेशन बैलेंस हैं। वास्तविक जमा और निकासी के लिए समर्थित प्रदाता चाहिए। Mercado Pago Pix केवल BRL के लिए है। स्वतः मुद्रा विनिमय नहीं होता।"
+
+msgid "USD and EUR are separate fiat balances in sandbox. Real deposits and payouts require a supported provider. No currency conversion is performed."
+msgstr "USD और EUR के सिमुलेशन बैलेंस अलग हैं। वास्तविक लेनदेन के लिए समर्थित प्रदाता चाहिए। मुद्रा विनिमय नहीं होता।"
+
+msgid "USD and EUR payments require a supported fiat provider."
+msgstr ""
+
+msgid "Unable to refresh now. The previous status has been kept."
+msgstr "अभी अपडेट संभव नहीं। पिछली स्थिति रखी गई है।"
+
+msgid "Unable to register this email"
+msgstr ""
+
+msgid "Unauthenticated notification."
+msgstr ""
+
+msgid "Unavailable · wallet not connected"
+msgstr ""
+
+msgid "Under review"
+msgstr "समीक्षाधीन"
+
+msgid "Unexpected provider redirect."
+msgstr ""
+
+msgid "Unsupported asset."
+msgstr ""
+
+msgid "Use a destination such as sandbox:destination-wallet. No real money will be sent."
+msgstr "sandbox:destination-wallet जैसा गंतव्य उपयोग करें। वास्तविक धन नहीं भेजा जाएगा।"
+
+msgid "Use a production access token for the production environment."
+msgstr "वास्तविक परिवेश के लिए प्रोडक्शन ऐक्सेस टोकन उपयोग करें।"
+
+msgid "Use a sandbox: destination for simulated transfers."
+msgstr ""
+
+msgid "Use a test access token for the test environment."
+msgstr "परीक्षण परिवेश के लिए परीक्षण ऐक्सेस टोकन उपयोग करें।"
+
+msgid "Use an external wallet as the withdrawal destination."
+msgstr ""
+
+msgid "Use my own application credentials"
+msgstr "अपने ऐप के क्रेडेंशियल उपयोग करें"
+
+msgid "Use the explicit simulation action in this environment."
+msgstr ""
+
+msgid "VERIFIED ON-CHAIN BALANCE"
+msgstr ""
+
+msgid "Validate and broadcast"
+msgstr "सत्यापित और प्रसारित करें"
+
+msgid "Validate and save credentials"
+msgstr "क्रेडेंशियल सत्यापित और सहेजें"
+
+msgid "Verification pending"
+msgstr "सत्यापन लंबित"
+
+msgid "View all"
+msgstr ""
+
+msgid "View ↗"
+msgstr ""
+
+msgid "WALLET"
+msgstr ""
+
+msgid "WATCH-ONLY"
+msgstr ""
+
+msgid "WATCH-ONLY MODE"
+msgstr ""
+
+msgid "WATCH-ONLY · UNVERIFIED BALANCE"
+msgstr ""
+
+msgid "WORKSPACE"
+msgstr ""
+
+msgid "Waiting for server confirmation. Automatic updates are active."
+msgstr "सर्वर की पुष्टि की प्रतीक्षा। स्वतः अपडेट सक्रिय हैं।"
+
+msgid "Waiting for verifiable payment evidence."
+msgstr "सत्यापन योग्य भुगतान प्रमाण की प्रतीक्षा।"
+
+msgid "Wallet"
+msgstr "वॉलेट"
+
+msgid "Wallet actions"
+msgstr ""
+
+msgid "Wallet compartments"
+msgstr ""
+
+msgid "Wallet operation"
+msgstr ""
+
+msgid "Wallet ownership proof"
+msgstr ""
+
+msgid "Wallet ·"
+msgstr "वॉलेट ·"
+
+msgid "Watch-only"
+msgstr ""
+
+msgid "Watch-only requests never masquerade as verified payments or spendable balances."
+msgstr ""
+
+msgid "Webhook signing secret"
+msgstr "Webhook हस्ताक्षर सीक्रेट"
+
+msgid "Welcome back"
+msgstr "वापसी पर स्वागत है"
+
+msgid "With clarity."
+msgstr "पूरी स्पष्टता के साथ।"
+
+msgid "Withdrawals reserve funds and require an owner or administrator to authorize them."
+msgstr "निकासी धन आरक्षित करती है और स्वामी या व्यवस्थापक की अनुमति आवश्यक है।"
+
+msgid "YOUR ACTIVITY"
+msgstr ""
+
+msgid "YOUR FINANCIAL SPACE"
+msgstr "आपका वित्तीय स्थान"
+
+msgid "YOUR MONEY IN MOTION"
+msgstr "आपका धन, गतिशील"
+
+msgid "YOUR SPACES"
+msgstr ""
+
+msgid "You are not authorized for this organization or operation."
+msgstr ""
+
+msgid "You decide when funds leave."
+msgstr "धन कब भेजना है, आप तय करें।"
+
+msgid "Your business."
+msgstr "आपका व्यवसाय।"
+
+msgid "Your connections."
+msgstr "आपके कनेक्शन।"
+
+msgid "Your control."
+msgstr ""
+
+msgid "Your draft invoices and receiving details, all in one place."
+msgstr ""
+
+msgid "Your finances, organized."
+msgstr "आपकी वित्तीय स्थिति, व्यवस्थित।"
+
+msgid "Your first workspace starts here"
+msgstr ""
+
+msgid "Your money."
+msgstr ""
+
+msgid "Your next payment starts here."
+msgstr "आपका अगला भुगतान यहाँ से शुरू होता है।"
+
+msgid "Your payment requests"
+msgstr "आपके भुगतान अनुरोध"
+
+msgid "Your payment."
+msgstr "आपका भुगतान।"
+
+msgid "Your recovery phrase stays private."
+msgstr ""
+
+msgid "Your requests will appear here. No confirmed payments yet."
+msgstr ""
+
+msgid "Your role allows viewing this wallet. Ask an operator to create a payment request."
+msgstr "आपकी भूमिका वॉलेट देखने की है। अनुरोध बनाने के लिए ऑपरेटर से कहें।"
+
+msgid "Your story starts here"
+msgstr ""
+
+msgid "clearly tracked."
+msgstr "स्पष्ट रूप से दर्ज।"
+
+msgid "confirmations ·"
+msgstr "पुष्टियाँ ·"
+
+msgid "effortless."
+msgstr ""
+
+msgid "physical soul."
+msgstr ""
+
+msgid "recent movements"
+msgstr "हाल की गतिविधियाँ"
+
+msgid "reserved for withdrawals"
+msgstr "निकासी के लिए आरक्षित"
+
+msgid "sat"
+msgstr ""
+
+msgid "with a"
+msgstr ""
+
+msgid "· BCH Flow"
+msgstr ""
+
+msgid "· Bitcoin Cash"
+msgstr ""
+
+msgid "· Total reserved:"
+msgstr "· कुल आरक्षित:"
+
+msgid "— BCH"
+msgstr ""
+
+msgid "₿ BCH FLOW"
+msgstr ""
+
+msgid "← Back to workspace"
+msgstr ""
+
+msgid "← Return to wallet"
+msgstr ""
+
+msgid "◈ Merchant wallet ↗"
+msgstr ""

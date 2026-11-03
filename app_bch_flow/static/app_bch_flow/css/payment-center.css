@@ -1234,3 +1234,87 @@
     transform: none;
   }
 }
+.pay-assets {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  width: 100%;
+  justify-content: space-between;
+}
+.pay-assets > a {
+  flex: 1;
+  min-width: max-content;
+}
+.pay-integration-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--pay-line);
+}
+.pay-integration-grid h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+.pay-integration-grid form > p {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--pay-muted);
+}
+.pay-integration-grid input,
+.pay-integration-grid select {
+  width: 100%;
+}
+.pay-integration-grid button {
+  width: 100%;
+  margin-top: 14px;
+}
+.pay-manual-credentials summary,
+.pay-integration-connection summary {
+  cursor: pointer;
+  color: var(--pay-mint);
+  font-size: 12px;
+}
+.pay-integration-connection {
+  padding: 10px 0 22px;
+  border-top: 1px solid var(--pay-line);
+}
+.pay-integration-connection label {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  max-width: 400px;
+  margin: 15px 0;
+}
+.pay-integration-grid .errorlist {
+  color: #f1bdb4;
+  font-size: 12px;
+}
+.pay-integrations-link {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  color: var(--pay-mint) !important;
+  font-size: 11px;
+  margin: 10px 0;
+}
+.pay-dialog input[autocomplete="off"] {
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 760px) {
+  .pay-integration-grid {
+    grid-template-columns: 1fr;
+  }
+  .pay-assets {
+    justify-content: flex-start;
+  }
+  .pay-assets > a {
+    min-width: 102px;
+  }
+  .pay-assets a small {
+    direction: ltr;
+  }
+}

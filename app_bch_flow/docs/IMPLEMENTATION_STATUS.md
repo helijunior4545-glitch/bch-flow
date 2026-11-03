@@ -16,3 +16,7 @@ or networks in this environment. Legacy watch-only endpoints remain non-authorit
 Mainnet and real-money readiness is not established. Pix payouts are not implemented;
 external signer integration remains a manual package/sign/submit workflow. Read the
 activation document before configuring a real provider or handling funds.
+
+Merchant self-service connections and nine-language selection are now implemented.
+English is the default. USD/EUR are independent sandbox currencies; real fiat rails
+are still unavailable. See ../../docs/MERCHANT_CONNECTIONS_AND_LANGUAGES.md.

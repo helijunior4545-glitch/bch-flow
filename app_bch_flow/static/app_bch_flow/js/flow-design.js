@@ -24,7 +24,11 @@
       button.setAttribute("aria-expanded", String(expanded));
       button.setAttribute(
         "aria-label",
-        expanded ? "Recolher menu" : "Expandir menu",
+        expanded
+          ? document.querySelector("[data-interaction-messages]")?.dataset
+              .collapse || "Collapse menu"
+          : document.querySelector("[data-interaction-messages]")?.dataset
+              .expand || "Expand menu",
       );
     });
     shell.querySelectorAll(".flow-side-item").forEach((link) => {

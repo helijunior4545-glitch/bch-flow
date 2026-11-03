@@ -3,6 +3,9 @@
 No generic user-supplied URLs, signing keys, or credentials in database records.
 """
 
+from django.utils.translation import gettext as _
+
+
 import base64
 import hashlib
 import hmac
@@ -16,6 +19,7 @@ from urllib.request import Request, build_opener, HTTPRedirectHandler
 from urllib.error import URLError, HTTPError
 from django.conf import settings
 from .amounts import PaymentError, ProviderUnavailable, units, display
+from .assets import SANDBOX_ONLY
 
 
 def provider_config(account):
@@ -25,7 +29,9 @@ def provider_config(account):
         settings, "FLOW_PAYMENTS_ALLOW_LIVE", False
     ):
         raise ProviderUnavailable(
-            "Produção não está habilitada. Configure e valide a integração antes de ativá-la."
+            _(
+                "Production is disabled. Configure and validate the integration before enabling it."
+            )
         )
     if account.environment == "live" and (
         settings.DEBUG
@@ -33,8 +39,18 @@ def provider_config(account):
         or not getattr(settings, "CSRF_COOKIE_SECURE", False)
     ):
         raise ProviderUnavailable(
-            "Produção exige configurações HTTPS e cookies seguros, com DEBUG desabilitado."
+            _("Production requires HTTPS, secure cookies and DEBUG disabled.")
         )
+    if account.asset in SANDBOX_ONLY:
+        raise ProviderUnavailable(
+            _("USD and EUR payments require a supported fiat provider.")
+        )
+    if account.asset == "BRL":
+        from .integrations import connection_credentials
+
+        managed = connection_credentials(account.organization_id, account.environment)
+        if managed is not None:
+            return {**managed, "_managed_connection": True}
     configs = getattr(settings, "FLOW_PAYMENT_PROVIDERS", {})
     config = (
         configs.get(str(account.organization_id), {})
@@ -43,14 +59,14 @@ def provider_config(account):
     )
     if not isinstance(config, dict):
         raise ProviderUnavailable(
-            "Provedor não configurado para esta organização, ativo e ambiente."
+            _("No provider is configured for this organization, asset and environment.")
         )
     return config
 
 
 class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        raise ProviderUnavailable("Redirecionamento inesperado do provedor.")
+        raise ProviderUnavailable(_("Unexpected provider redirect."))
 
 
 def _read_json(request):
@@ -65,13 +81,17 @@ def _read_json(request):
             return result
     except (URLError, HTTPError, TimeoutError, OSError, ValueError):
         raise ProviderUnavailable(
-            "O provedor não confirmou a operação. Consulte o status antes de tentar novamente."
+            _(
+                "The provider did not confirm the operation. Check its status before retrying."
+            )
         ) from None
 
 
 def local_secret(config, name):
     # Secret files are used only to authenticate configured operations, never
     # inspected for discovery or written to application records/logs.
+    if config.get("_managed_connection") and name in config:
+        return config[name]
     filename = config.get(name + "_file")
     if filename:
         try:
@@ -82,7 +102,7 @@ def local_secret(config, name):
             return value
         except (OSError, ValueError):
             raise ProviderUnavailable(
-                "Segredo local de autenticação não está disponível."
+                _("The local authentication secret is unavailable.")
             ) from None
     return os.environ.get(config.get(name + "_env", ""), "")
 
@@ -99,7 +119,7 @@ class MercadoPago:
         )
         if not self.token or not str(self.config.get("collector_id", "")).isdigit():
             raise ProviderUnavailable(
-                "Credencial e identificador do recebedor Mercado Pago são obrigatórios."
+                _("Mercado Pago credentials and merchant ID are required.")
             )
 
         for organization, assets in getattr(
@@ -113,12 +133,14 @@ class MercadoPago:
                 )
                 if str(other) == str(self.config["collector_id"]):
                     raise ProviderUnavailable(
-                        "Uma conta Mercado Pago não pode ser compartilhada entre organizações."
+                        _(
+                            "A Mercado Pago account cannot be shared between organizations."
+                        )
                     )
 
     def call(self, path, payload=None, key=None):
         if not re.fullmatch(r"/v1/payments(?:/[0-9]+)?", path):
-            raise PaymentError("Recurso do provedor inválido.")
+            raise PaymentError(_("Invalid provider resource."))
         headers = {
             "Authorization": "Bearer " + self.token,
             "Content-Type": "application/json",
@@ -133,7 +155,7 @@ class MercadoPago:
             if not isinstance(amount, str) or not re.fullmatch(
                 r"[0-9]+\.[0-9]{2}", amount
             ):
-                raise PaymentError("Valor Pix inválido.")
+                raise PaymentError(_("Invalid Pix amount."))
             data = (
                 '{"transaction_amount":' + amount + "," + json.dumps(body)[1:]
             ).encode()
@@ -143,12 +165,12 @@ class MercadoPago:
 
     def create(self, request, payer_email):
         if not payer_email:
-            raise PaymentError("O email do pagador é necessário para criar o Pix.")
+            raise PaymentError(_("Payer email is required to create a Pix request."))
         result = self.call(
             "/v1/payments",
             {
                 "transaction_amount": display(request.amount_units, "BRL"),
-                "description": request.description or "Cobrança BCH Flow",
+                "description": request.description or "Payment request BCH Flow",
                 "payment_method_id": "pix",
                 "external_reference": str(request.pk),
                 "date_of_expiration": request.expires_at.isoformat(
@@ -166,13 +188,13 @@ class MercadoPago:
         )
         if not isinstance(qr, str) or not 1 <= len(qr) <= 5000:
             raise ProviderUnavailable(
-                "O provedor não retornou o código Pix. Repita com a mesma chave de operação."
+                _("No Pix code was returned. Retry with the same operation key.")
             )
         return str(result["id"]), qr
 
     def get(self, resource_id):
         if not re.fullmatch(r"[0-9]{1,80}", str(resource_id)):
-            raise PaymentError("Identificador de pagamento inválido.")
+            raise PaymentError(_("Invalid payment identifier."))
         return self.call("/v1/payments/" + str(resource_id))
 
     def validate(self, data, request, require_approved=True):
@@ -195,7 +217,9 @@ class MercadoPago:
             )
         ):
             raise PaymentError(
-                "Pagamento não corresponde à cobrança, ao recebedor ou ao ambiente esperado."
+                _(
+                    "The payment does not match the request, merchant or expected environment."
+                )
             )
 
 
@@ -211,7 +235,7 @@ def validate_mp_signature(signature, request_id, resource_id, secret, now=None):
         or len(request_id) > 200
         or not re.fullmatch(r"[0-9]{1,80}", resource_id or "")
     ):
-        raise PaymentError("Notificação não autenticada.")
+        raise PaymentError(_("Unauthenticated notification."))
     try:
         parts = dict(part.strip().split("=", 1) for part in signature.split(","))
         ts, digest = parts["ts"], parts["v1"]
@@ -228,7 +252,7 @@ def validate_mp_signature(signature, request_id, resource_id, secret, now=None):
         if not hmac.compare_digest(expected, digest):
             raise ValueError
     except (ValueError, KeyError, AttributeError):
-        raise PaymentError("Assinatura inválida ou notificação expirada.") from None
+        raise PaymentError(_("Invalid signature or expired notification.")) from None
 
 
 class CoreNode:
@@ -254,7 +278,7 @@ class CoreNode:
             )
         ):
             raise ProviderUnavailable(
-                "Configure um endpoint RPC HTTPS de carteira watch-only isolada."
+                _("Configure an isolated watch-only wallet HTTPS RPC endpoint.")
             )
         configs = getattr(settings, "FLOW_PAYMENT_PROVIDERS", {})
         for organization, assets in configs.items():
@@ -266,20 +290,20 @@ class CoreNode:
                         if isinstance(c, dict)
                     ):
                         raise ProviderUnavailable(
-                            "Uma carteira RPC não pode ser compartilhada entre organizações."
+                            _("An RPC wallet cannot be shared between organizations.")
                         )
         user = os.environ.get(self.config.get("username_env", ""), "")
         password = local_secret(self.config, "password")
         if not user or not password:
             raise ProviderUnavailable(
-                "As credenciais RPC desta organização ainda não foram configuradas."
+                _("RPC credentials are not configured for this organization.")
             )
         self.authorization = (
             "Basic " + base64.b64encode(f"{user}:{password}".encode()).decode()
         )
         required = self.config.get("confirmations", 3)
         if type(required) is not int or not 1 <= required <= 100:
-            raise ProviderUnavailable("A política de confirmações é inválida.")
+            raise ProviderUnavailable(_("Invalid confirmation policy."))
         self.confirmations = required
 
     def rpc(self, method, *params):
@@ -297,7 +321,7 @@ class CoreNode:
             )
         )
         if result.get("error") is not None or "result" not in result:
-            raise ProviderUnavailable("O nó recusou a consulta ou operação.")
+            raise ProviderUnavailable(_("The node rejected the request or operation."))
         return result["result"]
 
     def ready(self):
@@ -312,13 +336,15 @@ class CoreNode:
             or wallet.get("private_keys_enabled") is not False
         ):
             raise ProviderUnavailable(
-                "Nó não sincronizado, rede incorreta ou carteira não é watch-only."
+                _(
+                    "The node is not synchronized, the network is incorrect or the wallet is not watch-only."
+                )
             )
 
     def validate_address(self, address):
         info = self.rpc("validateaddress", address)
         if info.get("isvalid") is not True:
-            raise PaymentError("Endereço inválido para a rede desta conta.")
+            raise PaymentError(_("Invalid address for this account network."))
         return info.get("address", address)
 
     def new_address(self):
@@ -328,16 +354,16 @@ class CoreNode:
 
     def outputs(self, txid):
         if not re.fullmatch(r"[a-fA-F0-9]{64}", txid or ""):
-            raise PaymentError("TXID inválido.")
+            raise PaymentError(_("Invalid TXID."))
         self.ready()
         # gettransaction is wallet-scoped; never accept a browser's claimed amount.
         tx = self.rpc("gettransaction", txid, True)
         confirmations = tx.get("confirmations", 0)
         if type(confirmations) is not int:
-            raise PaymentError("Resposta de confirmações inválida.")
+            raise PaymentError(_("Invalid confirmation response."))
         decoded = self.rpc("decoderawtransaction", tx["hex"])
         if decoded.get("txid") != txid.lower():
-            raise PaymentError("Transação retornada não corresponde ao TXID.")
+            raise PaymentError(_("The returned transaction does not match the TXID."))
         return confirmations, decoded["vout"]
 
     @staticmethod
@@ -353,24 +379,24 @@ class CoreNode:
         from app_bch_flow.models import FlowReceipt, FlowRequest, FlowWithdrawal
 
         if not re.fullmatch(r"[a-fA-F0-9]{2,1000000}", raw or "") or len(raw) % 2:
-            raise PaymentError("Transação assinada inválida.")
+            raise PaymentError(_("Invalid signed transaction."))
         self.ready()
         decoded = self.rpc("decoderawtransaction", raw)
         txid = decoded.get("txid", "")
         if not re.fullmatch(r"[a-f0-9]{64}", txid):
-            raise PaymentError("TXID retornado inválido.")
+            raise PaymentError(_("Invalid returned TXID."))
         inputs = decoded.get("vin", [])
         if not 1 <= len(inputs) <= 100 or len(
             {(i.get("txid"), i.get("vout")) for i in inputs}
         ) != len(inputs):
-            raise PaymentError("Entradas de transação inválidas ou duplicadas.")
+            raise PaymentError(_("Invalid or duplicate transaction inputs."))
         planned = (
             set(withdrawal.inputs.values_list("txid", "vout"))
             if withdrawal.pk
             else set()
         )
         if planned and planned != {(i.get("txid"), i.get("vout")) for i in inputs}:
-            raise PaymentError("As entradas diferem do pacote de assinatura reservado.")
+            raise PaymentError(_("Inputs do not match the reserved signing package."))
         unspent = {
             (u["txid"], u["vout"]): u
             for u in self.rpc("listunspent", self.confirmations)
@@ -397,13 +423,13 @@ class CoreNode:
             )
             if key not in unspent or (receipt is None and not owned_change):
                 raise PaymentError(
-                    "As entradas não pertencem aos recebimentos disponíveis desta organização."
+                    _(
+                        "Inputs do not belong to available receipts for this organization."
+                    )
                 )
             input_amount = units(unspent[key]["amount"], self.account.asset)
             if receipt is not None and receipt.amount_units != input_amount:
-                raise PaymentError(
-                    "O valor da entrada diverge do recebimento registrado."
-                )
+                raise PaymentError(_("Input amount differs from the recorded receipt."))
             total += input_amount
         change_addresses = set(
             FlowRequest.objects.filter(account=self.account).values_list(
@@ -411,7 +437,9 @@ class CoreNode:
             )
         )
         if withdrawal.destination in change_addresses:
-            raise PaymentError("Use uma carteira externa como destino desta saída.")
+            raise PaymentError(
+                _("Use an external wallet as the withdrawal destination.")
+            )
         sent, output_total = 0, 0
         for output in decoded.get("vout", []):
             value = units(output.get("value"), self.account.asset)
@@ -420,7 +448,9 @@ class CoreNode:
                 sent += value
             elif address not in change_addresses:
                 raise PaymentError(
-                    "A transação contém um destino ou troco não autorizado."
+                    _(
+                        "The transaction contains an unauthorized destination or change address."
+                    )
                 )
             output_total += value
         fee = total - output_total
@@ -428,7 +458,7 @@ class CoreNode:
             sent != withdrawal.amount_units
             or not 0 <= fee <= withdrawal.fee_limit_units
         ):
-            raise PaymentError("Valor enviado ou taxa diverge da autorização.")
+            raise PaymentError(_("The amount or fee differs from the authorization."))
         accepted = self.rpc("testmempoolaccept", [raw])
         if (
             not isinstance(accepted, list)
@@ -436,7 +466,7 @@ class CoreNode:
             or accepted[0].get("allowed") is not True
         ):
             raise PaymentError(
-                "O nó não aceitou a transação assinada para transmissão."
+                _("The node did not accept the signed transaction for broadcast.")
             )
         return txid, fee, inputs
 
@@ -456,7 +486,9 @@ class CoreNode:
         )
         if not change_addresses or withdrawal.destination in change_addresses:
             raise PaymentError(
-                "É necessário um endereço de troco desta conta e um destino externo."
+                _(
+                    "An account-owned change address and external destination are required."
+                )
             )
         selected, total = [], 0
         target = withdrawal.amount_units + withdrawal.fee_limit_units
@@ -502,12 +534,14 @@ class CoreNode:
                 break
             if len(selected) >= 100:
                 raise PaymentError(
-                    "Muitas entradas. Consolide sua carteira externa antes de continuar."
+                    _(
+                        "Too many inputs. Consolidate your external wallet before continuing."
+                    )
                 )
         change = total - target
         if change < 0 or 0 < change < 546:
             raise PaymentError(
-                "Não há entradas confirmadas suficientes para valor, taxa e troco utilizável."
+                _("Not enough confirmed inputs for the amount, fee and usable change.")
             )
         outputs = {
             withdrawal.destination: display(withdrawal.amount_units, self.account.asset)
@@ -522,7 +556,7 @@ class CoreNode:
             or len(raw) % 2
         ):
             raise ProviderUnavailable(
-                "O nó não retornou uma transação sem assinatura válida."
+                _("The node did not return a valid unsigned transaction.")
             )
         return {
             "asset": self.account.asset,

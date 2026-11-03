@@ -171,3 +171,16 @@ a reachable HTTPS callback, isolated node wallets and RPC authentication. Outsta
 product integrations: contracted Pix payout product, guided external wallet signer,
 review/refund operations and production operational/security validation. No real
 funds have been moved by this implementation session.
+
+## Merchant self-service and internationalization update
+
+The merchant connection screen is now implemented. Owners/admins can manage their
+Mercado Pago connection directly in the application, with encrypted credentials,
+OAuth/PKCE, identity validation and explicit disconnection. See
+[Merchant connections, languages and currencies](MERCHANT_CONNECTIONS_AND_LANGUAGES.md)
+for setup and remaining provider validation. The earlier server-only configuration
+instructions remain a legacy fallback only when no managed connection record exists.
+
+English is now the default. The language selector supports nine languages with RTL
+for Arabic and English fallback for untranslated legacy content. USD and EUR are
+independent sandbox fiat accounts; live deposits and payouts are not enabled.

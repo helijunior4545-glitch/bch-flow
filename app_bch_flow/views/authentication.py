@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.views.decorators.http import require_http_methods,require_POST
@@ -18,7 +19,7 @@ def register(request):
         try:
             identity=register_identity(form.cleaned_data['email'],form.cleaned_data['password'])
         except (IntegrityError,ValidationError):
-            form.add_error('email','Unable to register this email')
+            form.add_error('email',_('Unable to register this email'))
         else:
             token,_=create_session(identity)
             response=redirect('bch_flow:dashboard')
@@ -36,7 +37,7 @@ def login(request):
             response=redirect('bch_flow:dashboard')
             set_session_cookie(response,token)
             return response
-        form.add_error(None,'Invalid credentials')
+        form.add_error(None,_('Invalid credentials'))
     return render(request,'app_bch_flow/authentication/login.html',{'form':form})
 
 @require_POST

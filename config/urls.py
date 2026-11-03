@@ -9,6 +9,7 @@ def local_health(request):
 
 
 urlpatterns = [
+    path('i18n/',include('django.conf.urls.i18n')),
     path('wallet-v301/', include(('bch_wallet_v301.urls', 'bch_wallet_v301'), namespace='bch_wallet_v301')),
     path('health/', local_health, name='local_health'),
     path('admin/', admin.site.urls),

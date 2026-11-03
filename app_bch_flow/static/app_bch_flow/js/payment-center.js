@@ -3,9 +3,27 @@
   "use strict";
   const root = document.querySelector("[data-payment-app]");
   if (!root) return;
+  const messages =
+    document.querySelector("[data-interaction-messages]")?.dataset || {};
+  const tr = (key, fallback) => messages[key] || fallback;
   window.lucide?.createIcons({
     attrs: { "stroke-width": 1.7, "aria-hidden": "true" },
   });
+  const assetNavigation = root.querySelector(".pay-assets");
+  const selectedAsset = assetNavigation?.querySelector("[aria-current]");
+  function alignSelectedAsset() {
+    if (!selectedAsset) return;
+    const box = selectedAsset.getBoundingClientRect();
+    const parent = assetNavigation.getBoundingClientRect();
+    assetNavigation.scrollLeft +=
+      box.left - parent.left - (parent.width - box.width) / 2;
+  }
+  alignSelectedAsset();
+  if (assetNavigation && "ResizeObserver" in window) {
+    new ResizeObserver(alignSelectedAsset).observe(assetNavigation);
+  } else {
+    window.addEventListener("resize", alignSelectedAsset);
+  }
   const reduced = matchMedia("(prefers-reduced-motion: reduce)");
   let returnFocus = null,
     toastTimer;
@@ -55,7 +73,9 @@
     toggle.setAttribute("aria-pressed", String(hidden));
     toggle.setAttribute(
       "aria-label",
-      hidden ? "Mostrar valores" : "Ocultar valores",
+      hidden
+        ? tr("showValues", "Show balances")
+        : tr("hideValues", "Hide balances"),
     );
     root.querySelectorAll("[data-private-value]").forEach((el) => {
       if (!el.dataset.originalValue) el.dataset.originalValue = el.textContent;
@@ -86,7 +106,7 @@
           if (!value || !navigator.clipboard || !isSecureContext)
             throw new Error();
           await navigator.clipboard.writeText(value);
-          note("Copiado com sucesso.");
+          note(tr("copySuccess", "Copied successfully."));
         } catch (_) {
           if (target) {
             target.focus();
@@ -94,8 +114,11 @@
           }
           note(
             target
-              ? "Selecione e copie o código manualmente."
-              : "Copie o endereço da página de pagamento pelo navegador.",
+              ? tr("manualCopy", "Select and copy the code manually.")
+              : tr(
+                  "copyLink",
+                  "Copy the payment page address from your browser.",
+                ),
           );
         }
       });
@@ -135,12 +158,20 @@
         }
         if (statusText)
           statusText.textContent = terminal.includes(state.status)
-            ? "Status registrado. Verificação contínua ativa."
-            : "Aguardando confirmação do servidor. Atualização automática ativa.";
+            ? tr(
+                "statusRecorded",
+                "Status recorded. Continuous verification is active.",
+              )
+            : tr(
+                "statusWaiting",
+                "Waiting for server confirmation. Automatic updates are active.",
+              );
       } catch (_) {
         if (statusText)
-          statusText.textContent =
-            "Não foi possível atualizar agora. O status anterior foi mantido.";
+          statusText.textContent = tr(
+            "statusError",
+            "Unable to refresh now. The previous status has been kept.",
+          );
       } finally {
         clearTimeout(timer);
       }

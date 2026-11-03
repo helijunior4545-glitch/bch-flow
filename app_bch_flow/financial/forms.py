@@ -1,10 +1,11 @@
+from django.utils.translation import gettext_lazy as _
 from django import forms
 from .amounts import units, PaymentError
 
 
 class RequestForm(forms.Form):
     amount = forms.CharField(
-        label="Valor",
+        label=_("Amount"),
         max_length=30,
         widget=forms.TextInput(
             attrs={
@@ -14,9 +15,11 @@ class RequestForm(forms.Form):
             }
         ),
     )
-    description = forms.CharField(label="Descrição", max_length=160, required=False)
+    description = forms.CharField(
+        label=_("Description"), max_length=160, required=False
+    )
     payer_email = forms.EmailField(
-        label="Email do pagador (Pix conectado)", required=False
+        label=_("Payer email (connected Pix)"), required=False
     )
     key = forms.CharField(widget=forms.HiddenInput, max_length=80)
 
@@ -33,12 +36,12 @@ class RequestForm(forms.Form):
 
 class WithdrawalForm(RequestForm):
     destination = forms.CharField(
-        label="Destino",
+        label=_("Destination"),
         max_length=180,
         widget=forms.TextInput(attrs={"autocomplete": "off", "spellcheck": "false"}),
     )
     fee_limit = forms.CharField(
-        label="Taxa máxima autorizada", max_length=30, initial="0"
+        label=_("Maximum authorized fee"), max_length=30, initial="0"
     )
     description = None
     payer_email = None

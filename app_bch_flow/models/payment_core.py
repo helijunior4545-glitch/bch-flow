@@ -4,12 +4,12 @@ import uuid
 from django.db import models
 from django.db.models import Q, F
 
-ASSETS = [("BTC", "Bitcoin"), ("BCH", "Bitcoin Cash"), ("BRL", "Real / Pix")]
+ASSETS = [("BTC", "Bitcoin"), ("BCH", "Bitcoin Cash"), ("BRL", "Real / Pix"), ("USD", "US dollar"), ("EUR", "Euro")]
 ENVIRONMENTS = [
-    ("sandbox", "Demonstração"),
-    ("testnet", "Rede de testes"),
-    ("mercadopago_test", "Teste Mercado Pago"),
-    ("live", "Produção"),
+    ("sandbox", "Sandbox"),
+    ("testnet", "Test network"),
+    ("mercadopago_test", "Mercado Pago test"),
+    ("live", "Production"),
 ]
 MAX_UNITS = 2_100_000_000_000_000
 
@@ -36,7 +36,7 @@ class FlowAccount(models.Model):
                 name="flow_account_tenant_asset_env",
             ),
             models.CheckConstraint(
-                condition=Q(asset__in=["BTC", "BCH", "BRL"]), name="flow_account_asset"
+                condition=Q(asset__in=["BTC", "BCH", "BRL", "USD", "EUR"]), name="flow_account_asset"
             ),
             models.CheckConstraint(
                 condition=Q(
@@ -56,7 +56,8 @@ class FlowAccount(models.Model):
             ),
             models.CheckConstraint(
                 condition=(
-                    Q(environment__in=["sandbox", "live"])
+                    Q(environment="sandbox")
+                    | Q(asset__in=["BTC", "BCH", "BRL"], environment="live")
                     | Q(asset__in=["BTC", "BCH"], environment="testnet")
                     | Q(asset="BRL", environment="mercadopago_test")
                 ),
