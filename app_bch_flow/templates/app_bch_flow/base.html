@@ -1,5 +1,8 @@
 {% load static %}<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#f6f8f5"><title>{% block title %}BCH Flow{% endblock %}</title><link rel="stylesheet" href="{% static 'app_bch_flow/css/base.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/v1.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-premium.css' %}"><!-- BCH-FLOW-V313-INTEGRATION -->
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/bch-premium-v313.css' %}?v=313" data-bch-premium="v313">
+
 <script src="{% static 'app_bch_flow/js/bch-premium-v313.js' %}?v=313" defer></script>
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-design.css' %}">
+<script src="{% static 'app_bch_flow/vendor/lucide.min.js' %}" defer></script>
+<script src="{% static 'app_bch_flow/js/flow-design.js' %}" defer></script>
 </head><body><a class="skip" href="#main">Skip to content</a>{% block content %}{% endblock %}<script defer src="{% static 'app_bch_flow/js/flow-premium.js' %}"></script></body></html>
