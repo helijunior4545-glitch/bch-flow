@@ -1,5 +1,7 @@
 """BCH Flow V4.1 merchant wallet: read-only interface and fail-closed actions."""
 from decimal import Decimal
+from datetime import timedelta
+from django.utils import timezone
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods
 from app_bch_flow.models import BCHMembership, BCHInvoice, BCHMerchant, BCHWalletConnection
@@ -36,7 +38,21 @@ def wallet_home(request, org_id):
     invoice_addresses = list(BCHInvoice.objects.filter(
         organization=member.organization
     ).order_by('network', 'receiving_cashaddr').values('network', 'receiving_cashaddr').distinct()[:20])
+    # A request-volume chart, never a claimed balance or payment confirmation.
+    today = timezone.localdate()
+    days = [today - timedelta(days=offset) for offset in range(6, -1, -1)]
+    counts = {day: 0 for day in days}
+    for invoice in invoices:
+        day = timezone.localtime(invoice.created_at).date()
+        if day in counts:
+            counts[day] += 1
+    peak = max(counts.values(), default=0) or 1
+    request_activity = [
+        {'day': day, 'count': counts[day], 'height': round(counts[day] / peak * 100)}
+        for day in days
+    ]
     return render(request, 'app_bch_flow/wallet_v41/home.html', {
+        'request_activity': request_activity,
         'merchant_wallet': merchant_wallet,
         'wallet_connections': wallet_connections,
         'invoice_addresses': invoice_addresses,

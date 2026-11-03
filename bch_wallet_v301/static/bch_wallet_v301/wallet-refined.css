@@ -1,0 +1,161 @@
+/* Align the explicitly labeled demonstration with the tenant wallet. */
+body {
+  background:
+    radial-gradient(ellipse at 50% 26%, #254c3455, transparent 65%), #0b1110 !important;
+}
+.app {
+  max-width: 1280px !important;
+}
+.header {
+  border-radius: 0 !important;
+  border: 0 !important;
+  border-bottom: 1px solid #8bac932b !important;
+  box-shadow: none;
+  background: transparent !important;
+  backdrop-filter: none;
+}
+.logo-mark,
+.coin {
+  background: linear-gradient(140deg, #c7e9b4, #7fbb8c) !important;
+  color: #193423 !important;
+}
+.logo-light,
+.heading h1 em,
+.action-symbol,
+.text-action {
+  color: #b2e5bd !important;
+}
+.heading {
+  margin: 42px auto 32px !important;
+}
+.heading h1 {
+  font-weight: 500 !important;
+  font-size: clamp(28px, 4vw, 44px) !important;
+}
+.eyebrow {
+  color: #a4ba9e !important;
+  letter-spacing: 0.2em;
+}
+.subtitle {
+  max-width: 560px !important;
+  font-size: 13px;
+}
+.leaf {
+  background:
+    repeating-linear-gradient(110deg, #ffffff03 0 1px, transparent 1px 4px),
+    linear-gradient(140deg, #344a37, #192c20) !important;
+  border-color: #819b6c88 !important;
+  border-radius: 25px !important;
+  padding: 14px !important;
+}
+.leaf-left {
+  border-radius: 25px 8px 8px 25px !important;
+}
+.leaf-right {
+  border-radius: 8px 25px 25px 8px !important;
+}
+.balance-card {
+  background: linear-gradient(125deg, #254d35, #10271b) !important;
+  border-color: #accb8d66 !important;
+}
+.balance-value {
+  font-weight: 500 !important;
+}
+.overline,
+.emboss {
+  color: #bed8ab !important;
+}
+.action-tile,
+.pocket {
+  background: linear-gradient(145deg, #2a4030, #192e20) !important;
+  border-color: #86b28544 !important;
+}
+.action-tile:hover,
+.pocket:hover {
+  border-color: #b0da9a !important;
+  box-shadow: 0 10px 25px #0004 !important;
+}
+.pocket-symbol,
+.pill-button,
+.avatar {
+  color: #b9dfae !important;
+}
+.pocket-copy small {
+  color: #9fbc9e !important;
+}
+.dock {
+  position: sticky;
+  bottom: 16px;
+  z-index: 10;
+  background: #14291ee8 !important;
+  border-color: #91be8f44 !important;
+  border-radius: 20px !important;
+}
+.dock-item.selected {
+  background: #a1d29e19 !important;
+  color: #c4ebc2 !important;
+}
+.sheet.centered-dialog.v306-dialog {
+  background: linear-gradient(145deg, #263e2c, #12251a) !important;
+  border-radius: 24px !important;
+}
+.v306-cta {
+  background: #3a6041 !important;
+  color: #ddf0d2 !important;
+}
+.preview-chip {
+  background: #abc78519 !important;
+  border-color: #b7cf8b44 !important;
+  color: #d7dfad !important;
+}
+.wallet-spine {
+  background: linear-gradient(90deg, #15271a, #859c68 48%, #16271c) !important;
+}
+.glass-atmosphere {
+  opacity: 0.3;
+}
+.chart {
+  opacity: 0.65;
+}
+.stage-footer {
+  margin-top: 16px;
+}
+.heading h1 em {
+  font-style: normal;
+}
+.header-center {
+  font-size: 10px;
+}
+.page-footer {
+  margin-bottom: 20px;
+}
+@media (max-width: 560px) {
+  .heading {
+    margin: 25px auto 22px !important;
+  }
+  .heading .subtitle {
+    font-size: 12px;
+  }
+  .leaf {
+    border-radius: 22px !important;
+  }
+  .dock {
+    position: sticky;
+    bottom: 10px;
+    justify-content: space-around;
+    padding: 5px !important;
+  }
+  .dock-item {
+    min-width: 40px;
+    padding: 8px 2px;
+  }
+  .dock-item span {
+    font-size: 8px;
+  }
+  .wallet {
+    gap: 13px !important;
+  }
+  .pocket {
+    height: 58px !important;
+  }
+}
