@@ -1399,3 +1399,120 @@ msgstr ""
 
 msgid "◈ Merchant wallet ↗"
 msgstr ""
+
+msgid "Money, with a different rhythm."
+msgstr "Seu dinheiro, em outro ritmo."
+
+msgid "Main navigation"
+msgstr "Navegação principal"
+
+msgid "The experience"
+msgstr "A experiência"
+
+msgid "A NEW PERSPECTIVE ON MONEY"
+msgstr "UM NOVO OLHAR PARA O SEU DINHEIRO"
+
+msgid "Less friction."
+msgstr "Menos atrito."
+
+msgid "More flow."
+msgstr "Mais flow."
+
+msgid "A considered space for your business. Bring your organizations, payment requests and wallet experience into one beautifully clear view."
+msgstr "Um espaço pensado para o seu negócio. Organizações, cobranças e carteira em uma experiência clara em cada detalhe."
+
+msgid "Enter your flow"
+msgstr "Entre no seu flow"
+
+msgid "Take a closer look"
+msgstr "Explore os detalhes"
+
+msgid "Your workspace. Your perspective. Your control."
+msgstr "Seu espaço. Sua perspectiva. Seu controle."
+
+msgid "THE WALLET, REIMAGINED"
+msgstr "A CARTEIRA, REIMAGINADA"
+
+msgid "Open or close the decorative wallet"
+msgstr "Abrir ou fechar a carteira ilustrativa"
+
+msgid "A DIFFERENT KIND OF EVERYDAY"
+msgstr "UM NOVO JEITO DE VIVER O DIA A DIA"
+
+msgid "Tap the wallet. Discover what unfolds."
+msgstr "Toque na carteira. Veja o que se revela."
+
+msgid "Visual concept · Not a balance or supported-currency claim"
+msgstr "Conceito visual · Não representa saldo nem suporte a moedas"
+
+msgid "Currency design inspiration"
+msgstr "Moedas como inspiração visual"
+
+msgid "PURPOSE IN EVERY DETAIL"
+msgstr "INTENÇÃO EM CADA DETALHE"
+
+msgid "Everything in place."
+msgstr "Tudo no lugar."
+
+msgid "Room to move."
+msgstr "Espaço para crescer."
+
+msgid "Clarity is a feeling. We bring it to the tools you use every day, from the first request to your next decision."
+msgstr "Clareza é uma sensação. Ela está nas ferramentas do seu dia a dia, da primeira cobrança à sua próxima decisão."
+
+msgid "A space for every ambition."
+msgstr "Um espaço para cada ambição."
+
+msgid "Separate organizations. Clear roles. Keep each business in its own context."
+msgstr "Organizações separadas. Papéis definidos. Cada negócio com seu próprio contexto."
+
+msgid "Make the next move simple."
+msgstr "Simplifique o próximo passo."
+
+msgid "Create payment requests and find your receiving details without losing your place."
+msgstr "Crie cobranças e encontre seus dados de recebimento sem perder o contexto."
+
+msgid "Confidence starts with clarity."
+msgstr "Confiança começa com clareza."
+
+msgid "Explicit statuses and thoughtful details. Requests and observations stay distinct from verified settlement."
+msgstr "Status claros e detalhes bem pensados. Cobranças e observações são diferenciadas de pagamentos confirmados."
+
+msgid "Find your flow."
+msgstr "Encontre seu flow."
+
+msgid "Open your workspace"
+msgstr "Abra seu espaço"
+
+msgid "Local sandbox available. Live integrations require separate configuration."
+msgstr "Simulação local disponível. Integrações reais exigem configuração própria."
+
+msgid "Independent by design. Intentional by nature."
+msgstr "Independente por essência. Pensado em cada detalhe."
+
+msgid "Independent project · Not affiliated with Pix"
+msgstr "Projeto independente · Sem vínculo com o Pix"
+
+msgid "YOUR BUSINESS, IN FLOW"
+msgstr "SEU NEGÓCIO, EM FLOW"
+
+msgid "A clear space."
+msgstr "Um espaço claro."
+
+msgid "A fresh perspective."
+msgstr "Uma nova perspectiva."
+
+msgid "Move from overview to action. Your organizations and requests, thoughtfully connected."
+msgstr "Da visão geral à ação. Suas organizações e cobranças conectadas com cuidado."
+
+msgid "Explore merchant wallet"
+msgstr "Explore a carteira do lojista"
+
+msgid "Create an organization"
+msgstr "Crie uma organização"
+
+msgid "Pause decorative animations"
+msgstr "Pausar animações decorativas"
+
+msgid "Pause motion"
+msgstr "Pausar movimento"

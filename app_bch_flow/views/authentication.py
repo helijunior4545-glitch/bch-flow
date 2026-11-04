@@ -29,6 +29,8 @@ def register(request):
 
 @require_http_methods(['GET','POST'])
 def login(request):
+    if current_identity(request) is not None:
+        return redirect('bch_flow:dashboard')
     form=LoginForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
         identity=authenticate_identity(form.cleaned_data['email'],form.cleaned_data['password'])
