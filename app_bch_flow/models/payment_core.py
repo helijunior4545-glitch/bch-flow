@@ -19,6 +19,10 @@ class FlowAccount(models.Model):
     organization = models.ForeignKey(
         "app_bch_flow.BCHOrganization", on_delete=models.PROTECT
     )
+    wallet = models.OneToOneField(
+        "app_bch_flow.FlowNodeConnection", on_delete=models.PROTECT,
+        null=True, blank=True, related_name="account",
+    )
     asset = models.CharField(max_length=3, choices=ASSETS)
     environment = models.CharField(
         max_length=20, choices=ENVIRONMENTS, default="sandbox"
@@ -33,6 +37,7 @@ class FlowAccount(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=["organization", "asset", "environment"],
+                condition=Q(wallet__isnull=True),
                 name="flow_account_tenant_asset_env",
             ),
             models.CheckConstraint(
@@ -279,3 +284,74 @@ class FlowInbox(models.Model):
                 name="flow_inbox_resource",
             )
         ]
+
+
+class FlowBTCChange(models.Model):
+    """BTC-only dedicated change output, never a customer invoice address.
+
+    The address is allocated by the organization's isolated watch-only wallet.
+    A change output becomes spendable only after its txid/vout and amount have
+    been independently verified against the Bitcoin node and the withdrawal.
+    """
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    withdrawal = models.OneToOneField(
+        FlowWithdrawal,
+        on_delete=models.PROTECT,
+        related_name="btc_change",
+    )
+    account = models.ForeignKey(
+        FlowAccount,
+        on_delete=models.PROTECT,
+        related_name="btc_changes",
+    )
+    asset = models.CharField(max_length=3, default="BTC", editable=False)
+    address = models.CharField(max_length=180, unique=True)
+    txid = models.CharField(max_length=64, null=True, blank=True)
+    vout = models.PositiveIntegerField(null=True, blank=True)
+    amount_units = models.BigIntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(asset="BTC"),
+                name="flow_btc_change_asset_only",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    Q(txid__isnull=True, vout__isnull=True, amount_units__isnull=True)
+                    | Q(
+                        txid__isnull=False,
+                        vout__isnull=False,
+                        amount_units__gt=0,
+                        amount_units__lte=MAX_UNITS,
+                    )
+                ),
+                name="flow_btc_change_output_complete",
+            ),
+            models.UniqueConstraint(
+                fields=["account", "txid", "vout"],
+                condition=Q(txid__isnull=False, vout__isnull=False),
+                name="flow_btc_change_unique_output",
+            ),
+        ]
+
+    def clean(self):
+        from django.core.exceptions import ValidationError
+
+        super().clean()
+        if self.account_id and self.account.asset != "BTC":
+            raise ValidationError("BTC change must belong to a Bitcoin account.")
+        if self.withdrawal_id and self.account_id:
+            if self.withdrawal.account_id != self.account_id:
+                raise ValidationError("BTC change must match the withdrawal account.")
+        if self.account_id and self.address:
+            if FlowRequest.objects.filter(address=self.address).exists():
+                raise ValidationError("BTC change address cannot be an invoice address.")
+
+    def save(self, *args, **kwargs):
+        # Application-level checks complement DB constraints. Callers must
+        # still verify address ownership through Bitcoin Core before saving.
+        self.full_clean()
+        return super().save(*args, **kwargs)

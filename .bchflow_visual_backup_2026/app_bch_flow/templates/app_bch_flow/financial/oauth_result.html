@@ -1,0 +1,3 @@
+{% extends 'app_bch_flow/base.html' %}{% load i18n %}
+{% block title %}{% trans 'Connection not completed' %}{% endblock %}
+{% block content %}<main id="main" class="bch-auth"><section class="bch-card"><h1>{% trans 'Connection not completed' %}</h1><p role="alert">{{ error }}</p><a class="button" href="{% url 'bch_flow:dashboard' %}">{% trans 'Back to dashboard' %}</a></section></main>{% endblock %}

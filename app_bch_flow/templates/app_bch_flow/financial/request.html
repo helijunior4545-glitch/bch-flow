@@ -1,15 +1,12 @@
-{% extends "app_bch_flow/base.html" %}
+{% extends "app_bch_flow/layouts/financial.html" %}
 {% load static i18n %}
 {% block title %}{% trans "Payment request ·" %} {{ charge.account.asset }}{% endblock %}
-{% block content %}
-  <link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}">
-  <main id="main" class="pay-app pay-detail" data-payment-app>
-    <header class="pay-top">
-      <a class="pay-brand" href="{% url 'bch_flow:financial_home' member.organization_id %}?asset={{ charge.account.asset }}&amp;environment={{ charge.account.environment }}">
-        <i data-lucide="arrow-left">
-        </i>{% trans "Back to wallet" %}</a>
-      <span>{{ member.organization.name }}</span>
-    </header>
+{% block financial_content %}
+
+{% load static %}
+
+  <div class="financial-page" data-payment-app data-asset="{{ charge.account.asset }}">
+
     <div class="pay-heading">
       <div>
         <p class="pay-eyebrow">{% trans "RECEIVE ·" %} {{ charge.account.asset }}</p>
@@ -92,8 +89,8 @@
         {% endif %}
       </section>
     {% endif %}
-    <section class="pay-section">
-      <h2>{% trans "Payment trail" %}</h2>
+    <section class="pay-section" data-reveal>
+      <div class="pay-section-heading"><h2>{% trans "Payment trail" %}</h2><a class="pay-secondary" href="{% url 'bch_flow:financial_receipt' member.organization_id charge.pk %}"><i data-lucide="receipt-text"></i>{% trans 'View receipt' %}</a></div>
       {% for receipt in charge.receipts.all %}
         <div class="pay-receipt">
           <code>{{ receipt.source_key }}</code>
@@ -109,7 +106,7 @@
     </section>
     <div class="pay-toast" hidden role="status" aria-live="polite">
     </div>
-  </main>
+  </div>
   <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
   </script>
 {% endblock %}

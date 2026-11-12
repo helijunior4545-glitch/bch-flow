@@ -1,0 +1,44 @@
+{% extends 'app_bch_flow/base.html' %}{% load static i18n %}
+{% block title %}BCH Flow · {% trans 'Your financial space' %}{% endblock %}
+{% block content %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/pages/landing.css' %}">
+<main id="main" class="flow-landing">
+<nav class="landing-nav" aria-label="{% trans 'Main navigation' %}"><a class="landing-brand" href="{% url 'bch_flow:home' %}"><span><i data-lucide="boxes"></i></span>BCH FLOW</a><div class="landing-links"><a href="#experience">{% trans 'The experience' %}</a><a href="#how">{% trans 'How it works' %}</a></div><a class="pay-secondary" href="{% if identity %}{% url 'bch_flow:dashboard' %}{% else %}{% url 'bch_flow:login' %}{% endif %}">{% if identity %}{% trans 'Dashboard' %}{% else %}{% trans 'Sign in' %}{% endif %}<i data-lucide="arrow-up-right"></i></a></nav>
+<section class="landing-hero" data-reveal><div class="landing-copy"><p class="eyebrow">{% trans 'YOUR FINANCIAL SPACE' %}</p><h1>{% trans 'One wallet.' %}<br><em>{% trans 'New possibilities.' %}</em></h1><p>{% trans 'Receive, send and track Bitcoin, Bitcoin Cash and Pix. A clear workspace, from the first payment request to the verified receipt.' %}</p><div class="landing-actions"><a class="pay-primary" href="{% if identity %}{% url 'bch_flow:dashboard' %}{% else %}{% url 'bch_flow:register' %}{% endif %}">{% trans 'Open your workspace' %}<i data-lucide="arrow-up-right"></i></a><a class="landing-text-link" href="#how">{% trans 'See how it works' %}<i data-lucide="arrow-down"></i></a></div><small class="landing-custody"><i data-lucide="shield-check"></i>{% trans 'Your keys stay in your wallet.' %}</small></div>
+<!-- BCH_FLOW_EXPERIENCE_V2 -->
+<div class="fx-stage" data-fx-stage>
+  <div class="fx-glow" aria-hidden="true"></div>
+  <div class="fx-player-shell">
+    <button type="button" class="fx-player-trigger" data-fx-open aria-haspopup="dialog" aria-label="{% trans 'Watch the BCH Flow demonstration' %}">
+      <span class="fx-grid" aria-hidden="true"></span>
+      <span class="fx-preview-content"><span class="fx-preview-kicker">BCH FLOW / EXPERIENCE</span><span class="fx-preview-title">{% trans 'Your money. Your flow.' %}</span><span class="fx-preview-bottom"><span class="fx-play-icon" aria-hidden="true">▶</span>{% trans 'Watch the experience' %}</span></span>
+    </button>
+    <div class="fx-player-footer"><span>BCH FLOW <span aria-hidden="true">✦</span></span><span>BTC · BCH · PIX</span></div>
+  </div>
+  <svg class="fx-mascot" viewBox="0 0 170 210" role="img" aria-label="{% trans 'BCH Flow animated robot mascot' %}" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="fx-head" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffab68"/><stop offset="1" stop-color="#f36a36"/></linearGradient><linearGradient id="fx-body" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a884ff"/><stop offset="1" stop-color="#6743c8"/></linearGradient></defs>
+    <path class="fx-cape" d="M68 95 Q12 103 17 178 Q47 167 75 185 L110 126Z" fill="#7644c5" stroke="#b79aff" stroke-width="3"/>
+    <path d="M60 141 L54 181 Q61 195 73 186 L83 154ZM97 141 L105 182 Q118 193 125 181 L115 140Z" fill="#252d48" stroke="#9f7fff" stroke-width="3"/>
+    <rect x="55" y="93" width="67" height="68" rx="22" fill="url(#fx-body)" stroke="#e6d5ff" stroke-width="3"/>
+    <rect x="72" y="113" width="33" height="22" rx="8" fill="#1d2039"/><path d="M80 123 H98" stroke="#ffab68" stroke-width="4" stroke-linecap="round"/>
+    <path d="M60 110 Q43 108 40 135" fill="none" stroke="#ff995e" stroke-width="14" stroke-linecap="round"/>
+    <g class="fx-arm"><path d="M116 107 Q139 88 142 68" fill="none" stroke="#ff995e" stroke-width="14" stroke-linecap="round"/><circle cx="143" cy="62" r="12" fill="#ffb17b"/><path d="M137 56 L135 42 M144 52 L146 37 M151 56 L158 45" stroke="#ffb17b" stroke-width="6" stroke-linecap="round"/></g>
+    <rect x="35" y="29" width="103" height="78" rx="29" fill="url(#fx-head)" stroke="#ffcfaa" stroke-width="4"/>
+    <rect x="48" y="43" width="78" height="47" rx="19" fill="#1b2135"/>
+    <g class="fx-eyes"><rect x="63" y="61" width="15" height="11" rx="5" fill="#fff6e9"/><rect x="96" y="61" width="15" height="11" rx="5" fill="#fff6e9"/></g>
+    <path d="M80 80 Q88 85 97 80" fill="none" stroke="#ff9c66" stroke-width="3" stroke-linecap="round"/><path d="M85 29 L85 16" stroke="#b795ff" stroke-width="5" stroke-linecap="round"/><circle cx="85" cy="13" r="7" fill="#b795ff"/>
+  </svg>
+</div></section>
+<section id="experience" class="landing-experience"><div class="landing-section-head"><p class="eyebrow">BTC · BCH · PIX</p><h2>{% trans 'Less searching.' %}<br><em>{% trans 'More clarity.' %}</em></h2><p>{% trans 'One consistent experience for your organizations, payment requests and transfers.' %}</p></div><div class="landing-feature-grid"><article data-reveal><i data-lucide="qr-code"></i><span>01 / {% trans 'RECEIVE' %}</span><h3>{% trans 'Make receiving simple.' %}</h3><p>{% trans 'Create a request with an exact amount, unique address and shareable QR code. Track payment evidence and confirmations.' %}</p></article><article data-reveal><i data-lucide="send"></i><span>02 / {% trans 'SEND' %}</span><h3>{% trans 'Every detail, reviewed.' %}</h3><p>{% trans 'Reserve funds, review destination and fee, sign in your external wallet and track the transaction on the node.' %}</p></article><article data-reveal><i data-lucide="layers-3"></i><span>03 / {% trans 'ORGANIZE' %}</span><h3>{% trans 'A space for each business.' %}</h3><p>{% trans 'Keep accounts and access separate by organization, currency and environment. Simulations remain clearly identified.' %}</p></article></div></section>
+<section id="how" class="landing-how" data-reveal><div><p class="eyebrow">{% trans 'CONNECTED, WITH CONTROL' %}</p><h2>{% trans 'Your wallet.' %}<br><em>{% trans 'Your next move.' %}</em></h2></div><ol><li><strong>{% trans 'Create your organization' %}</strong><span>{% trans 'Choose who can create and authorize operations.' %}</span></li><li><strong>{% trans 'Connect your provider' %}</strong><span>{% trans 'NOWNodes for BTC/BCH, or a configured Core node. Mercado Pago is exclusively for Pix receipts.' %}</span></li><li><strong>{% trans 'Verify, then use' %}</strong><span>{% trans 'Compare derived addresses with your wallet and validate the full flow before accepting production funds.' %}</span></li></ol></section>
+<footer class="landing-footer"><a class="landing-brand" href="{% url 'bch_flow:home' %}"><span><i data-lucide="boxes"></i></span>BCH FLOW</a><p>{% trans 'Private keys are never requested. Pix payouts require a separate provider product.' %}</p><a href="{% url 'bch_flow:register' %}">{% trans 'Get started' %}<i data-lucide="arrow-up-right"></i></a></footer>
+</main>
+<div class="fx-video-overlay" data-fx-overlay hidden>
+  <div class="fx-video-dialog" role="dialog" aria-modal="true" aria-label="{% trans 'BCH Flow demonstration' %}" tabindex="-1" data-fx-dialog>
+    <div class="fx-video-top"><span>BCH FLOW / EXPERIENCE</span><button class="fx-close" type="button" data-fx-close aria-label="{% trans 'Close video' %}">×</button></div>
+    <div class="fx-video-frame" data-fx-frame>
+      <div class="fx-video-message" data-fx-empty><strong>{% trans 'BCH Flow demonstration' %}</strong>{% trans 'The player is ready. Add demo.mp4 to the landing media folder to enable playback.' %}</div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'app_bch_flow/js/landing-experience.js' %}" defer></script>
+{% endblock %}

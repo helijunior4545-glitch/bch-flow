@@ -1,0 +1,42 @@
+{% extends 'app_bch_flow/base.html' %}
+{% load static %}
+{% block title %}Receive · BCH Flow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/receive-v1.css' %}">
+<main id="main" class="receive-page" data-receive-page>
+  <header class="receive-topbar">
+    <a class="receive-logo" href="{% url 'bch_flow:dashboard' %}" aria-label="BCH Flow dashboard"><span class="receive-logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18 18 5M8 5h10v10"/></svg></span><span>BCH<span class="receive-logo-light">Flow</span></span></a>
+    <a class="receive-back" href="{% url 'bch_flow:v3_workspace' member.organization_id %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 7-5 5 5 5"/></svg> Workspace</a>
+  </header>
+  <div class="receive-shell">
+    <div class="receive-heading"><div class="receive-eyebrow"><span class="receive-live-dot"></span> BCH FLOW / RECEIVE / WATCH-ONLY</div><h1>Receive Bitcoin Cash<span>.</span></h1><p>A beautifully simple way to review a payment request. No transfer or settlement is initiated here.</p></div>
+    <div class="receive-layout">
+      <section class="receive-panel receive-primary" aria-labelledby="receive-amount-heading">
+        <div class="receive-panel-top"><div class="receive-panel-label" id="receive-amount-heading">REQUEST AMOUNT</div><span class="receive-network">{{ invoice.network|upper }}</span></div>
+        <div class="receive-amount" aria-label="Amount {{ amount_bch }} Bitcoin Cash"><span class="receive-amount-number">{{ amount_bch }}</span><span class="receive-amount-unit">BCH</span></div>
+        <div class="receive-sats">{{ invoice.amount_satoshis }} satoshis</div>
+        <div class="receive-separator"></div>
+        <div class="receive-state" role="status"><div class="receive-state-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><div><strong>{% if is_expired %}Request expired{% else %}Payment not verified{% endif %}</strong><p>Recorded status: {{ invoice.status }} · Not proof of payment</p></div><span class="receive-state-tag">{% if is_expired %}EXPIRED{% else %}UNVERIFIED{% endif %}</span></div>
+        <div class="receive-metadata"><div><span>Network</span><strong>{{ invoice.network|upper }}</strong></div><div><span>Valid until</span><strong>{{ invoice.expires_at|date:'M d, Y · H:i T' }}</strong></div>{% if invoice.description %}<div><span>Reference</span><strong>{{ invoice.description }}</strong></div>{% endif %}<div><span>Request ID</span><strong class="receive-id">{{ invoice.id }}</strong></div></div>
+        <div class="receive-safety"><div class="receive-safety-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 4v5c0 5-3.3 8-8 9-4.7-1-8-4-8-9V7z"/><path d="M12 8v5M12 16h.01"/></svg></div><div><strong>Watch-only · Settlement blocked</strong><p>Wallet ownership has not been cryptographically verified. Do not treat this request as a receipt or use it to authorize fulfillment.</p></div></div>
+      </section>
+      <aside class="receive-panel receive-secondary" aria-label="Receiving details">
+        <div class="receive-side-heading"><div><span class="receive-panel-label">PAYMENT DETAILS</span><h2>Receiving address</h2></div><span class="receive-side-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18"/></svg></span></div>
+        <p class="receive-muted">Confirm that this is an address you control. This page does not verify ownership.</p>
+        <div class="receive-address-wrap"><div class="receive-address-label">CASHADDR <span>WATCH-ONLY</span></div><code id="receive-address">{{ invoice.receiving_cashaddr }}</code><button class="receive-copy" type="button" data-receive-copy="receive-address" aria-label="Copy CashAddr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg><span>Copy address</span></button></div>
+        <div class="receive-preview"><div class="receive-preview-head"><span>QR EXPERIENCE PREVIEW</span><span class="receive-preview-badge">DEMO ONLY</span></div><div class="receive-qr-stage" aria-label="Decorative preview, not a scannable payment QR code"><div class="receive-qr-glow"></div><div class="receive-qr-grid" id="receive-demo-pattern" aria-hidden="true"></div><div class="receive-qr-overlay"><span>PREVIEW</span></div></div><div class="receive-qr-message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><div><strong>Not a payment QR code</strong><p>Decorative preview only. Scanning is intentionally disabled until address-control verification and payment release gates are complete.</p></div></div></div>
+        <div class="receive-uri"><div class="receive-uri-head"><span>REQUEST URI · INFORMATION ONLY</span></div><code id="receive-uri">{{ payment_uri }}</code><button type="button" class="receive-uri-copy" data-receive-copy="receive-uri" aria-label="Copy informational URI"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg> Copy informational URI</button></div>
+      </aside>
+    </div>
+    <footer class="receive-footer"><span>Designed for clarity. Built with financial safeguards.</span><a href="{% url 'bch_flow:v3_workspace' member.organization_id %}">Back to requests <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a></footer>
+  </div>
+  <div class="receive-toast" role="status" aria-live="polite" id="receive-toast"></div>
+</main>
+<script defer src="{% static 'app_bch_flow/js/receive-v1.js' %}"></script>
+
+<!-- BCH Flow Pay V1: owner/operator-only share link -->
+<div class="receive-share-v1" style="margin:22px 0"><a style="display:inline-flex;align-items:center;gap:8px;padding:13px 19px;border-radius:10px;background:#176f4c;color:white;text-decoration:none;font-weight:700" href="{% url 'bch_flow:pay_v1_share' member.organization_id invoice.id %}">Preview payer checkout ↗</a><p style="font-size:12px;opacity:.72">Signed preview link · 30-minute validity · no transfer initiated</p></div>
+
+<!-- BCH FLOW MERCHANT SIMULATION V3 -->
+<div style="margin:18px 0;padding:16px;border:1px solid #d8e8df;border-radius:12px"><a href="{% url 'bch_flow:merchant_payment_simulation_v3' member.organization_id invoice.id %}" style="font-weight:750;color:#166d4b">Preview merchant payment notification →</a><p style="font-size:12px;opacity:.7">Simulation only · no BCH sent · invoice remains unpaid</p></div>
+{% endblock %}

@@ -26,6 +26,10 @@ class RequestForm(forms.Form):
     def __init__(self, *args, asset="BCH", **kwargs):
         self.asset = asset
         super().__init__(*args, **kwargs)
+        self.fields['amount'].label = _("Amount") + ' (' + asset + ')'
+        self.fields['amount'].widget.attrs['placeholder'] = '0.00' if asset == 'BRL' else '0.00000000'
+        if 'payer_email' in self.fields and asset != 'BRL':
+            self.fields['payer_email'].widget = forms.HiddenInput()
 
     def clean_amount(self):
         try:

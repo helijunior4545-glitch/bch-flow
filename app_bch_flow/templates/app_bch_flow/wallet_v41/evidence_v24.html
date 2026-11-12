@@ -1,24 +1,27 @@
-{% extends 'app_bch_flow/base.html' %}
+{% extends 'app_bch_flow/layouts/financial.html' %}{% load static i18n %}
 {% load static %}
 {% block title %}Payment evidence · BCH Flow{% endblock %}
-{% block content %}
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-v41.css' %}">
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-v24.css' %}">
-<main id="main" class="mw"><header class="mw-top"><a class="mw-brand" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">BCH<span>Flow</span></a><a class="mw-back" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}#mw23-history">← Wallet</a></header>
-<div class="mw-container"><span class="mw-eyebrow">BLOCKCHAIN / READ-ONLY EVIDENCE</span><h1>Payment evidence.<br><em>Not settlement.</em></h1>
-<section class="mw-panel"><div class="mw-panel-head"><div><span class="mw-eyebrow">REQUEST</span><h2>{{ invoice.id }}</h2></div><span class="mw-tag">{{ invoice.status|upper }}</span></div>
+{% block financial_content %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/pages/diagnostics.css' %}">
+
+{% load static %}
+
+
+
+<div class="diagnostic-page" data-reveal>
+<div class="mw-container"><span class="pay-eyebrow">BLOCKCHAIN / READ-ONLY EVIDENCE</span><h1>Payment evidence.<br><em>Not settlement.</em></h1>
+<section class="pay-section"><div class="mw-panel-head"><div><span class="pay-eyebrow">REQUEST</span><h2>{{ invoice.id }}</h2></div><span class="pay-status">{{ invoice.status|upper }}</span></div>
 <dl class="ev24-grid"><div><dt>Requested</dt><dd>{{ invoice.amount_satoshis }} sat</dd></div><div><dt>Network</dt><dd>{{ invoice.network|upper }}</dd></div><div><dt>Address attribution</dt><dd>{% if shared %}SHARED / AMBIGUOUS{% else %}No duplicate found in stored invoices{% endif %}</dd></div><div><dt>Payment verification</dt><dd>NOT VERIFIED</dd></div></dl>
 <p class="ev24-address">{{ invoice.receiving_cashaddr }}</p>
-{% if shared %}<div class="mw-notice" role="status">This receiving address is also registered on another request. Outputs cannot be uniquely attributed to this invoice.</div>{% endif %}
+{% if shared %}<div class="pay-pending" role="status">This receiving address is also registered on another request. Outputs cannot be uniquely attributed to this invoice.</div>{% endif %}
 <p>Manual, read-only observation across explicitly configured BCH mainnet Blockbook providers. UTXOs are not complete payment history, verified ownership, or settlement.</p>
 
-<section class="mw-panel" aria-label="Blockchain provider configuration"><div class="mw-panel-head"><div><span class="mw-eyebrow">PROVIDER READINESS</span><h2>{{ provider_preflight.state }}</h2></div></div>
+<section class="pay-section" aria-label="Blockchain provider configuration"><div class="mw-panel-head"><div><span class="pay-eyebrow">PROVIDER READINESS</span><h2>{{ provider_preflight.state }}</h2></div></div>
 <p>Configuration checks are local only. CONFIGURED_NOT_TESTED does not mean reachable, synchronized or independently validated.</p>
 <dl class="ev24-grid">{% for provider in provider_preflight.providers %}<div><dt>{{ provider.name }}</dt><dd>{{ provider.state }}</dd></div>{% endfor %}</dl>
 {% if provider_preflight.state == 'INCOMPLETE_CONFIGURATION' %}<p role="status">Two distinct HTTPS Blockbook origins are required. No external request was made.</p>{% endif %}
 </section>
-{% if invoice.network == 'mainnet' %}<a class="mw-cta" href="?inspect=1">Inspect configured providers ↗</a>{% else %}<p>External inspection is not available for this network.</p>{% endif %}
-{% if error %}<div class="mw-notice" role="alert">{{ error }}</div>{% endif %}
+{% if invoice.network == 'mainnet' %}<a class="pay-primary" href="?inspect=1">Inspect configured providers ↗</a>{% else %}<p>External inspection is not available for this network.</p>{% endif %}
+{% if error %}<div class="pay-pending" role="alert">{{ error }}</div>{% endif %}
 {% if engine_result %}
 <section class="ev27-result" aria-label="Blockchain observation result">
 <h3>Blockchain observation · {{ engine_result.state }}</h3>
@@ -41,5 +44,5 @@
 </section>
 {% endif %}
 <p class="mw-caption">No invoice updates, evidence journal writes, background polling, signing, broadcasting, or settlement. A verified reconciliation pipeline requires full transaction-output history, chain validation, address allocation policy and independent verification.</p>
-</section></div></main>
+</section></div></div>
 {% endblock %}

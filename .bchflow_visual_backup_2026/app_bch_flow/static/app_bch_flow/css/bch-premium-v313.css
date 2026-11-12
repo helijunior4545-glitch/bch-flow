@@ -1,0 +1,31 @@
+/* BCH FLOW V313 — unified premium system | border radius: 7px */
+:root{--bch-bg:#0e0e10;--bch-surface:#19191b;--bch-surface-raised:#242427;--bch-ink:#f5f2eb;--bch-muted:#b2aca1;--bch-gold:#d9b66d;--bch-gold-deep:#8e6b34;--bch-stroke:#ffffff24;--bch-radius:7px;color-scheme:dark}
+html{scroll-behavior:smooth}body{background:radial-gradient(ellipse 75% 38% at 50% -12%,#4a40312b,transparent 80%),linear-gradient(160deg,#151517,#0b0b0c 80%)!important;color:var(--bch-ink);-webkit-font-smoothing:antialiased}
+body,button,input,textarea,select{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body :is(.card,.panel,.tile,.widget,.modal,.modal-content,.dialog,.dropdown-menu,.dropdown,.toast,.alert,.badge,.pill,.btn,.button,button,input,textarea,select,.form-control,.table-responsive,.navbar,.sidebar,.wallet-card,.balance-card,.payment-card,.invoice-card,.stat-card,.summary-card,.sheet,.drawer,.popover,.accordion,.tab,.tabs,.qr-card,.transaction-card){border-radius:7px!important}
+body :is(.card,.panel,.tile,.widget,.wallet-card,.balance-card,.payment-card,.invoice-card,.stat-card,.summary-card){background-color:var(--bch-surface);border-color:var(--bch-stroke);box-shadow:0 10px 32px #0003}
+body :is(.navbar,.sidebar,.topbar,.header,.app-header,.dashboard-header){border-color:var(--bch-stroke)}
+body :is(h1,h2,h3,h4){letter-spacing:-.025em;text-wrap:balance}body :is(.text-muted,.muted,.subtitle,.helper-text){color:var(--bch-muted)}
+body :is(a,button,.btn,.button,[role=button]){transition:color .18s ease,border-color .18s ease,background-color .18s ease,box-shadow .18s ease,transform .18s ease}
+body :is(a,button,.btn,.button,[role=button]):focus-visible{outline:2px solid var(--bch-gold)!important;outline-offset:3px}
+body :is(button,.btn,.button,[role=button]):not(:disabled):hover{transform:translateY(-1px)}
+body :is(.btn-primary,.button-primary,.primary-button,button.primary,[type=submit].btn-primary){background:linear-gradient(145deg,#e8c77f,#b88d48)!important;border:1px solid #e7c57b!important;color:#19130c!important;font-weight:650;box-shadow:0 3px 14px #d1a75925}
+body :is(.btn-primary,.button-primary,.primary-button,button.primary,[type=submit].btn-primary):hover{box-shadow:0 7px 22px #d1a75945}
+body :is(input,textarea,select,.form-control){background-color:#202023;color:#f4f1e9;border-color:#ffffff36;min-height:40px}
+body :is(input,textarea,select,.form-control):focus{border-color:#d9b66d;box-shadow:0 0 0 3px #d9b66d22;outline:none}
+body :is(table,.table){border-color:var(--bch-stroke)}body :is(th,td){border-color:#ffffff16}
+body :is(.modal-content,.dialog,.sheet,.drawer){background:linear-gradient(155deg,#29292b,#161618);border:1px solid #d9b66d4a;box-shadow:0 28px 85px #0009}
+body :is(.wallet-card,.balance-card,[class*=wallet-balance],[class*=balance-panel]){background:linear-gradient(140deg,#2a292a,#141416 72%)!important;border:1px solid #d1a65c75!important;box-shadow:inset 0 1px #ffffff25,0 18px 40px #0005!important}
+body :is(.wallet-card,.balance-card,[class*=wallet-balance],[class*=balance-panel]) :is(.amount,.balance,.value){font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+body :is(.wallet-card,.balance-card,[class*=wallet-balance],[class*=balance-panel]) :is(.label,.caption,small){color:#c2b8a5}
+body :is(.wallet-card,.balance-card,[class*=wallet-balance],[class*=balance-panel]) :is(.coin,.icon,.symbol){color:var(--bch-gold)}
+body :is(.sidebar,.dashboard-sidebar){background-color:#141416;border-right:1px solid #ffffff22}
+body :is(.nav-link.active,.sidebar a.active,[aria-current=page]){color:var(--bch-gold)!important;background-color:#d9b66d17;border-radius:7px}
+body :is(.hero,.landing-hero,[class*=hero-section]){position:relative;isolation:isolate}
+body :is(.hero,.landing-hero,[class*=hero-section])::before{content:"";position:absolute;z-index:-1;pointer-events:none;inset:0;background:radial-gradient(ellipse 55% 55% at 80% 15%,#d9b66d12,transparent 85%)}
+body :is(.section,.container,.dashboard-content,.main-content){min-width:0}
+body img,body video{max-width:100%}body svg{max-width:100%}
+body :is(.transaction-row,.activity-row,.list-group-item){border-color:#ffffff19}
+body :is(.transaction-row,.activity-row,.list-group-item):hover{background-color:#ffffff08}
+@media(max-width:768px){body :is(.card,.panel,.wallet-card,.balance-card){max-width:100%}body :is(h1){font-size:clamp(1.8rem,7vw,2.8rem)}body :is(.modal-content,.dialog){max-width:calc(100vw - 24px)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}body :is(a,button,.btn,.button,[role=button]){transition:none!important;animation:none!important;transform:none!important}}

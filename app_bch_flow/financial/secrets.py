@@ -3,6 +3,7 @@
 from django.views.decorators.debug import sensitive_variables
 
 
+import os
 from cryptography.fernet import Fernet, MultiFernet, InvalidToken
 from django.conf import settings
 from django.utils.translation import gettext as _
@@ -12,7 +13,9 @@ from .amounts import ProviderUnavailable
 @sensitive_variables()
 def cipher():
     keys = getattr(settings, "FLOW_CREDENTIAL_ENCRYPTION_KEYS", [])
-    filename = getattr(settings, "FLOW_CREDENTIAL_KEY_FILE", "")
+    filename = getattr(settings, "FLOW_CREDENTIAL_KEY_FILE", "") or os.environ.get(
+        "FLOW_CREDENTIAL_KEY_FILE", ""
+    )
     if not keys and filename:
         try:
             with open(filename, encoding="ascii") as source:
@@ -24,6 +27,10 @@ def cipher():
             raise ProviderUnavailable(
                 _("Credential encryption is not configured. Contact the administrator.")
             ) from None
+    if not keys and not filename:
+        key = os.environ.get("FLOW_CREDENTIAL_ENCRYPTION_KEY", "").strip()
+        if key:
+            keys = [key]
     if not keys:
         raise ProviderUnavailable(
             _("Credential encryption is not configured. Contact the administrator.")

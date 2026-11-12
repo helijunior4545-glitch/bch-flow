@@ -235,7 +235,7 @@ class PaymentCoreTests(PaymentFixture):
                 destination="sandbox:attacker"
             )
 
-    @override_settings(FLOW_PAYMENTS_ALLOW_LIVE=False)
+    @override_settings(FLOW_PAYMENTS_ALLOW_LIVE=True)
     def test_live_mode_cannot_be_enabled_by_request_parameter(self):
         with self.assertRaises(ProviderUnavailable):
             service.ensure_account(self.owner, self.org.pk, "BTC", "live")
@@ -435,7 +435,7 @@ class CoreNodeTests(PaymentFixture):
     )
     def test_node_verifies_outputs_before_credit_and_replay_is_safe(self):
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=self.response),
         ):
             service.reconcile_request(self.charge, self.txid)
@@ -459,7 +459,7 @@ class CoreNodeTests(PaymentFixture):
             return value
 
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=bad),
         ):
             with self.assertRaises(ProviderUnavailable):
@@ -480,7 +480,7 @@ class CoreNodeTests(PaymentFixture):
             return self.response(method, *args)
 
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=pending),
         ):
             service.reconcile_request(self.charge, self.txid)
@@ -498,7 +498,7 @@ class CoreNodeTests(PaymentFixture):
                 2,
                 2,
             )
-        with patch("app_bch_flow.financial.service.CoreNode") as adapter:
+        with patch("app_bch_flow.financial.service.blockchain_node") as adapter:
             node = adapter.return_value
             node.validate_address.return_value = "bcrt1qexternalfixture"
             withdrawal = service.create_withdrawal(
@@ -595,7 +595,7 @@ class CoreNodeTests(PaymentFixture):
             return self.response(method, *args)
 
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=response),
         ):
             with self.assertRaises(PaymentError):
@@ -648,6 +648,13 @@ class NodeSigningPackageTests(CoreNodeTests):
         def response(method, *params):
             if method == "validateaddress":
                 return {"isvalid": True, "address": params[0]}
+            if method == "getrawchangeaddress":
+                return "bcrt1qinternalchangefixture"
+            if method == "getaddressinfo":
+                return {
+                    "ismine": True,
+                    "ischange": True,
+                }
             if method == "listunspent":
                 return [
                     {
@@ -662,14 +669,14 @@ class NodeSigningPackageTests(CoreNodeTests):
                     params[1],
                     {
                         "bcrt1qexternalfixture": "0.00004000",
-                        self.charge.address: "0.00005500",
+                        "bcrt1qinternalchangefixture": "0.00005500",
                     },
                 )
                 return "00"
             return self.response(method, *params)
 
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=response),
         ):
             withdrawal = service.create_withdrawal(
@@ -713,14 +720,30 @@ class NodeSigningPackageTests(CoreNodeTests):
                 2,
                 2,
             )
-        withdrawal = FlowWithdrawal(
-            account=self.node_account,
-            destination="bcrt1qexternalfixture",
-            amount_units=4000,
-            fee_limit_units=500,
-        )
+        with self.settings(FLOW_BLOCKCHAIN_NODES=self.config()):
+            with patch.object(
+                CoreNode,
+                "rpc",
+                return_value={"isvalid": True, "address": "bcrt1qexternalfixture"},
+            ):
+                withdrawal = service.create_withdrawal(
+                    self.owner,
+                    self.node_account,
+                    "bcrt1qexternalfixture",
+                    4000,
+                    500,
+                    "signed-validation-01",
+                )
 
         def response(method, *params):
+            if method == "validateaddress":
+                return {"isvalid": True, "address": params[0]}
+            if method == "getrawchangeaddress":
+                return "bcrt1qinternalchangefixture"
+            if method == "getaddressinfo":
+                return {"ismine": True, "ischange": True}
+            if method == "createrawtransaction":
+                return "00"
             if method == "listunspent":
                 return [
                     {
@@ -740,8 +763,8 @@ class NodeSigningPackageTests(CoreNodeTests):
                             "scriptPubKey": {"address": withdrawal.destination},
                         },
                         {
-                            "value": Decimal("0.00005800"),
-                            "scriptPubKey": {"address": self.charge.address},
+                            "value": Decimal("0.00005500"),
+                            "scriptPubKey": {"address": "bcrt1qinternalchangefixture"},
                         },
                     ],
                 }
@@ -750,13 +773,17 @@ class NodeSigningPackageTests(CoreNodeTests):
             return self.response(method, *params)
 
         with (
-            self.settings(FLOW_PAYMENT_PROVIDERS=self.config()),
+            self.settings(FLOW_BLOCKCHAIN_NODES=self.config()),
             patch.object(CoreNode, "rpc", side_effect=response),
         ):
+            withdrawal = service.prepare_signing(self.owner, withdrawal)
+            withdrawal.refresh_from_db()
+            self.assertEqual(withdrawal.signing_payload["asset"], "BTC")
+            self.assertTrue(withdrawal.inputs.exists())
             txid, fee, inputs = CoreNode(self.node_account).inspect_signed(
                 withdrawal, "00"
             )
-            self.assertEqual((txid, fee), ("b" * 64, 200))
+            self.assertEqual((txid, fee), ("b" * 64, 500))
             self.assertEqual(inputs, [{"txid": self.txid, "vout": 0}])
 
 

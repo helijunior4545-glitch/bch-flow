@@ -1,11 +1,7 @@
 """Concrete adapters. Configuration is server-owned and scoped to one organization.
-
 No generic user-supplied URLs, signing keys, or credentials in database records.
 """
-
 from django.utils.translation import gettext as _
-
-
 import base64
 import hashlib
 import hmac
@@ -20,8 +16,6 @@ from urllib.error import URLError, HTTPError
 from django.conf import settings
 from .amounts import PaymentError, ProviderUnavailable, units, display
 from .assets import SANDBOX_ONLY
-
-
 def provider_config(account):
     if account.environment == "sandbox":
         return {}
@@ -47,11 +41,24 @@ def provider_config(account):
         )
     if account.asset == "BRL":
         from .integrations import connection_credentials
-
         managed = connection_credentials(account.organization_id, account.environment)
         if managed is not None:
             return {**managed, "_managed_connection": True}
-    configs = getattr(settings, "FLOW_PAYMENT_PROVIDERS", {})
+    # BTC/BCH use blockchain nodes, never payment-provider credentials.
+    # Configuration is server-owned, scoped by organization, asset and network.
+    if account.asset in ("BTC", "BCH"):
+        from app_bch_flow.models import FlowNodeConnection
+        from .secrets import unseal
+        connection = None
+        if account.wallet_id:
+            connection = FlowNodeConnection.objects.filter(pk=account.wallet_id, organization_id=account.organization_id, asset=account.asset, environment=account.environment).first()
+            if connection is None:
+                raise ProviderUnavailable(_("The selected wallet does not match this account."))
+        if connection:
+            return {"provider": connection.provider, "api_key": unseal(connection.api_ciphertext), "public_key": connection.public_key, "confirmations": connection.confirmations, "connection_id": connection.pk, "chain": "main"}
+        configs = getattr(settings, "FLOW_BLOCKCHAIN_NODES", {})
+    else:
+        configs = getattr(settings, "FLOW_PAYMENT_PROVIDERS", {})
     config = (
         configs.get(str(account.organization_id), {})
         .get(account.asset, {})
@@ -62,29 +69,51 @@ def provider_config(account):
             _("No provider is configured for this organization, asset and environment.")
         )
     return config
-
-
 class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         raise ProviderUnavailable(_("Unexpected provider redirect."))
+def _provider_failure(request, label, reason, status=None):
+    if not label:
+        return ProviderUnavailable(_("The provider did not confirm the operation. Check its status before retrying."))
+    # Only fixed diagnostic categories and the destination hostname are exposed.
+    # Never include response bodies, headers, URL paths or exception text.
+    host = urlsplit(request if isinstance(request, str) else request.full_url).hostname or "provider"
+    prefix = f"{label} · {host}"
+    if status is not None:
+        prefix += f" · HTTP {status}"
+    hints = {
+        "access": _("Check the API key, access to this endpoint in your provider plan, and the server outbound network policy."),
+        "rate": _("The provider request quota or rate limit was reached. Check your plan and wait before retrying."),
+        "endpoint": _("This endpoint was not found. Check the endpoint available in your provider dashboard."),
+        "service": _("The provider or network gateway is unavailable. Check the operation status before retrying."),
+        "timeout": _("No confirmation was received before the timeout. Check the operation status before retrying."),
+        "network": _("The server could not reach the provider. Check DNS, outbound HTTPS access and trusted certificates."),
+        "response": _("The provider returned an invalid or oversized JSON response. The operation is not confirmed."),
+    }
+    return ProviderUnavailable(prefix + ": " + str(hints[reason]))
 
 
-def _read_json(request):
+def _read_json(request, *, allow_list=False, provider_label=None):
     try:
         with build_opener(_NoRedirect()).open(request, timeout=15) as response:
             body = response.read(2_000_001)
             if len(body) > 2_000_000:
                 raise ValueError
             result = json.loads(body, parse_float=Decimal)
-            if not isinstance(result, dict):
+            if not isinstance(result, (dict, list) if allow_list else dict):
                 raise ValueError
             return result
-    except (URLError, HTTPError, TimeoutError, OSError, ValueError):
-        raise ProviderUnavailable(
-            _(
-                "The provider did not confirm the operation. Check its status before retrying."
-            )
-        ) from None
+    except HTTPError as error:
+        status = error.code
+        reason = "access" if status in (401, 403) else "rate" if status == 429 else "endpoint" if status == 404 else "service"
+        error.close()
+        raise _provider_failure(request, provider_label, reason, status) from None
+    except TimeoutError:
+        raise _provider_failure(request, provider_label, "timeout") from None
+    except (URLError, OSError):
+        raise _provider_failure(request, provider_label, "network") from None
+    except (ValueError, UnicodeError):
+        raise _provider_failure(request, provider_label, "response") from None
 
 
 def local_secret(config, name):
@@ -105,11 +134,8 @@ def local_secret(config, name):
                 _("The local authentication secret is unavailable.")
             ) from None
     return os.environ.get(config.get(name + "_env", ""), "")
-
-
 class MercadoPago:
     """Checkout API /v1/payments. Payouts are intentionally not assumed available."""
-
     def __init__(self, account):
         self.account = account
         self.config = dict(provider_config(account))
@@ -121,7 +147,6 @@ class MercadoPago:
             raise ProviderUnavailable(
                 _("Mercado Pago credentials and merchant ID are required.")
             )
-
         for organization, assets in getattr(
             settings, "FLOW_PAYMENT_PROVIDERS", {}
         ).items():
@@ -137,7 +162,6 @@ class MercadoPago:
                             "A Mercado Pago account cannot be shared between organizations."
                         )
                     )
-
     def call(self, path, payload=None, key=None):
         if not re.fullmatch(r"/v1/payments(?:/[0-9]+)?", path):
             raise PaymentError(_("Invalid provider resource."))
@@ -162,7 +186,6 @@ class MercadoPago:
         return _read_json(
             Request("https://api.mercadopago.com" + path, data=data, headers=headers)
         )
-
     def create(self, request, payer_email):
         if not payer_email:
             raise PaymentError(_("Payer email is required to create a Pix request."))
@@ -191,12 +214,10 @@ class MercadoPago:
                 _("No Pix code was returned. Retry with the same operation key.")
             )
         return str(result["id"]), qr
-
     def get(self, resource_id):
         if not re.fullmatch(r"[0-9]{1,80}", str(resource_id)):
             raise PaymentError(_("Invalid payment identifier."))
         return self.call("/v1/payments/" + str(resource_id))
-
     def validate(self, data, request, require_approved=True):
         expected_live = self.account.environment == "live"
         if (
@@ -221,11 +242,8 @@ class MercadoPago:
                     "The payment does not match the request, merchant or expected environment."
                 )
             )
-
-
 def validate_mp_signature(signature, request_id, resource_id, secret, now=None):
     """HMAC manifest documented by the official Mercado Pago webhook validator.
-
     Source: github.com/mercadopago/sdk-python, mercadopago/webhook/validator.py.
     Require all components for this payment-only endpoint; reject stale messages.
     """
@@ -253,11 +271,8 @@ def validate_mp_signature(signature, request_id, resource_id, secret, now=None):
             raise ValueError
     except (ValueError, KeyError, AttributeError):
         raise PaymentError(_("Invalid signature or expired notification.")) from None
-
-
 class CoreNode:
     """Bitcoin Core / BCH Node, isolated watch-only wallet, externally signed sends."""
-
     def __init__(self, account):
         self.account = account
         self.config = provider_config(account)
@@ -280,7 +295,7 @@ class CoreNode:
             raise ProviderUnavailable(
                 _("Configure an isolated watch-only wallet HTTPS RPC endpoint.")
             )
-        configs = getattr(settings, "FLOW_PAYMENT_PROVIDERS", {})
+        configs = getattr(settings, "FLOW_BLOCKCHAIN_NODES", {})
         for organization, assets in configs.items():
             if organization != str(account.organization_id):
                 for environments in assets.values():
@@ -305,7 +320,6 @@ class CoreNode:
         if type(required) is not int or not 1 <= required <= 100:
             raise ProviderUnavailable(_("Invalid confirmation policy."))
         self.confirmations = required
-
     def rpc(self, method, *params):
         data = json.dumps(
             {"jsonrpc": "1.0", "id": "flow", "method": method, "params": params}
@@ -323,7 +337,6 @@ class CoreNode:
         if result.get("error") is not None or "result" not in result:
             raise ProviderUnavailable(_("The node rejected the request or operation."))
         return result["result"]
-
     def ready(self):
         info = self.rpc("getblockchaininfo")
         wallet = self.rpc("getwalletinfo")
@@ -340,17 +353,52 @@ class CoreNode:
                     "The node is not synchronized, the network is incorrect or the wallet is not watch-only."
                 )
             )
-
     def validate_address(self, address):
         info = self.rpc("validateaddress", address)
         if info.get("isvalid") is not True:
             raise PaymentError(_("Invalid address for this account network."))
         return info.get("address", address)
-
     def new_address(self):
         self.ready()
         address = self.rpc("getnewaddress", "BCH Flow request")
         return self.validate_address(address)
+    def btc_change_address(self, invoice_addresses, destination):
+        """BTC only: allocate an internal address from the isolated watch-only wallet."""
+        if self.account.asset != "BTC":
+            raise PaymentError("BTC change derivation is BTC-only.")
+        address = self.validate_address(self.rpc("getrawchangeaddress"))
+        details = self.rpc("getaddressinfo", address)
+        if (
+            not isinstance(details, dict)
+            or details.get("ismine") is not True
+            or details.get("ischange") is not True
+            or address in invoice_addresses
+            or address == destination
+        ):
+            raise ProviderUnavailable("BTC change address is not verified as internal and wallet-owned.")
+        return address
+
+    def btc_known_change(self, txid, vout, address):
+        """Only a specific output of a submitted BTC withdrawal is spendable change."""
+        from app_bch_flow.models import FlowWithdrawal
+        previous = FlowWithdrawal.objects.filter(
+            account=self.account, txid=txid, status="submitted"
+        ).first()
+        if previous is None or not isinstance(previous.signing_payload, dict):
+            return False
+        package = previous.signing_payload
+        if package.get("asset") != "BTC" or package.get("change_address") != address:
+            return False
+        tx = self.rpc("gettransaction", txid, True)
+        decoded = self.rpc("decoderawtransaction", tx["hex"])
+        if decoded.get("txid") != txid:
+            return False
+        return any(
+            item.get("n") == vout
+            and self.output_address(item) == address
+            and units(item.get("value"), "BTC") == units(package["outputs"][address], "BTC")
+            for item in decoded.get("vout", [])
+        )
 
     def outputs(self, txid):
         if not re.fullmatch(r"[a-fA-F0-9]{64}", txid or ""):
@@ -365,7 +413,6 @@ class CoreNode:
         if decoded.get("txid") != txid.lower():
             raise PaymentError(_("The returned transaction does not match the TXID."))
         return confirmations, decoded["vout"]
-
     @staticmethod
     def output_address(output):
         script = output.get("scriptPubKey", {})
@@ -374,10 +421,8 @@ class CoreNode:
             addresses = script.get("addresses", [])
             address = addresses[0] if len(addresses) == 1 else None
         return address
-
     def inspect_signed(self, withdrawal, raw):
         from app_bch_flow.models import FlowReceipt, FlowRequest, FlowWithdrawal
-
         if not re.fullmatch(r"[a-fA-F0-9]{2,1000000}", raw or "") or len(raw) % 2:
             raise PaymentError(_("Invalid signed transaction."))
         self.ready()
@@ -397,6 +442,31 @@ class CoreNode:
         )
         if planned and planned != {(i.get("txid"), i.get("vout")) for i in inputs}:
             raise PaymentError(_("Inputs do not match the reserved signing package."))
+        if self.account.asset == "BTC":
+            package = withdrawal.signing_payload if withdrawal.pk else None
+            if not isinstance(package, dict) or package.get("asset") != "BTC":
+                raise PaymentError("BTC signing package is required.")
+            if not planned or planned != {(i.get("txid"), i.get("vout")) for i in inputs}:
+                raise PaymentError("BTC inputs must exactly match reserved inputs.")
+            expected_inputs = {(i["txid"], i["vout"]) for i in package.get("inputs", [])}
+            if planned != expected_inputs:
+                raise PaymentError("BTC signing package inputs were changed.")
+            expected_outputs = package.get("outputs")
+            if not isinstance(expected_outputs, dict) or not expected_outputs:
+                raise PaymentError("BTC signing package outputs are missing.")
+            actual_outputs = {}
+            for item in decoded.get("vout", []):
+                address = self.output_address(item)
+                if not address or address in actual_outputs:
+                    raise PaymentError("BTC transaction has ambiguous or duplicate outputs.")
+                actual_outputs[address] = units(item.get("value"), "BTC")
+            if actual_outputs != {a: units(v, "BTC") for a, v in expected_outputs.items()}:
+                raise PaymentError("BTC signed outputs differ from the approved package.")
+            change_address = package.get("change_address")
+            if change_address:
+                details = self.rpc("getaddressinfo", change_address)
+                if details.get("ismine") is not True or details.get("ischange") is not True:
+                    raise PaymentError("BTC change address ownership could not be verified.")
         unspent = {
             (u["txid"], u["vout"]): u
             for u in self.rpc("listunspent", self.confirmations)
@@ -419,7 +489,9 @@ class CoreNode:
                 account=self.account, txid=key[0], status="submitted"
             ).exists()
             owned_change = (
-                change and unspent.get(key, {}).get("address") in change_addresses
+                self.btc_known_change(key[0], key[1], unspent[key].get("address"))
+                if self.account.asset == "BTC" and key in unspent
+                else change and unspent.get(key, {}).get("address") in change_addresses
             )
             if key not in unspent or (receipt is None and not owned_change):
                 raise PaymentError(
@@ -446,7 +518,11 @@ class CoreNode:
             address = self.output_address(output)
             if address == withdrawal.destination:
                 sent += value
-            elif address not in change_addresses:
+            elif address not in (
+                {withdrawal.signing_payload.get("change_address")}
+                if self.account.asset == "BTC"
+                else change_addresses
+            ):
                 raise PaymentError(
                     _(
                         "The transaction contains an unauthorized destination or change address."
@@ -469,7 +545,6 @@ class CoreNode:
                 _("The node did not accept the signed transaction for broadcast.")
             )
         return txid, fee, inputs
-
     def prepare_unsigned(self, withdrawal):
         from app_bch_flow.models import (
             FlowReceipt,
@@ -477,8 +552,10 @@ class CoreNode:
             FlowWithdrawal,
             FlowSpend,
         )
-
         self.ready()
+        # BCH_SELFCUSTODY_STRICT_CHANGE_GUARD_V1
+        from app_bch_flow.wallet.selfcustody.change_policy import require_bch_signer_ready
+        require_bch_signer_ready(self.account)
         change_addresses = set(
             FlowRequest.objects.filter(account=self.account)
             .exclude(address__startswith="pending:")
@@ -514,10 +591,14 @@ class CoreNode:
                 status="credited",
             ).exists()
             own_change = (
-                coin.get("address") in change_addresses
-                and FlowWithdrawal.objects.filter(
-                    account=self.account, txid=txid, status="submitted"
-                ).exists()
+                self.btc_known_change(txid, vout, coin.get("address"))
+                if self.account.asset == "BTC"
+                else (
+                    coin.get("address") in change_addresses
+                    and FlowWithdrawal.objects.filter(
+                        account=self.account, txid=txid, status="submitted"
+                    ).exists()
+                )
             )
             if not (credited or own_change):
                 continue
@@ -546,8 +627,13 @@ class CoreNode:
         outputs = {
             withdrawal.destination: display(withdrawal.amount_units, self.account.asset)
         }
+        btc_change = None
         if change:
-            outputs[sorted(change_addresses)[0]] = display(change, self.account.asset)
+            if self.account.asset == "BTC":
+                btc_change = self.btc_change_address(change_addresses, withdrawal.destination)
+                outputs[btc_change] = display(change, "BTC")
+            else:
+                outputs[sorted(change_addresses)[0]] = display(change, self.account.asset)
         inputs = [{"txid": item["txid"], "vout": item["vout"]} for item in selected]
         raw = self.rpc("createrawtransaction", inputs, outputs)
         if (
@@ -558,7 +644,7 @@ class CoreNode:
             raise ProviderUnavailable(
                 _("The node did not return a valid unsigned transaction.")
             )
-        return {
+        package = {
             "asset": self.account.asset,
             "environment": self.account.environment,
             "chain": self.config["chain"],
@@ -569,3 +655,6 @@ class CoreNode:
             "unsigned_transaction": raw,
             "notice": "Sign only in your external wallet. Verify outputs, network and fee. Never provide private keys to BCH Flow.",
         }
+        if self.account.asset == "BTC":
+            package["change_address"] = btc_change
+        return package

@@ -1,0 +1,25 @@
+/* BCH Flow unified visual foundation — visual only, no financial state changes. */
+:root{--bf-bg:#f3f5fa;--bf-paper:#fff;--bf-sidebar:#121725;--bf-ink:#151b2b;--bf-muted:#667085;--bf-orange:#ff8900;--bf-orange-deep:#ff6410;--bf-line:#dce2ed;--bf-radius:17px;--bf-ease:cubic-bezier(.2,.8,.2,1)}
+body.bf-unified{background:var(--bf-bg);color:var(--bf-ink);font-family:Inter,Manrope,system-ui,-apple-system,sans-serif}
+body.bf-unified :is(h1,h2,h3){letter-spacing:-.035em}
+body.bf-unified :is(button,a,input,select,textarea):focus-visible{outline:3px solid #ff890077;outline-offset:3px}
+body.bf-unified :is(button,a){-webkit-tap-highlight-color:transparent}
+body.bf-unified :is(button,[type=submit],.btn,.button){transition:transform .22s var(--bf-ease),box-shadow .22s var(--bf-ease),border-color .22s var(--bf-ease),background-color .22s var(--bf-ease)}
+body.bf-unified :is(button,[type=submit],.btn,.button):not(:disabled):hover{transform:translateY(-2px)}
+body.bf-unified :is(button,[type=submit],.btn,.button):not(:disabled):active{transform:translateY(0) scale(.985)}
+body.bf-unified :is(input:not([type=checkbox]):not([type=radio]),select,textarea){transition:border-color .2s,box-shadow .2s}
+body.bf-unified :is(input:not([type=checkbox]):not([type=radio]),select,textarea):focus{border-color:var(--bf-orange);box-shadow:0 0 0 3px #ff89001f}
+body.bf-unified :is(.card,.panel,.dashboard-card,.stat-card,.metric-card){transition:transform .3s var(--bf-ease),box-shadow .3s var(--bf-ease),border-color .3s var(--bf-ease)}
+body.bf-unified :is(.card,.panel,.dashboard-card,.stat-card,.metric-card):hover{box-shadow:0 12px 28px #141a2910}
+body.bf-unified [data-bf-reveal]{opacity:0;transform:translateY(9px);transition:opacity .55s var(--bf-ease),transform .55s var(--bf-ease)}
+body.bf-unified [data-bf-reveal].bf-visible{opacity:1;transform:none}
+/* Explicit opt-in components for per-template migration */
+.bf-page{max-width:1200px;margin:0 auto;padding:clamp(20px,3vw,42px)}
+.bf-surface{background:var(--bf-paper);border:1px solid var(--bf-line);border-radius:var(--bf-radius);box-shadow:0 8px 26px #151b2b08}
+.bf-heading{font-size:clamp(30px,4vw,48px);font-weight:850;line-height:1.05;letter-spacing:-.065em;color:var(--bf-ink)}
+.bf-accent{color:var(--bf-orange-deep)}
+.bf-primary{background:linear-gradient(110deg,#ff9a00,#ff6510);color:#fff;border:0;border-radius:13px;padding:13px 19px;font-weight:750}
+.bf-secondary{background:#fff;border:1px solid var(--bf-line);color:var(--bf-ink);border-radius:13px;padding:12px 18px}
+.bf-status{border-radius:12px;padding:12px 16px;background:#e7f7ed;color:#16452f;border:1px solid #b9e8ca}
+/* Never recolor verified/unverified/payment states through generic status selectors. */
+@media(prefers-reduced-motion:reduce){body.bf-unified *,body.bf-unified *::before,body.bf-unified *::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}body.bf-unified [data-bf-reveal]{opacity:1;transform:none}}

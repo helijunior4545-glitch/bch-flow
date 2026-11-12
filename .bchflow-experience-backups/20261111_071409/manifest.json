@@ -1,0 +1,21 @@
+{
+  "version": "3.0",
+  "created_at": "2026-11-11T12:14:09.422837+00:00",
+  "files": {
+    "app_bch_flow/templates/app_bch_flow/landing/index.html": {
+      "existed": true,
+      "before": "8805de490bae5513b250ce1fbe6af8cc9275a03cb813d6877e7e8a7164fbefcd",
+      "after": "954a57c4d1c10cb5a8b01a35d17138cd168dca70d651da72e05d7426fa5ec1c4"
+    },
+    "app_bch_flow/static/app_bch_flow/css/pages/landing.css": {
+      "existed": true,
+      "before": "48b82410c78db7839cbd3db8a9f580239580b73ec61d8a4d37517ceca660d869",
+      "after": "33a7c960de71a60755048518c21623edec787226de27042f5ffcdef29b402ac5"
+    },
+    "app_bch_flow/static/app_bch_flow/js/landing-experience.js": {
+      "existed": true,
+      "before": "1859e1591a0707df7dbbd61500ff360a62afb5afc5005ba15987483b48848e73",
+      "after": "1dad619ec0d44054cc3992aeff57f2e8c64f469c1dc3dedd1dbc74076e2e35bf"
+    }
+  }
+}

@@ -3,8 +3,10 @@ from .views import landing
 from .views.authentication import register,login,logout
 from .views.dashboard import dashboard,new_organization
 from .views import v3_workspace
+from .views.jury import enter as jury_enter
 app_name='bch_flow'
 urlpatterns=[
+    path('jury/', jury_enter, name='jury_enter'),
     path('',landing.index,name='home'),
     path('register/',register,name='register'),
     path('login/',login,name='login'),
@@ -69,3 +71,13 @@ urlpatterns = [path('dashboard/organizations/<uuid:org_id>/wallet/modal/<slug:pa
 
 # Tenant-isolated multi-asset orchestration, separate from legacy watch-only tools.
 urlpatterns += [path('', include('app_bch_flow.financial.urls'))]
+
+# BCH FLOW CHIPNET WATCH V1 — read-only, org-scoped, no signing or broadcast.
+from app_bch_flow.views.chipnet_v4_web import workspace as _chipnet_v4_workspace
+from app_bch_flow.views.chipnet_watch_v1 import chipnet_observe as _chipnet_observe_v1
+urlpatterns = [path('dashboard/organizations/<uuid:org_id>/wallet/chipnet-v4/', _chipnet_v4_workspace, name='chipnet_v4_workspace')] + urlpatterns
+urlpatterns = [path('dashboard/organizations/<uuid:org_id>/wallet/chipnet-observe/', _chipnet_observe_v1, name='chipnet_observe_v1')] + urlpatterns
+
+# WizardConnect signs in the browser wallet; broadcast retains the existing authorization flow.
+from app_bch_flow.views.wizardconnect import signing_request as wizard_signing_request
+urlpatterns += [path("dashboard/organizations/<uuid:org_id>/wizardconnect/withdrawals/<uuid:withdrawal_id>/", wizard_signing_request, name="wizardconnect_sign_request")]

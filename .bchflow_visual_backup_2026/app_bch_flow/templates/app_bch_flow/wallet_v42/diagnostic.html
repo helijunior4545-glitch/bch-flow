@@ -1,0 +1,15 @@
+{% extends 'app_bch_flow/base.html' %}
+{% load static %}
+{% block title %}Blockchain diagnostic · BCH Flow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/wallet-v41.css' %}">
+<main id="main" class="mw"><header class="mw-top"><a class="mw-brand" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">BCH<span>Flow</span></a><a class="mw-back" href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">← Wallet</a></header>
+<div class="mw-container mw-send"><span class="mw-eyebrow">V4.2 / EXTERNAL BLOCKCHAIN DIAGNOSTIC</span><h1>Observe.<br><em>Never assume.</em></h1>
+<section class="mw-panel"><span class="mw-tag">READ ONLY</span><h2>Inspect a BCH mainnet transaction</h2><p>Checks a real transaction using the existing opt-in NOWNodes diagnostic. No keys, no balance estimates, no invoice settlement.</p>
+<form method="get" style="display:grid;gap:12px;margin-top:18px"><label for="txid">Transaction ID (TXID)</label><input id="txid" name="txid" value="{{ txid }}" maxlength="64" pattern="[a-fA-F0-9]{64}" autocomplete="off" spellcheck="false" required style="width:100%;min-width:0;padding:14px;border:1px solid #b7cfc1;border-radius:10px;font:inherit">
+{% if invoice %}<input type="hidden" name="invoice" value="{{ invoice.id }}"><p>Reference invoice: {{ invoice.id }} · {{ invoice.amount_satoshis }} sat · {{ invoice.network }}</p>{% endif %}
+<button class="mw-cta" type="submit" style="border:0;cursor:pointer;justify-content:center">Inspect transaction →</button></form>
+{% if error %}<div class="mw-notice" role="alert">{{ error }}</div>{% endif %}
+{% if report %}<div class="mw-notice" role="status"><strong>External provider observation — NOT payment confirmation</strong><br>TXID: <code style="overflow-wrap:anywhere">{{ report.txid }}</code><br>Network: {{ report.network }}<br>Confirmations reported: {{ report.confirmations }}<br>Block height: {{ report.block_height }}<br>Observed: {{ report.observed_at }}<br>{% if invoice %}Outputs listing this invoice address: {{ matched_satoshis }} sat (unverified attribution).{% endif %}</div>{% endif %}
+<div class="mw-notice">The diagnostic is disabled unless the server explicitly configures BCHFLOW_V49_ENABLE_REAL_DIAGNOSTIC=1 and BCHFLOW_V48_PRIMARY_KEY. Single-provider observations are not consensus verification, wallet ownership proof, spendable balance, or authorization to fulfill an order. Signing, broadcast and settlement remain blocked.</div></section></div></main>
+{% endblock %}

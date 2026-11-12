@@ -1,0 +1,30 @@
+{% extends 'app_bch_flow/layouts/financial.html' %}{% load static i18n %}
+{% block title %}Chipnet · Transações BCH{% endblock %}
+{% block financial_content %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/pages/diagnostics.css' %}">
+
+{% load static %}
+
+<div class="diagnostic-page" data-reveal>
+<a href="{% url 'bch_flow:wallet_v41_home' member.organization_id %}">← Voltar à carteira</a>
+<h1>Enviar BCH · Chipnet</h1><nav><a href="{% url 'bch_flow:financial_home' member.organization_id %}?asset=BRL&amp;environment=mercadopago_test">Receber PIX · teste</a><a href="{% url 'bch_flow:financial_home' member.organization_id %}?asset=BRL&amp;environment=live">Receber PIX · produção</a><a href="{% url 'bch_flow:merchant_integrations' member.organization_id %}">Conectar Mercado Pago</a></nav>
+<p>Rede de testes. A chave privada nunca deve ser inserida nesta página. A assinatura acontece em um computador local confiável e offline.</p>
+{% if error %}<p role="alert">{{ error }}</p>{% endif %}
+{% if txid %}<h2>Transação transmitida</h2><p>TXID: <code>{{ txid }}</code></p><p>Aguarde confirmação da rede. O envio ainda não significa liquidação.</p>{% endif %}
+<section><h2>1. Preparar transação</h2>
+<form method="post">{% csrf_token %}<input type="hidden" name="action" value="prepare">
+<p><label>Endereço de origem Chipnet <input name="source" required maxlength="160"></label></p>
+<p><label>Endereço de destino Chipnet <input name="destination" required maxlength="160"></label></p>
+<p><label>Endereço exclusivo de troco (sob seu controle) <input name="change" required maxlength="160"></label></p>
+<p><label>Quantidade (satoshis) <input type="number" min="546" name="amount_sats" required></label></p>
+<p><label>Taxa máxima fixa (satoshis) <input type="number" min="1" max="100000" name="fee_sats" required></label></p>
+<button type="submit">Preparar pacote Chipnet</button></form></section>
+{% if package %}<section><h2>2. Assinar offline</h2><p>Salve o JSON abaixo em um arquivo local e assine com o CLI V4. Verifique independentemente UTXOs, destino e troco.</p>
+<textarea readonly rows="15">{{ package }}</textarea>
+<p>Comando: <code>python -m app_bch_flow.wallet.chipnet_v4_cli sign-offline --package pacote.json --out assinado.hex</code></p>
+<h2>3. Transmitir transação assinada</h2>
+<form method="post">{% csrf_token %}<input type="hidden" name="action" value="broadcast"><input type="hidden" name="token" value="{{ token }}">
+<p><label>Hex assinado <textarea name="signed_hex" rows="6" maxlength="200000" required></textarea></label></p>
+<p><label>Digite BROADCAST CHIPNET para confirmar <input name="confirmation" required autocomplete="off"></label></p>
+<button type="submit">Transmitir na Chipnet</button></form></section>{% endif %}
+<p>Operações ainda não reconciliadas com o razão financeiro. Não use para mainnet nem como comprovante de liquidação.</p>
+</div>{% endblock %}

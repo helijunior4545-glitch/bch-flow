@@ -1,0 +1,18 @@
+{
+  "version": "7.0",
+  "created_at": "2026-11-11T12:39:59.902953+00:00",
+  "files": {
+    "html": {
+      "before": "9fd2e18daec090c659727fbbf85035c26c11dbf48cd433e83e3aa8011993fc01",
+      "after": "b28df3aef0ce817734c87e4ef4226f453d0603d1ca0f0e77c668f152cc752413"
+    },
+    "css": {
+      "before": "0278f9d094c86001566e6404b6c96814be5af7660a85e418fbf05921d01cacbe",
+      "after": "99f81f69237e2773c0b0e8584bcf3745be6281a6de3803e4b212c671b18f8afd"
+    },
+    "js": {
+      "before": "ed0d251ba797be9fd1e835146448e78eb0362ea9b7483d7e9289c06406137068",
+      "after": "389805b5829a7ad8a615691b2b3630fb8aec698b95740abfde00940293062292"
+    }
+  }
+}

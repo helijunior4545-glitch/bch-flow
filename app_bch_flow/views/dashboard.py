@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 from app_bch_flow.models import BCHMembership
 from app_bch_flow.forms.organizations import OrganizationForm
 from app_bch_flow.identity.services import create_organization
@@ -11,6 +12,10 @@ def dashboard(request):
     identity=current_identity(request)
     if identity is None:
         return redirect('bch_flow:login')
+    if identity.is_demo:
+        member = identity.memberships.filter(is_active=True).first()
+        if member:
+            return redirect(reverse('bch_flow:financial_home', args=[member.organization_id]) + '?environment=sandbox')
     memberships=BCHMembership.objects.select_related('organization').filter(identity=identity,is_active=True,organization__is_active=True)
     return render(request,'app_bch_flow/dashboard/index.html',{'identity':identity,'memberships':memberships})
 
@@ -19,6 +24,8 @@ def new_organization(request):
     identity=current_identity(request)
     if identity is None:
         return redirect('bch_flow:login')
+    if identity.is_demo:
+        return redirect('bch_flow:dashboard')
     form=OrganizationForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
         try:

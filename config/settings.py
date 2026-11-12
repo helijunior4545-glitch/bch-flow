@@ -83,8 +83,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-SESSION_COOKIE_SECURE = False  # LOCAL HTTP ONLY.
-CSRF_COOKIE_SECURE = False  # LOCAL HTTP ONLY.
+SESSION_COOKIE_SECURE = env.bool('DJANGO_SESSION_COOKIE_SECURE', default=not DEBUG)
+CSRF_COOKIE_SECURE = env.bool('DJANGO_CSRF_COOKIE_SECURE', default=not DEBUG)
 # Existing BCH Flow safety gates must remain active. No live payment enablement.
 
 # Multi-asset orchestration: sandbox is explicit; live integrations are opt-in.
@@ -92,6 +92,22 @@ CSRF_COOKIE_SECURE = False  # LOCAL HTTP ONLY.
 import json as _json
 FLOW_PAYMENTS_SANDBOX_ENABLED = env.bool('FLOW_PAYMENTS_SANDBOX_ENABLED', default=DEBUG)
 FLOW_PAYMENTS_ALLOW_LIVE = env.bool('FLOW_PAYMENTS_ALLOW_LIVE', default=False)
+
+# BCH Flow: expor somente o nome do usuario RPC ao provider (nao e segredo).
+import os as _bchflow_os
+_bchflow_os.environ.setdefault('BCHFLOW_BTC_RPC_USER', env('BCHFLOW_BTC_RPC_USER', default=''))
+
+# BTC/BCH blockchain RPC config is separate from BRL/PIX payment providers.
+# The optional JSON maps organization -> asset -> environment -> RPC metadata.
+# Secrets must be referenced using *_env or *_file, not embedded in JSON.
+FLOW_BLOCKCHAIN_NODES = {}
+_blockchain_nodes_file = env('FLOW_BLOCKCHAIN_NODES_FILE', default='')
+if _blockchain_nodes_file:
+    with open(_blockchain_nodes_file, encoding='utf-8') as _blockchain_stream:
+        FLOW_BLOCKCHAIN_NODES = _json.load(_blockchain_stream)
+    if not isinstance(FLOW_BLOCKCHAIN_NODES, dict):
+        raise ValueError('FLOW_BLOCKCHAIN_NODES_FILE must contain a JSON object')
+
 FLOW_PAYMENT_PROVIDERS = {}
 _provider_file = env('FLOW_PROVIDER_CONFIG_FILE', default='')
 if _provider_file:

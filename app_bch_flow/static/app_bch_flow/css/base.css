@@ -1,2 +1,48 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
 :root{color-scheme:dark;--bg:#0c1018;--ink:#f7f8fa;--muted:#a9b2c1;--accent:#f7931a}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif}.skip{position:absolute;top:-100px}.skip:focus{top:0}.hackathon-banner{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;background:#1b2432;padding:1rem;font-size:.8rem}.hackathon-banner span{color:var(--muted)}.hero{max-width:1040px;margin:auto;padding:clamp(5rem,13vw,11rem) 1.5rem;text-align:center}.eyebrow{letter-spacing:.2em;color:var(--accent);font-size:.8rem}h1{font-size:clamp(3rem,9vw,7rem);letter-spacing:-.07em;line-height:1.02;margin:1rem 0 2rem}h1 em{font-style:normal;color:var(--accent)}.hero>p:not(.eyebrow){max-width:650px;margin:1rem auto;color:var(--muted);font-size:1.1rem;line-height:1.6}.actions{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin:2.5rem 0}.button{padding:1rem 1.8rem;border-radius:12px;background:var(--accent);color:#171717;font-weight:700}.button.secondary{background:#242d3c;color:white}.disabled{opacity:.55}.disclaimer{font-size:.8rem!important}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+
+/* BCH-REWRITE-2026:START */
+
+:where(.sidebar,.app-sidebar,.dashboard-sidebar){background:var(--bch-navy);color:#fff}
+:where(.sidebar,.app-sidebar,.dashboard-sidebar) a:hover{background:rgba(255,255,255,.08)}
+:where(.sidebar,.app-sidebar,.dashboard-sidebar) a[aria-current="page"]{background:var(--bch-orange);color:white}
+:where(.dashboard,.workspace,.content-area,.main-content){background:var(--bch-canvas);color:var(--bch-ink)}
+:where(.dashboard,.workspace,.content-area,.main-content) :where(.card,.panel,.tile){background:var(--bch-paper);border:1px solid var(--bch-border);border-radius:var(--bch-radius)}
+
+/* BCH-REWRITE-2026:END */
+
+/* BCH-REDESIGN-106-V2:START */
+/* BCH FLOW — enterprise visual system, orange / ink / cloud */
+:root{--bch-ink:#151c2d;--bch-navy:#171d2d;--bch-orange:#ff8800;--bch-orange-deep:#ed6b00;--bch-cloud:#f3f5fa;--bch-surface:#fff;--bch-line:#e4e8f0;--bch-muted:#697388;--bch-shadow:0 14px 44px rgba(20,29,47,.065);--bch-radius:18px;--bch-ease:cubic-bezier(.22,1,.36,1)}
+html{scroll-behavior:smooth}body{color:var(--bch-ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+:where(.bch-r106-scope){color:var(--bch-ink);accent-color:var(--bch-orange)}
+:where(.bch-r106-scope) :where(button,.btn,[role=button],a,input,select,textarea){transition:color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .28s var(--bch-ease),transform .28s var(--bch-ease),opacity .2s ease}
+:where(.bch-r106-scope) :where(button,.btn,[role=button]){cursor:pointer}
+:where(.bch-r106-scope) :where(button,.btn,[role=button]):not(:disabled):hover{transform:translateY(-2px)}
+:where(.bch-r106-scope) :where(button,.btn,[role=button]):not(:disabled):active{transform:translateY(0) scale(.985)}
+:where(.bch-r106-scope) :where(a,button,input,textarea,select,[tabindex]):focus-visible{outline:3px solid rgba(255,136,0,.42);outline-offset:3px}
+:where(.bch-r106-scope) :where(input,select,textarea){border-radius:12px;border-color:var(--bch-line)}
+:where(.bch-r106-scope) :where(input,select,textarea):focus{border-color:var(--bch-orange);box-shadow:0 0 0 4px rgba(255,136,0,.1)}
+:where(.bch-r106-scope) :where(.card,.panel,.tile,.stat-card,.metric-card,.summary-card,[class*='-card']){border-radius:var(--bch-radius);box-shadow:var(--bch-shadow);transition:transform .34s var(--bch-ease),box-shadow .34s var(--bch-ease),border-color .25s ease}
+:where(.bch-r106-scope) :where(.card,.panel,.tile,.stat-card,.metric-card,.summary-card,[class*='-card']):hover{box-shadow:0 20px 55px rgba(20,29,47,.105)}
+:where(.bch-r106-scope) :where(table){border-collapse:separate;border-spacing:0;width:100%}
+:where(.bch-r106-scope) :where(th){font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--bch-muted)}
+:where(.bch-r106-scope) :where(tr){transition:background-color .18s ease}
+:where(.bch-r106-scope) :where(tbody tr:hover){background:rgba(255,136,0,.045)}
+:where(.bch-r106-scope) :where(dialog,[role=dialog],.modal){border-radius:22px}
+:where(.bch-r106-scope) :where(.badge,.chip,[class*='status']){border-radius:999px}
+:where(.bch-r106-scope) :where(.sidebar,.side-nav,.premium-sidebar){background:var(--bch-navy);color:#fff}
+:where(.bch-r106-scope) :where(.sidebar,.side-nav,.premium-sidebar) a{transition:background-color .22s ease,color .22s ease,transform .22s var(--bch-ease)}
+:where(.bch-r106-scope) :where(.sidebar,.side-nav,.premium-sidebar) a:hover{transform:translateX(3px)}
+:where(.bch-r106-scope) :where(.sidebar,.side-nav,.premium-sidebar) a.active,:where(.bch-r106-scope) :where(.sidebar,.side-nav,.premium-sidebar) a[aria-current=page]{background:linear-gradient(115deg,#ff9c00,#f36a00);color:#fff}
+:where(.bch-r106-scope) :where(.btn-primary,.button-primary,[class*='primary-button']){background:linear-gradient(110deg,var(--bch-orange),var(--bch-orange-deep));border-color:transparent;color:white;box-shadow:0 8px 20px rgba(255,136,0,.16)}
+:where(.bch-r106-scope) :where(.btn-primary,.button-primary,[class*='primary-button']):hover{box-shadow:0 12px 28px rgba(255,136,0,.26)}
+:where(.bch-r106-scope) :where(.skeleton,[class*='skeleton']){background-image:linear-gradient(90deg,#e9edf4 0%,#f7f8fb 48%,#e9edf4 100%);background-size:200% 100%;animation:bch-r106-shimmer 1.7s linear infinite}
+@keyframes bch-r106-shimmer{to{background-position-x:-200%}}
+@keyframes bch-r106-appear{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+.bch-r106-ready :where(main,[role=main]){animation:bch-r106-appear .48s var(--bch-ease) both}
+.bch-r106-pulse{animation:bch-r106-tap .32s ease}@keyframes bch-r106-tap{50%{transform:scale(.97)}}
+@media(max-width:760px){:where(.bch-r106-scope) :where(.card,.panel,[class*='-card']){border-radius:14px}:where(.bch-r106-scope) :where(table){display:block;max-width:100%;overflow-x:auto}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}.bch-r106-scope *,.bch-r106-scope *::before,.bch-r106-scope *::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* BCH-REDESIGN-106-V2:END */

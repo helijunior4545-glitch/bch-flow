@@ -1,0 +1,42 @@
+/* BCH Flow / Receive Detail — fintech editorial 2026 */
+.receive-page{--r-ink:#182032;--r-muted:#727e90;--r-green:#ff8700;--r-line:#e5e9f0;background:radial-gradient(ellipse 52% 36% at 88% 0%,#fff0dd 0%,transparent 85%),#f3f5f9;color:#182032;font-family:Inter,Manrope,system-ui,sans-serif}
+.receive-topbar{max-width:1260px;height:78px;border-bottom:1px solid #e5e9f0}
+.receive-logo{color:#141b2b}.receive-logo-light{color:#ff8700}.receive-logo-mark{background:#161d2c;color:#ff8a00}.receive-logo:hover .receive-logo-mark{box-shadow:0 12px 28px #ff870033}
+.receive-back{color:#526076}.receive-back:hover,.receive-footer a:hover{color:#ed7800}
+.receive-shell{max-width:1240px;margin-top:48px}
+.receive-eyebrow,.receive-panel-label,.receive-address-label,.receive-preview-head,.receive-uri-head{color:#a36a25}
+.receive-live-dot{background:#ff8b00;box-shadow:0 0 0 5px #fff0df}
+.receive-heading h1{color:#141b2b;letter-spacing:-2.6px}.receive-heading h1 span{color:#ff8700}
+.receive-heading p,.receive-muted{color:#6c788a}
+.receive-layout{gap:24px}
+.receive-panel{background:#fff;border:1px solid #e3e8f0;border-radius:22px;box-shadow:0 16px 46px #17223a0a;transition:box-shadow .3s ease,border-color .3s ease,transform .3s ease}
+.receive-panel:hover{border-color:#f3cba0;box-shadow:0 23px 60px #17223a13;transform:translateY(-2px)}
+.receive-primary{position:relative;overflow:hidden}.receive-primary:before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#ff8800,#ffc375,#fff2e1)}
+.receive-network{background:#fff1df;color:#b75b00;border-color:#ffd9aa}
+.receive-amount-number{color:#151c2b}.receive-amount-unit{color:#f08200}.receive-sats{color:#7a8698}
+.receive-separator{background:#e5e9f0}.receive-state-icon{background:#fff1df;color:#b86b0a}
+.receive-state p,.receive-metadata span{color:#798698}.receive-state-tag{background:#fff3e6;border-color:#ffdcb5;color:#aa630e}
+.receive-safety{background:#fff9f1;border-color:#f4dfc2}.receive-safety-icon{color:#c27a16}.receive-safety p{color:#776b5f}
+.receive-side-icon{background:#fff0dc;color:#f08300}.receive-address-wrap,.receive-uri code{background:#f7f8fb;border-color:#e4e9f1}
+.receive-address-wrap code,.receive-uri code{color:#1b283b}.receive-address-label span{color:#8a95a5}
+.receive-copy,.receive-uri-copy{background:#ff8700;color:#fff;border-radius:11px;box-shadow:0 4px 12px #ff870022}
+.receive-copy:hover,.receive-uri-copy:hover{background:#e77700;color:#fff;box-shadow:0 12px 25px #ff87003c}
+.receive-copy:focus-visible,.receive-uri-copy:focus-visible,.receive-page a:focus-visible{outline:3px solid #ffb452;outline-offset:3px}
+.receive-preview-badge{background:#fff3e6;color:#a96210;border-color:#f5d6aa}
+.receive-qr-stage{background:radial-gradient(circle,#fff,#f5f7fb);border-color:#e3e8f0}.receive-qr-glow{background:#ffdab0}.receive-qr-grid{border-color:#e4e9f1;box-shadow:0 14px 32px #17223a19}.receive-qr-grid i.on{background:#253148}
+.receive-qr-overlay span{color:#ad670e;border-color:#f1d9b6}.receive-qr-message{background:#fff9f0;border-color:#f4e2c8}
+.receive-qr-message>svg,.receive-qr-message strong{color:#9d620e}.receive-qr-message p{color:#84745f}
+.receive-uri{border-color:#e5e9f0}.receive-footer{color:#8792a1}.receive-footer a{color:#e27b06}
+.receive-toast{background:#182032;box-shadow:0 16px 48px #18203233}
+.receive-share-v1{max-width:1180px;margin:20px auto!important;padding:24px!important;background:#fff;border:1px solid #e3e8f0;border-radius:18px;box-shadow:0 10px 32px #17223a0b;transition:transform .25s ease,box-shadow .25s ease}
+.receive-share-v1:hover{transform:translateY(-2px);box-shadow:0 16px 38px #17223a16}
+.receive-share-v1>a{background:#ff8700!important;color:#fff!important;border-radius:11px!important;transition:transform .2s ease,box-shadow .2s ease,background .2s ease!important}
+.receive-share-v1>a:hover{background:#e77700!important;transform:translateY(-2px);box-shadow:0 10px 24px #ff87004a}
+.receive-share-v1+div{max-width:1180px;margin:18px auto!important;padding:24px!important;border:1px solid #e3e8f0!important;background:#fff;border-radius:18px!important;box-shadow:0 10px 32px #17223a0b;transition:transform .25s ease,box-shadow .25s ease}
+.receive-share-v1+div:hover{transform:translateY(-2px);box-shadow:0 16px 38px #17223a16}
+.receive-share-v1+div>a{color:#c66b00!important;text-decoration:none;transition:color .2s ease}
+.receive-share-v1+div>a:hover{color:#ff8700!important}
+.receive-page .receive-panel:focus-within{border-color:#ffb65d}
+@media(max-width:1250px){.receive-share-v1,.receive-share-v1+div{margin-left:30px!important;margin-right:30px!important}}
+@media(max-width:600px){.receive-share-v1,.receive-share-v1+div{margin-left:17px!important;margin-right:17px!important;padding:18px!important}.receive-panel:hover{transform:none}.receive-shell{margin-top:25px}}
+@media(prefers-reduced-motion:reduce){.receive-page *, .receive-share-v1,.receive-share-v1+div{animation:none!important;transition:none!important;transform:none!important}}

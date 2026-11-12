@@ -34,6 +34,8 @@ from .secrets import seal, unseal, cipher
 @sensitive_variables()
 def reauthenticate(actor, org_id, password):
     membership(actor, org_id, APPROVE_ROLES)
+    if actor.is_demo:
+        raise PaymentError(_("Demo accounts can only use the sandbox."))
     with transaction.atomic():
         actor = BCHIdentity.objects.select_for_update().get(pk=actor.pk)
         failures = BCHAuditEvent.objects.filter(

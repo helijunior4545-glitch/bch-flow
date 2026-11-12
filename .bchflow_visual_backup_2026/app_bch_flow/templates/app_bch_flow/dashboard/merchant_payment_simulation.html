@@ -1,0 +1,33 @@
+{% extends 'app_bch_flow/base.html' %}
+{% block title %}Merchant payment simulation · BCH Flow{% endblock %}
+{% block content %}
+<style>
+.bch-sim{--ink:#152d23;--green:#146e4b;--muted:#66786f;--line:#e0e9e3;max-width:740px;margin:48px auto;padding:0 18px 60px;color:var(--ink);font-family:Inter,system-ui,sans-serif}.bch-sim *{box-sizing:border-box}.bch-sim a{color:var(--green)}.bch-sim .eyebrow{font-size:11px;font-weight:800;letter-spacing:1.8px;color:#946421}.bch-sim h1{font-size:clamp(30px,6vw,44px);letter-spacing:-.05em;margin:12px 0}.bch-sim .card{background:white;border:1px solid var(--line);border-radius:23px;padding:clamp(20px,5vw,36px);box-shadow:0 20px 60px #153d260d}.bch-sim .amount{font-size:clamp(35px,8vw,56px);font-weight:800;letter-spacing:-.05em;margin:15px 0}.bch-sim .amount small{font-size:18px;color:var(--green)}.bch-sim .muted{color:var(--muted);font-size:13px;line-height:1.7}.bch-sim .banner{background:#fff7e9;border:1px solid #f0d7a9;border-radius:12px;padding:14px;font-size:13px;line-height:1.6;margin:22px 0}.bch-sim .status{padding:18px;border:1px solid var(--line);border-radius:15px;background:#f6faf7;margin:18px 0}.bch-sim .status strong{display:block;font-size:18px;margin:5px 0}.bch-sim button{border:0;border-radius:12px;background:var(--green);color:white;font-weight:800;padding:16px 22px;cursor:pointer;min-height:50px}.bch-sim button:disabled{opacity:.55;cursor:not-allowed}.bch-sim button:focus-visible{outline:3px solid #74c6a0;outline-offset:3px}.bch-sim .timeline{list-style:none;padding:0;margin:22px 0}.bch-sim .timeline li{padding:13px 0 13px 22px;border-left:2px solid #d9e7dd;color:#84978c;font-size:13px}.bch-sim .timeline li.active{border-color:var(--green);color:var(--ink);font-weight:750}.bch-sim .detail{border-top:1px solid var(--line);padding-top:18px;overflow-wrap:anywhere}.bch-sim .pill{display:inline-block;background:#fff2d9;color:#85581c;padding:6px 9px;border-radius:8px;font-size:11px;font-weight:800}.bch-sim .done{color:#166e4c}.bch-sim .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.bch-sim .row a{font-size:13px}
+</style>
+<main id="main" class="bch-sim" data-bch-merchant-sim>
+<a href="{% url 'bch_flow:v3_invoice' member.organization_id invoice.id %}">← Back to invoice</a>
+<p class="eyebrow">BCH FLOW / MERCHANT DEMONSTRATION</p>
+<h1>What the merchant sees after payment</h1>
+<p class="muted">A local visual walkthrough of a customer's payment. This page never sends BCH or updates invoice records.</p>
+<section class="card" aria-label="Merchant simulation">
+<span class="pill">SIMULATION ONLY · NOT A REAL PAYMENT</span>
+<p class="muted">{{ invoice.organization.name }} · {{ invoice.network|upper }}</p>
+<div class="amount">{{ amount_bch }} <small>BCH</small></div>
+<p class="muted">Invoice {{ invoice.id }}</p>
+<div class="banner"><strong>Financial record remains unchanged.</strong> A simulated success is not a blockchain confirmation, receipt, or authorization to fulfill an order. The actual invoice status is <strong>{{ invoice.status }}</strong>.</div>
+<div class="status" role="status" aria-live="polite"><span class="muted">Demo event</span><strong data-sim-status>Waiting for simulation</strong><span class="muted" data-sim-subtitle>Start to preview the merchant notification sequence.</span></div>
+<ol class="timeline"><li data-sim-step="0">Invoice created</li><li data-sim-step="1">Customer payment detected — simulated</li><li data-sim-step="2">Transaction verification — simulated</li><li data-sim-step="3">Merchant notified — simulated</li></ol>
+<div class="row"><button type="button" data-sim-start>Run payment simulation</button><button type="button" data-sim-reset style="background:#e8f0eb;color:#184c35">Reset</button></div>
+<div class="detail"><p class="muted">Recorded invoice status: <strong>{{ invoice.status }}</strong> · Demo TXID: <strong>none</strong> · Blockchain calls: <strong>none</strong></p><p class="muted">No payment webhooks, wallet actions, database writes, or order fulfillment are triggered.</p></div>
+</section>
+</main>
+<script>
+(()=>{'use strict';const root=document.querySelector('[data-bch-merchant-sim]');if(!root)return;
+const start=root.querySelector('[data-sim-start]'),reset=root.querySelector('[data-sim-reset]'),label=root.querySelector('[data-sim-status]'),subtitle=root.querySelector('[data-sim-subtitle]');
+const steps=[['Invoice created','Merchant issued a payment request.'],['Payment detected — SIMULATED','A mock incoming transaction event is displayed.'],['Verification — SIMULATED','Mock verification progress. No blockchain was queried.'],['Merchant notification — SIMULATED','This is how a successful merchant notification could appear. No real payment was received.']];let timers=[];
+function clear(){timers.forEach(clearTimeout);timers=[]}function paint(i){label.textContent=steps[i][0];subtitle.textContent=steps[i][1];root.querySelectorAll('[data-sim-step]').forEach((el,n)=>el.classList.toggle('active',n<=i));if(i===3)start.disabled=false}
+start.addEventListener('click',()=>{clear();start.disabled=true;paint(0);for(let i=1;i<steps.length;i++)timers.push(setTimeout(()=>paint(i),i*1700))});reset.addEventListener('click',()=>{clear();start.disabled=false;label.textContent='Waiting for simulation';subtitle.textContent='Start to preview the merchant notification sequence.';root.querySelectorAll('[data-sim-step]').forEach(el=>el.classList.remove('active'))});
+window.addEventListener('pagehide',clear);
+})();
+</script>
+{% endblock %}

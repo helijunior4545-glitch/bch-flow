@@ -9,6 +9,37 @@
   window.lucide?.createIcons({
     attrs: { "stroke-width": 1.7, "aria-hidden": "true" },
   });
+  // Refined, accessible UI motion; never infer financial outcomes.
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const premiumAssets = root.querySelector(".premium-assets");
+  const currentPremiumAsset = premiumAssets?.querySelector('[aria-current="page"]');
+  if (premiumAssets && currentPremiumAsset && premiumAssets.scrollWidth > premiumAssets.clientWidth) {
+    currentPremiumAsset.scrollIntoView({block:"nearest",inline:"center"});
+  }
+  const revealItems = root.querySelectorAll(".premium-hero,.premium-controls,.premium-mode,.premium-cards,.premium-history,.premium-detail-section,.premium-ledger");
+  if (!motionQuery.matches && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) { entry.target.classList.add("is-visible"); observer.unobserve(entry.target); }
+      }
+    }, {threshold:0.07,rootMargin:"0px 0px -25px 0px"});
+    revealItems.forEach((el) => { el.classList.add("premium-reveal"); observer.observe(el); });
+  }
+  if (!motionQuery.matches && window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    root.querySelectorAll(".premium-balance,.premium-receive,.premium-send").forEach((card) => {
+      let raf = 0;
+      card.addEventListener("pointermove", (event) => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          const rect = card.getBoundingClientRect();
+          card.style.setProperty("--pointer-x", `${event.clientX-rect.left}px`);
+          card.style.setProperty("--pointer-y", `${event.clientY-rect.top}px`);
+          raf=0;
+        });
+      }, {passive:true});
+      card.addEventListener("pointerleave", () => { if(raf) cancelAnimationFrame(raf); raf=0; card.style.removeProperty("--pointer-x");card.style.removeProperty("--pointer-y"); });
+    });
+  }
   const assetNavigation = root.querySelector(".pay-assets");
   const selectedAsset = assetNavigation?.querySelector("[aria-current]");
   function alignSelectedAsset() {
@@ -62,7 +93,7 @@
         () =>
           form
             .querySelectorAll("button[type=submit]")
-            .forEach((b) => (b.disabled = true)),
+            .forEach((b) => { b.dataset.wasEnabled = "true"; b.disabled = true; }),
         0,
       );
     });
@@ -126,6 +157,26 @@
   if (!reduced.matches) {
     const balance = root.querySelector(".pay-balance-card");
     balance?.setAttribute("data-value-pulse", "");
+  }
+  const transferForm = root.querySelector('[data-review-transfer]');
+  const reviewDialog = root.querySelector('#transfer-review');
+  let confirmedReservation = false, reservationSubmitter = null;
+  if (transferForm && reviewDialog) {
+    transferForm.addEventListener('submit', event => {
+      if (confirmedReservation) { confirmedReservation = false; return; }
+      event.preventDefault(); event.stopImmediatePropagation();
+      reservationSubmitter = event.submitter;
+      for (const [field, target] of [['destination','[data-review-destination]'],['amount','[data-review-amount]'],['fee_limit','[data-review-fee]']]) {
+        reviewDialog.querySelector(target).textContent = transferForm.querySelector(`[name="send-${field}"]`).value;
+      }
+      reviewDialog.showModal();
+    }, true);
+    reviewDialog.querySelector('[data-confirm-reservation]').addEventListener('click',()=>{
+      confirmedReservation = true;
+      reviewDialog.close();
+      if (reservationSubmitter) transferForm.requestSubmit(reservationSubmitter);
+      else transferForm.requestSubmit();
+    });
   }
   const statusUrl = root.dataset.statusUrl;
   const statusText = root.querySelector(".pay-poll-status");

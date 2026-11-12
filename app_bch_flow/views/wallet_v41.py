@@ -70,6 +70,8 @@ def send_preview(request, org_id):
     member = _member(request, org_id)
     if member is None:
         return redirect('bch_flow:login')
+    if member.role in ('owner', 'admin'):
+        return redirect('bch_flow:chipnet_v4_workspace', org_id=org_id)
     # Intentionally no transaction creation, wallet key access, or network calls.
     # POST is never interpreted as authorization and is rejected fail-closed.
     if request.method == 'POST':

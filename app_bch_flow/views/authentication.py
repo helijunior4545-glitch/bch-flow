@@ -6,6 +6,7 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from app_bch_flow.forms.authentication import RegistrationForm,LoginForm
 from app_bch_flow.identity.services import register_identity,authenticate_identity
+from app_bch_flow.identity.jury import access_context
 from app_bch_flow.identity.sessions import create_session,resolve_session,revoke_session,set_session_cookie,clear_session_cookie,COOKIE_NAME
 
 def current_identity(request):
@@ -25,11 +26,12 @@ def register(request):
             response=redirect('bch_flow:dashboard')
             set_session_cookie(response,token)
             return response
-    return render(request,'app_bch_flow/authentication/register.html',{'form':form})
+    return render(request,'app_bch_flow/authentication/register.html',{'form':form, **access_context()})
 
 @require_http_methods(['GET','POST'])
 def login(request):
-    if current_identity(request) is not None:
+    identity = current_identity(request)
+    if identity is not None and not identity.is_demo:
         return redirect('bch_flow:dashboard')
     form=LoginForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
@@ -40,7 +42,7 @@ def login(request):
             set_session_cookie(response,token)
             return response
         form.add_error(None,_('Invalid credentials'))
-    return render(request,'app_bch_flow/authentication/login.html',{'form':form})
+    return render(request,'app_bch_flow/authentication/login.html',{'form':form, **access_context()})
 
 @require_POST
 def logout(request):

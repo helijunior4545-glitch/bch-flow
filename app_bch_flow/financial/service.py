@@ -30,6 +30,7 @@ from app_bch_flow.models import (
 )
 from .amounts import PaymentError, ProviderUnavailable, MAX_UNITS, units
 from .providers import CoreNode, MercadoPago, provider_config
+from .nodes import blockchain_node
 from .assets import ASSET_INFO, SANDBOX_ONLY
 
 WRITE_ROLES = ("owner", "admin", "operator")
@@ -65,9 +66,11 @@ def check_key(key):
         raise PaymentError(_("Invalid operation key. Refresh the form."))
 
 
-def ensure_account(actor, org_id, asset, environment):
+def ensure_account(actor, org_id, asset, environment, wallet_id=None):
     membership(actor, org_id)
-    if asset not in ASSET_INFO or environment not in (
+    if actor.is_demo and environment != 'sandbox':
+        raise PaymentError(_("Demo accounts can only use the sandbox."))
+    if asset not in ("BTC", "BCH", "BRL", "USD", "EUR") or environment not in (
         "sandbox",
         "testnet",
         "mercadopago_test",
@@ -88,21 +91,27 @@ def ensure_account(actor, org_id, asset, environment):
                 "USD and EUR accounts currently support sandbox only. Connect a supported fiat provider before accepting real payments."
             )
         )
+    from .nodes import select_wallet
+    wallet = select_wallet(org_id, asset, environment, wallet_id) if asset in ('BTC','BCH') and environment != 'sandbox' and wallet_id != 'legacy' else None
+    if wallet and wallet.archived_at:
+        raise PaymentError(_("This wallet is archived. Restore it before creating operations."))
     candidate = FlowAccount(
-        organization_id=org_id, asset=asset, environment=environment
+        organization_id=org_id, asset=asset, environment=environment, wallet=wallet
     )
     if environment != "sandbox":
         provider_config(candidate)
         # Validate credentials and endpoint configuration before persisting an account.
-        MercadoPago(candidate) if asset == "BRL" else CoreNode(candidate)
+        MercadoPago(candidate) if asset == "BRL" else blockchain_node(candidate)
     account, _created_or_unused = FlowAccount.objects.get_or_create(
-        organization_id=org_id, asset=asset, environment=environment
+        organization_id=org_id, asset=asset, environment=environment, wallet=wallet
     )
     return account
 
 
-def _locked(account_id):
+def _locked(account_id, allow_archived=False):
     account = FlowAccount.objects.select_for_update().get(pk=account_id)
+    if not allow_archived and account.wallet_id and account.wallet.archived_at:
+        raise PaymentError(_("This wallet is archived. Restore it before creating operations."))
     if account.frozen:
         raise PaymentError(
             _("This account is under review. New operations are blocked.")
@@ -198,7 +207,7 @@ def prepare_request(request):
             ).create(request, request.payer_email)
             request.address = "mercadopago:" + request.provider_reference
         else:
-            request.address = CoreNode(account).new_address()
+            request.address = blockchain_node(account).new_address()
         request.save(update_fields=["address", "payment_payload", "provider_reference"])
         return request
 
@@ -311,7 +320,7 @@ def reconcile_request(request, txid=None):
         ]
         required = 1
     else:
-        node = CoreNode(account)
+        node = blockchain_node(account)
         confirmations, outputs = node.outputs(txid)
         # Change from our own outgoing transaction is not a new external receipt.
         if FlowWithdrawal.objects.filter(account=account, txid=txid.lower()).exists():
@@ -336,7 +345,7 @@ def reconcile_request(request, txid=None):
         if not observations:
             raise PaymentError(_("This transaction does not pay the request address."))
     with transaction.atomic():
-        account = _locked(account.pk)
+        account = _locked(account.pk, allow_archived=True)
         request = FlowRequest.objects.select_for_update().get(
             pk=request.pk, account=account
         )
@@ -376,7 +385,7 @@ def create_withdrawal(actor, account, destination, amount, fee_limit, key):
                     "Pix payouts require a contracted transfer product; Checkout API does not authorize payouts."
                 )
             )
-        destination = CoreNode(account).validate_address(destination)
+        destination = blockchain_node(account).validate_address(destination)
     elif not destination.startswith("sandbox:"):
         raise PaymentError(_("Use a sandbox: destination for simulated transfers."))
     digest = fingerprint([destination, amount, fee_limit])
@@ -502,8 +511,40 @@ def submit_withdrawal(actor, withdrawal, raw=""):
         else:
             if account.asset == "BRL":
                 raise ProviderUnavailable(_("Pix payouts are not configured."))
-            node = CoreNode(account)
+            node = blockchain_node(account)
             txid, fee, inputs = node.inspect_signed(withdrawal, raw)
+            if account.asset == "BTC":
+                # Persist the exact change outpoint before any network side effect.
+                # A failed broadcast remains reserved and recoverable.
+                from app_bch_flow.models import FlowBTCChange
+
+                package = withdrawal.signing_payload
+                change_address = package.get("change_address")
+                record = FlowBTCChange.objects.select_for_update().filter(
+                    account=account, withdrawal=withdrawal
+                ).first()
+                if change_address:
+                    if record is None or record.address != change_address:
+                        raise PaymentError(_("BTC change record does not match the authorized package."))
+                    decoded = node.rpc("decoderawtransaction", raw)
+                    matching = [
+                        output for output in decoded.get("vout", [])
+                        if node.output_address(output) == change_address
+                    ]
+                    if len(matching) != 1 or type(matching[0].get("n")) is not int:
+                        raise PaymentError(_("BTC change output is missing or ambiguous."))
+                    output = matching[0]
+                    amount = units(output.get("value"), "BTC")
+                    if amount <= 0 or amount != units(package["outputs"][change_address], "BTC"):
+                        raise PaymentError(_("BTC change amount differs from the authorized package."))
+                    if record.txid and (record.txid != txid or record.vout != output["n"]):
+                        raise PaymentError(_("BTC change outpoint has already been assigned."))
+                    record.txid = txid
+                    record.vout = output["n"]
+                    record.amount_units = amount
+                    record.save(update_fields=["txid", "vout", "amount_units"])
+                elif record is not None:
+                    raise PaymentError(_("Unexpected BTC change record."))
             for item in inputs:
                 claim, _created_or_unused = FlowSpend.objects.get_or_create(
                     asset=account.asset,
@@ -579,7 +620,7 @@ def recover_withdrawal(actor, withdrawal):
         raise PaymentError(_("No pending broadcast to check."))
     if withdrawal.account.environment == "sandbox":
         return finish_withdrawal(withdrawal.pk)
-    node = CoreNode(withdrawal.account)
+    node = blockchain_node(withdrawal.account)
     node.ready()
     tx = node.rpc("gettransaction", withdrawal.txid, True)
     decoded = node.rpc("decoderawtransaction", tx["hex"])
@@ -615,7 +656,7 @@ def prepare_signing(actor, withdrawal):
             )
         if withdrawal.signing_payload:
             return withdrawal
-        payload = CoreNode(account).prepare_unsigned(withdrawal)
+        payload = blockchain_node(account).prepare_unsigned(withdrawal)
         for item in payload["inputs"]:
             claim, _created_or_unused = FlowSpend.objects.get_or_create(
                 asset=account.asset,
@@ -626,6 +667,24 @@ def prepare_signing(actor, withdrawal):
             )
             if claim.withdrawal_id != withdrawal.pk:
                 raise PaymentError(_("An input already belongs to another withdrawal."))
+        if account.asset == "BTC":
+            from app_bch_flow.models import FlowBTCChange
+
+            change_address = payload.get("change_address")
+            if change_address:
+                if change_address not in payload.get("outputs", {}):
+                    raise PaymentError(_("BTC signing package has no matching change output."))
+                if FlowRequest.objects.filter(address=change_address).exists():
+                    raise PaymentError(_("BTC change address cannot be an invoice address."))
+                if FlowBTCChange.objects.filter(withdrawal=withdrawal).exists():
+                    raise PaymentError(_("BTC change has already been registered."))
+                FlowBTCChange.objects.create(
+                    withdrawal=withdrawal,
+                    account=account,
+                    address=change_address,
+                )
+            elif FlowBTCChange.objects.filter(withdrawal=withdrawal).exists():
+                raise PaymentError(_("Unexpected BTC change record."))
         withdrawal.signing_payload = payload
         withdrawal.save(update_fields=["signing_payload"])
         return withdrawal

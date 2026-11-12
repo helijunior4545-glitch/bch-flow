@@ -1,3 +1,4 @@
+from app_bch_flow.wallets.wizardconnect.protocol import relay_urls
 from django.utils.translation import gettext_lazy as _
 import uuid
 from urllib.parse import urlencode
@@ -17,6 +18,7 @@ from app_bch_flow.models import (
     FlowRequest,
     FlowWithdrawal,
     FlowInbox,
+    FlowNodeConnection,
 )
 from app_bch_flow.views.authentication import current_identity
 from . import service
@@ -24,6 +26,8 @@ from .amounts import PaymentError, ProviderUnavailable, display, units
 from .forms import RequestForm, WithdrawalForm
 from .assets import ASSET_INFO, SANDBOX_ONLY
 from .providers import validate_mp_signature
+
+from app_bch_flow.identity.demo_credentials import DEMO_PASSWORD
 
 SALT = "flow-payment-checkout-v1"
 LABELS = {
@@ -64,11 +68,11 @@ def _member(request, org_id):
     )
 
 
-def _url(member, asset, environment):
+def _url(member, asset, environment, wallet=None):
     return (
         reverse("bch_flow:financial_home", args=[member.organization_id])
         + "?"
-        + urlencode({"asset": asset, "environment": environment})
+        + urlencode({"asset": asset, "environment": environment, **({"wallet": str(wallet)} if wallet else {})})
     )
 
 
@@ -93,25 +97,51 @@ def home(request, org_id):
     if member is None:
         return redirect("bch_flow:login")
     asset = request.GET.get("asset", "BCH")
-    environment = request.GET.get("environment", "sandbox")
-    if asset not in ASSET_INFO or environment not in LABELS:
+    environment = request.GET.get("environment", "live")
+    if member.identity.is_demo and environment != 'sandbox':
+        if request.method == 'POST':
+            return HttpResponse(_('Demo accounts can only use the sandbox.'), status=403)
+        return redirect(_url(member, asset if asset in ('BTC', 'BCH', 'BRL') else 'BCH', 'sandbox'))
+    if asset not in ("BTC", "BCH", "BRL") or environment not in LABELS:
         raise Http404
     if asset in SANDBOX_ONLY and environment != "sandbox":
         raise Http404
+    wallet_scope = FlowNodeConnection.objects.filter(organization_id=org_id, asset=asset, environment=environment)
+    wallets = wallet_scope.filter(archived_at__isnull=True).select_related('account').order_by('created_at')
+    selected_wallet = None
+    wallet_id = request.GET.get('wallet') if environment == 'live' else None
+    if wallet_id and wallet_id != 'legacy':
+        try:
+            wallet_uuid = uuid.UUID(wallet_id)
+        except (ValueError, TypeError):
+            raise Http404
+        selected_wallet = get_object_or_404(wallet_scope, pk=wallet_uuid)
+    elif wallet_id != 'legacy':
+        selected_wallet = wallets.first()
+    legacy_account = FlowAccount.objects.filter(organization_id=org_id, asset=asset, environment=environment, wallet__isnull=True).first()
     account = FlowAccount.objects.filter(
-        organization_id=org_id, asset=asset, environment=environment
+        organization_id=org_id, asset=asset, environment=environment, wallet=selected_wallet
     ).first()
+    selected_wallet_id = selected_wallet.pk if selected_wallet else ('legacy' if legacy_account else None)
+    wallet_readonly = bool(selected_wallet and selected_wallet.archived_at)
     error, notice = "", ""
     rf = RequestForm(asset=asset, prefix="receive", initial={"key": uuid.uuid4().hex})
     wf = WithdrawalForm(asset=asset, prefix="send", initial={"key": uuid.uuid4().hex})
     if request.method == "POST":
         action = request.POST.get("action")
         try:
+            if wallet_readonly:
+                raise PaymentError(_("This wallet is archived. Restore it before creating operations."))
+            # Presentation permissions must also be enforced on POST, not only in templates.
+            if action in ("request", "withdraw") and member.role not in service.WRITE_ROLES:
+                raise PaymentError(_("You are not authorized to create financial operations."))
+            if action in ("approve", "submit", "cancel", "recover", "prepare_send") and member.role not in service.APPROVE_ROLES:
+                raise PaymentError(_("You are not authorized to manage withdrawals."))
             if action == "request":
                 rf = RequestForm(request.POST, asset=asset, prefix="receive")
                 if rf.is_valid():
                     account = service.ensure_account(
-                        member.identity, org_id, asset, environment
+                        member.identity, org_id, asset, environment, wallet_id=selected_wallet_id
                     )
                     charge = service.create_request(
                         member.identity,
@@ -144,11 +174,12 @@ def home(request, org_id):
                         wf.cleaned_data["fee_limit"],
                         wf.cleaned_data["key"],
                     )
-                    return redirect(_url(member, asset, environment))
+                    return redirect(_url(member, asset, environment, selected_wallet_id))
             elif action in ("approve", "submit", "cancel", "recover", "prepare_send"):
                 withdrawal = get_object_or_404(
                     FlowWithdrawal.objects.select_related("account"),
                     pk=request.POST.get("withdrawal"),
+                    account=account,
                     account__organization_id=org_id,
                     account__asset=asset,
                     account__environment=environment,
@@ -169,13 +200,13 @@ def home(request, org_id):
                     service.recover_withdrawal(member.identity, withdrawal)
                 else:
                     service.cancel_withdrawal(member.identity, withdrawal)
-                return redirect(_url(member, asset, environment))
+                return redirect(_url(member, asset, environment, selected_wallet_id))
             else:
                 raise PaymentError(_("Invalid operation."))
         except PaymentError as exc:
             error = str(exc)
         except (IntegrityError, ValueError, ValidationError):
-            error = "The operation conflicted with another record. Refresh and check its status before retrying."
+            error = _("The operation conflicted with another record. Refresh and check its status before retrying.")
     if account:
         account.refresh_from_db()
     requests = (
@@ -193,15 +224,33 @@ def home(request, org_id):
         if account
         else []
     )
+    active_request = next((charge for charge in requests if payment_payload_for(charge)), None)
+    if active_request:
+        active_request.checkout_token = signing.dumps({'request': str(active_request.pk)}, salt=SALT)
+    chipnet_observation = None
+    if request.method == "GET" and asset == "BCH" and environment == "testnet":
+        # Chipnet watch-only data: never credit FlowAccount from this observation.
+        from app_bch_flow.financial.chipnet_balance_v52 import observe_chipnet_balance
+        chipnet_observation = observe_chipnet_balance()
     return render(
         request,
         "app_bch_flow/financial/home.html",
         {
             "member": member,
+            "wizard_relays": relay_urls(),
+            "wallets": wallets,
+            "wallet_home_url": _url(member, asset, environment, selected_wallet_id),
+            "selected_wallet": selected_wallet,
+            "legacy_account": legacy_account,
+            "wallet_readonly": wallet_readonly,
+            "chipnet_observation": chipnet_observation,
             "asset_options": [
                 {"code": code, **meta} for code, meta in ASSET_INFO.items()
+                if code in ("BTC", "BCH", "BRL")
             ],
-            "sandbox_only": asset in SANDBOX_ONLY,
+            "sandbox_only": asset in SANDBOX_ONLY or member.identity.is_demo,
+            "is_demo": member.identity.is_demo,
+            "demo_password": DEMO_PASSWORD if member.identity.is_demo else '',
             "asset": asset,
             "environment": environment,
             "environment_label": LABELS[environment],
@@ -209,14 +258,15 @@ def home(request, org_id):
             "available": display(account.available_units if account else 0, asset),
             "reserved": display(account.reserved_units if account else 0, asset),
             "requests": requests,
+            "active_request": active_request,
             "withdrawals": withdrawals,
             "journal": journal,
             "request_form": rf,
             "withdrawal_form": wf,
             "error": error,
             "notice": notice,
-            "can_write": member.role in service.WRITE_ROLES,
-            "can_approve": member.role in service.APPROVE_ROLES,
+            "can_write": member.role in service.WRITE_ROLES and not wallet_readonly,
+            "can_approve": member.role in service.APPROVE_ROLES and not wallet_readonly,
             "is_sandbox": environment == "sandbox",
         },
         status=400 if error else 200,
@@ -244,6 +294,10 @@ def request_detail(request, org_id, request_id):
         try:
             service.membership(member.identity, org_id)
             action = request.POST.get("action")
+            if action == "simulate" and member.role not in service.WRITE_ROLES:
+                raise PaymentError(_("You are not authorized to simulate receipts."))
+            if action in ("refresh", "prepare") and member.role not in service.WRITE_ROLES:
+                raise PaymentError(_("You are not authorized to modify payment requests."))
             if action == "simulate":
                 service.simulate_receipt(
                     member.identity,
@@ -252,7 +306,12 @@ def request_detail(request, org_id, request_id):
                     request.POST.get("key", ""),
                 )
             elif action == "refresh":
-                service.reconcile_request(charge, request.POST.get("txid"))
+                txid = request.POST.get("txid", "").strip()
+                if charge.account.asset in ('BTC', 'BCH') and not txid and charge.account.environment != 'sandbox':
+                    from .worker import sync_crypto
+                    sync_crypto(charge.account)
+                else:
+                    service.reconcile_request(charge, txid or None)
             elif action == "prepare":
                 service.prepare_request(charge)
             else:
@@ -264,7 +323,7 @@ def request_detail(request, org_id, request_id):
             error = str(exc)
         except IntegrityError:
             error = (
-                "This payment was already recorded. Check the history before retrying."
+                _("This payment was already recorded. Check the history before retrying.")
             )
     charge.refresh_from_db()
     return render(
@@ -272,12 +331,26 @@ def request_detail(request, org_id, request_id):
         "app_bch_flow/financial/request.html",
         {
             "member": member,
+            "wallet_home_url": _url(member, charge.account.asset, charge.account.environment, charge.account.wallet_id or "legacy"),
             "charge": charge,
             "status_label": STATUS_LABELS.get(charge.status, charge.status),
             "amount": display(charge.amount_units, charge.account.asset),
             "received": display(charge.received_units, charge.account.asset),
             "error": error,
             "checkout_url": checkout_url(charge),
+            # BTC-only presentation data; BCH and Pix retain their existing payloads.
+            "btc_receive_address": (
+                charge.address
+                if charge.account.asset == "BTC"
+                and charge.account.environment != "sandbox"
+                and not charge.address.startswith("pending:")
+                else ""
+            ),
+            "btc_payment_uri": (
+                payment_payload_for(charge)
+                if charge.account.asset == "BTC" and charge.account.environment != "sandbox"
+                else ""
+            ),
             "operation_key": uuid.uuid4().hex,
             "environment_label": LABELS[charge.account.environment],
             "is_sandbox": charge.account.environment == "sandbox",
@@ -330,6 +403,16 @@ def checkout(request, token):
                     charge.account.asset,
                 ),
                 "payment_payload": payload,
+                "btc_receive_address": (
+                    charge.address
+                    if charge.account.asset == "BTC"
+                    and charge.account.environment != "sandbox"
+                    and not charge.address.startswith("pending:")
+                    else ""
+                ),
+                "btc_payment_uri": payload
+                if charge.account.asset == "BTC" and charge.account.environment != "sandbox"
+                else "",
                 "token": token,
                 "expired": expired,
                 "environment_label": LABELS[charge.account.environment],
@@ -365,12 +448,14 @@ def mercado_webhook(request, org_id, environment):
     if len(request.body) > 16384 or len(request.GET.getlist("data.id")) != 1:
         return JsonResponse({"error": "invalid_notification"}, status=400)
     resource = request.GET.get("data.id", "")
+    if not resource or len(resource) > 256:
+        return JsonResponse({"error": "invalid_notification"}, status=400)
+    if environment not in ("mercadopago_test", "live"):
+        return JsonResponse({"error": "invalid_environment"}, status=400)
     # Config is keyed by organization. Signature selects no payer-supplied account.
     account = FlowAccount.objects.filter(
         organization_id=org_id, asset="BRL", environment=environment
     ).first()
-    if environment not in ("mercadopago_test", "live"):
-        return JsonResponse({"error": "invalid_environment"}, status=400)
     if account is None:
         return JsonResponse({"error": "not_configured"}, status=503)
     try:
@@ -407,22 +492,23 @@ def payment_payload_for(charge):
     if (
         charge.expires_at <= timezone.now()
         or charge.status in ("paid", "overpaid", "review")
+        or not charge.address
         or charge.address.startswith("pending:")
     ):
         return ""
-    if (
-        charge.account.asset in ("BTC", "BCH")
-        and charge.account.environment != "sandbox"
-    ):
-        scheme = "bitcoin:" if charge.account.asset == "BTC" else ""
-        return (
-            scheme
-            + charge.address
-            + "?amount="
-            + display(
-                max(0, charge.amount_units - charge.received_units),
-                charge.account.asset,
-            )
+    if charge.account.asset == "BTC" and charge.account.environment != "sandbox":
+        # BIP-21: the QR contains a payment URI, not a private key or signing data.
+        # Never issue a zero-amount request or silently substitute a new address.
+        remaining = charge.amount_units - charge.received_units
+        if remaining <= 0:
+            return ""
+        return "bitcoin:" + charge.address + "?" + urlencode(
+            {"amount": display(remaining, "BTC")}
+        )
+    if charge.account.asset == "BCH" and charge.account.environment != "sandbox":
+        # Preserve the legacy BCH payload exactly as previously generated.
+        return charge.address + "?amount=" + display(
+            max(0, charge.amount_units - charge.received_units), "BCH"
         )
     return charge.payment_payload
 
@@ -467,4 +553,23 @@ def signing_package(request, org_id, withdrawal_id):
     response["Content-Disposition"] = 'attachment; filename="signing-package.json"'
     response["Cache-Control"] = "no-store"
     response["X-Content-Type-Options"] = "nosniff"
+    return response
+
+@never_cache
+@require_GET
+def receipt(request, org_id, request_id):
+    member = _member(request, org_id)
+    if member is None:
+        return redirect('bch_flow:login')
+    charge = get_object_or_404(FlowRequest.objects.select_related('account__organization'), pk=request_id, account__organization_id=org_id)
+    receipts = list(charge.receipts.filter(status='credited').order_by('created_at'))
+    verified = charge.status in ('paid', 'overpaid') and sum(item.amount_units for item in receipts) >= charge.amount_units
+    response = render(request, 'app_bch_flow/financial/receipt.html', {
+        'member': member, 'wallet_home_url': _url(member, charge.account.asset, charge.account.environment, charge.account.wallet_id or 'legacy'), 'charge': charge, 'receipts': receipts, 'verified': verified,
+        'is_sandbox': charge.account.environment == 'sandbox',
+        'amount': display(charge.amount_units, charge.account.asset),
+        'received': display(sum(item.amount_units for item in receipts), charge.account.asset),
+    })
+    response['Cache-Control'] = 'private, no-store'
+    response['X-Robots-Tag'] = 'noindex, nofollow'
     return response

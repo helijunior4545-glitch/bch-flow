@@ -1,0 +1,17 @@
+/* BCH Flow V2.3 — scoped wallet navigation, read-only history and opt-in inspection */
+.mw23-nav{display:flex;gap:7px;overflow-x:auto;padding:9px 0 18px;margin:6px 0 12px;scrollbar-width:thin}
+.mw23-nav a{flex:0 0 auto;padding:10px 14px;border:1px solid #d4e3da;border-radius:999px;background:#f8fbf9;color:#225641;font-size:12px;font-weight:700;text-decoration:none}
+.mw23-nav a:hover,.mw23-nav a:focus-visible{background:#e9f4ed;outline-offset:2px}
+.mw23-panel{scroll-margin-top:24px}.mw23-scroll{overflow-x:auto;margin-top:14px}
+.mw23-table{width:100%;border-collapse:collapse;font-size:12px;min-width:540px}
+.mw23-table th{text-align:left;color:#53695c;font-weight:750;border-bottom:1px solid #d9e6dc;padding:12px 10px}
+.mw23-table td{padding:14px 10px;border-bottom:1px solid #e6eee9;vertical-align:top}
+.mw23-table a,.mw23-footer a,.mw23-address a{color:#176b49;font-weight:750}
+.mw23-table code{overflow-wrap:anywhere}.mw23-note,.mw23-muted{color:#607669;font-size:12px;line-height:1.6}
+.mw23-addresses{display:grid;gap:10px;margin-top:18px}
+.mw23-address{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border:1px solid #dce9df;border-radius:12px;padding:16px;background:#f9fbfa}
+.mw23-address>div{min-width:0;flex:1}.mw23-address code{display:block;overflow-wrap:anywhere;word-break:break-word;font-size:12px;margin-top:7px}
+.mw23-kicker{color:#607669;font-size:10px;letter-spacing:.07em;font-weight:700}
+.mw23-footer{display:flex;gap:18px;flex-wrap:wrap;margin-top:20px;font-size:12px}
+.mw23-empty{border:1px dashed #d3e3d9;padding:20px;border-radius:12px;color:#607669}
+@media(max-width:600px){.mw23-address{align-items:flex-start;flex-direction:column}.mw23-nav a{padding:9px 12px}}

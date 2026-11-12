@@ -2,12 +2,12 @@
 
 from django.utils.translation import gettext as _
 
-
 from django.db import transaction
 from app_bch_flow.models import FlowInbox, FlowRequest, FlowAccount, FlowReceipt
 from .service import reconcile_request
 from .providers import CoreNode
-from .amounts import PaymentError
+from .nodes import blockchain_node
+from .amounts import PaymentError, ProviderUnavailable, units
 
 
 def process_inbox(limit=100):
@@ -53,8 +53,53 @@ def process_inbox(limit=100):
     return completed, failed
 
 
+def _verify_btc_change_outputs(account, node, txids):
+    """BTC only: verify registered change against the wallet's decoded transaction.
+
+    Never credit change as an external receipt. Never infer ownership from a
+    matching address alone. This verifies the recorded outpoint and amount;
+    spending eligibility remains the responsibility of the BTC provider.
+    """
+    if account.asset != "BTC":
+        return
+
+    from app_bch_flow.models import FlowBTCChange
+
+    changes = (
+        FlowBTCChange.objects.filter(account=account, txid__in=txids)
+        .select_related("withdrawal")
+        .order_by("created_at")
+    )
+    for change in changes:
+        withdrawal = change.withdrawal
+        if (
+            withdrawal.account_id != account.pk
+            or withdrawal.txid != change.txid
+            or withdrawal.status not in ("submitted", "submitting", "unknown")
+            or change.vout is None
+            or change.amount_units is None
+            or change.amount_units <= 0
+        ):
+            raise PaymentError(_("BTC change record is inconsistent with its withdrawal."))
+        confirmations, outputs = node.outputs(change.txid)
+        if confirmations < 0:
+            raise PaymentError(_("BTC change transaction was removed from the active chain."))
+        matching = [
+            output for output in outputs
+            if output.get("n") == change.vout
+        ]
+        if len(matching) != 1:
+            raise PaymentError(_("BTC change output index does not match the transaction."))
+        output = matching[0]
+        if (
+            node.output_address(output) != change.address
+            or units(output.get("value"), "BTC") != change.amount_units
+        ):
+            raise PaymentError(_("BTC change output address or amount differs from the record."))
+
+
 def sync_crypto(account):
-    node = CoreNode(account)
+    node = blockchain_node(account)
     node.ready()
     changes = node.rpc("listsinceblock", account.sync_cursor, 1, True)
     unexpected_sends = {
@@ -83,11 +128,30 @@ def sync_crypto(account):
     ):
         if source.startswith(account.asset + ":" + account.environment + ":"):
             txids.add(source.split(":")[2])
+
+    if account.asset == "BTC":
+        # Include recorded BTC change even when listsinceblock has no new event.
+        # Do not inspect change records belonging to BCH or BRL accounts.
+        from app_bch_flow.models import FlowBTCChange
+
+        txids.update(
+            FlowBTCChange.objects.filter(account=account)
+            .exclude(txid__isnull=True)
+            .values_list("txid", flat=True)
+        )
+        try:
+            _verify_btc_change_outputs(account, node, txids - {None, ""})
+        except (PaymentError, ProviderUnavailable, KeyError, TypeError, ValueError):
+            FlowAccount.objects.filter(pk=account.pk).update(frozen=True)
+            raise PaymentError(
+                _("BTC change verification failed. Account frozen for manual review.")
+            ) from None
+
     requests = list(
         account.requests.exclude(address__startswith="pending:").order_by("created_at")
     )
     count = 0
-    for txid in sorted(txids - {None}):
+    for txid in sorted(txids - {None, ""}):
         confirmations, outputs = node.outputs(txid)
         addresses = {node.output_address(out) for out in outputs}
         for request in requests:

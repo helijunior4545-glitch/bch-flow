@@ -1,0 +1,31 @@
+{
+  "version": "5.0",
+  "created_at": "2026-11-11T12:32:13.714443+00:00",
+  "files": {
+    "html": {
+      "existed": true,
+      "before": "f43fc4a2cb6f69f16104a6f511431f79ccb80deae2b7f5b89aea23dfa7e2f6a9",
+      "after": "2420961d211a3c77b4157913071b3ac64fd8ffbdbede6834fcea1ddfa15ad1b7"
+    },
+    "css": {
+      "existed": true,
+      "before": "f216e41c17a44c58c652a2c8affab2f697d855323e5c0b13f2a4f71edf098b2f",
+      "after": "146eb2cc279a226eb2e8b2bfced4c36d409f9b4bb3c23626d61a42e10ce8da0b"
+    },
+    "js": {
+      "existed": true,
+      "before": "34f8b11424c8e61e6716b7f5b5868c2226c70d11b539f5c8f5cf5550f51f4ef8",
+      "after": "6374445069e06b8d173632b66a8ff827e1cce692735deef5a740369785f7096f"
+    },
+    "poster": {
+      "existed": false,
+      "before": null,
+      "after": "0324e3a38e907ccb2fc1ea6d39de25aa85421d071ce697780e2a266da1dcbf6e"
+    },
+    "video": {
+      "existed": false,
+      "before": null,
+      "after": "c98f4e26fa75bf22a406a1bbdfef957236dc8a3ad0f2e58100789f9f8344c0e8"
+    }
+  }
+}

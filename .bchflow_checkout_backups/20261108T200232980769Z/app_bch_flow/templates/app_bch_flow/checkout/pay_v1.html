@@ -1,0 +1,32 @@
+{% extends 'app_bch_flow/base.html' %}
+{% load static %}
+{% block title %}Payment request · BCH Flow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/pay-v2.css' %}">
+<main id="main" class="pix-pay" data-pix-pay data-expires="{{ invoice.expires_at|date:'c' }}" data-status-url="{{ status_url }}">
+  <header class="pix-top"><a href="{% url 'bch_flow:home' %}" class="pix-logo">BCH<span>Flow</span></a><span class="pix-secure">PAYMENT REQUEST · PREVIEW</span></header>
+  <section class="pix-wrap" aria-label="Payment request">
+    <div class="pix-step">PAYMENT DETAILS <span class="pix-network">{{ invoice.network|upper }}</span></div>
+    <div class="pix-recipient"><div class="pix-avatar" aria-hidden="true">↗</div><div><span>Requested by</span><strong>{{ invoice.organization.name|default:"Organization" }}</strong><small>Recipient identity and wallet ownership not verified</small></div></div>
+    <div class="pix-value-label">Amount requested</div>
+    <h1 class="pix-value">{{ amount_bch }} <span>BCH</span></h1>
+    <p class="pix-sats">{{ invoice.amount_satoshis }} satoshis</p>
+    <div class="pix-state"><span class="pix-pulse" aria-hidden="true"></span><div><strong data-pix-state>Awaiting verification</strong><small>Created is not proof of payment</small></div></div>
+    <div class="pix-qr-panel" role="group" aria-label="QR code demonstration, not a payment code">
+      <div class="pix-qr-frame" aria-hidden="true"><svg viewBox="0 0 240 240" width="240" height="240" focusable="false"><rect width="240" height="240" rx="12" fill="#fff"/><g fill="none" stroke="#204d3a" stroke-width="9"><rect x="18" y="18" width="56" height="56" rx="4"/><rect x="166" y="18" width="56" height="56" rx="4"/><rect x="18" y="166" width="56" height="56" rx="4"/></g><g fill="#204d3a"><rect x="36" y="36" width="20" height="20"/><rect x="184" y="36" width="20" height="20"/><rect x="36" y="184" width="20" height="20"/><rect x="94" y="24" width="12" height="12"/><rect x="118" y="24" width="12" height="12"/><rect x="142" y="48" width="12" height="12"/><rect x="94" y="72" width="12" height="12"/><rect x="118" y="72" width="12" height="12"/><rect x="94" y="172" width="12" height="12"/><rect x="118" y="196" width="12" height="12"/><rect x="142" y="172" width="12" height="12"/><rect x="166" y="118" width="12" height="12"/><rect x="190" y="142" width="12" height="12"/><rect x="214" y="190" width="12" height="12"/></g><path d="M95 111h50m-50 17h50" stroke="#e1a34c" stroke-width="11" stroke-linecap="round"/><rect x="76" y="91" width="88" height="61" rx="10" fill="#fff" fill-opacity=".88"/><text x="120" y="116" font-family="sans-serif" font-size="13" font-weight="800" fill="#9a6430" text-anchor="middle">DEMO</text><text x="120" y="133" font-family="sans-serif" font-size="8" fill="#9a6430" text-anchor="middle">NOT SCANNABLE</text></svg></div>
+      <strong>Scan to pay · coming soon</strong>
+      <p>This is a decorative preview, not a functional QR code. Payment remains disabled until the merchant wallet is verified and the financial release gates pass.</p>
+    </div>
+    <div class="pix-demo"><div class="pix-demo-symbol" aria-hidden="true">◇</div><strong>Payment demonstration</strong><p>QR payment and wallet launch are disabled until address ownership, transaction verification and settlement controls are approved.</p></div>
+    <div class="pix-actions"><button type="button" class="pix-button" data-pix-copy="pix-address">Copy address for review</button><span class="pix-action-note">Information only · not a payment instruction</span></div>
+    <details class="pix-details"><summary>View payment details</summary>
+      <dl><div><dt>Reference</dt><dd>{{ invoice.description|default:"—" }}</dd></div><div><dt>Request ID</dt><dd>{{ invoice.id }}</dd></div><div><dt>Expires</dt><dd>{{ expires_at|date:'M d, Y · H:i T' }}</dd></div><div><dt>Time remaining</dt><dd data-pix-countdown>Checking…</dd></div><div><dt>Recorded status</dt><dd>Created · Unpaid</dd></div></dl>
+      <div class="pix-address"><span>Unverified receiving address</span><code id="pix-address">{{ invoice.receiving_cashaddr }}</code></div>
+    </details>
+    <div class="pix-bottom"><span>🔒 Settlement blocked</span><span data-pix-poll>Not paid</span></div>
+  </section>
+  <footer class="pix-footer">BCH Flow · A clearer way to request Bitcoin Cash</footer>
+  <div class="pix-toast" role="status" aria-live="polite" data-pix-toast></div>
+</main>
+<script defer src="{% static 'app_bch_flow/js/pay-v2.js' %}"></script>
+{% endblock %}
