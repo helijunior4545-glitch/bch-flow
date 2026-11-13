@@ -1,3 +1,0 @@
-SATOSHIS_PER_BCH = 100_000_000
-SUPPORTED_NETWORKS = ("mainnet", "chipnet")
-DEFAULT_NETWORK = "mainnet"

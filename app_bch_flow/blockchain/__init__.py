@@ -1,1 +1,0 @@
-"""BCH network integration contracts."""

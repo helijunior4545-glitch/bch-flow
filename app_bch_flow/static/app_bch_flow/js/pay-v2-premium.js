@@ -1,2 +1,0 @@
-/* Presentation-only enhancements. Payment polling and copy behavior remain in pay-v2.js. */
-(()=>{'use strict';const root=document.querySelector('[data-pix-pay]');if(!root)return;const reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(!reduce)root.classList.add('checkout-ready');const copy=root.querySelector('[data-pix-copy]');if(copy){copy.addEventListener('click',()=>{copy.classList.add('is-copied');window.setTimeout(()=>copy.classList.remove('is-copied'),950)})}})();
