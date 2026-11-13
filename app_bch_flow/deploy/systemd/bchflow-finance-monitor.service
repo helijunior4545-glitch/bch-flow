@@ -1,0 +1,17 @@
+[Unit]
+Description=BCH Flow Finance watch-only observation (one shot)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/farcry/Documents/bch-flow
+EnvironmentFile=%h/.config/bch-flow/provider.env
+ExecStart=/home/farcry/Documents/bch-flow/.venv/bin/python manage.py bch_merchant_monitor_v299 --org-id f5e8b720-d000-4d17-a9c6-d1c49b5bd192 --probe --lock-dir /home/farcry/Downloads/bchflow-observations --snapshot-file /home/farcry/Downloads/bchflow-observations/finance.json --audit-file /home/farcry/Downloads/bchflow-observations/finance-audit.jsonl
+TimeoutStartSec=180
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,4 @@
+Bitcoin, Bitcoin Cash and Pix icon paths: Simple Icons 15.0.0 (CC0-1.0).
+https://github.com/simple-icons/simple-icons/tree/15.0.0
+Marks and brand names belong to their respective owners.
+Icons are bundled in templates/app_bch_flow/components/asset_symbol.html.

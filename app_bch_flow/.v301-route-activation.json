@@ -1,0 +1,15 @@
+{
+  "created_at_utc": "20261103T172926Z",
+  "files": {
+    "/home/farcry/Documents/bch-flow/config/settings.py": {
+      "backup": "/home/farcry/Documents/bch-flow/config/settings.py.v301-route-20261103T172926Z.bak",
+      "before_sha256": "21063eee340104c680d69be9bca428ecac2548f059a6a90db5562ddcf18f8856",
+      "after_sha256": "3733e287f6ded1982690b03a81c47ce8d887b24f6f172371abc367288d5cb9fb"
+    },
+    "/home/farcry/Documents/bch-flow/config/urls.py": {
+      "backup": "/home/farcry/Documents/bch-flow/config/urls.py.v301-route-20261103T172926Z.bak",
+      "before_sha256": "3abf5f7eea5a8305959bac685c47307c8fd8a12159c1942b9a9826b83effd756",
+      "after_sha256": "214a4e5fddbbf668468aaf07e9cca0f1d050dc6b60b8f4f4bbbcf5f7735847ca"
+    }
+  }
+}

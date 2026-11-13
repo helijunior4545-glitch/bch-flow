@@ -1,0 +1,19 @@
+{% extends 'app_bch_flow/layouts/financial.html' %}{% load static i18n %}
+{% load static %}
+{% block title %}Blockchain diagnostic · BCH Flow{% endblock %}
+{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/pages/diagnostics.css' %}">{% endblock %}
+{% block financial_content %}
+
+{% load static %}
+
+
+<div class="diagnostic-page" data-reveal>
+<div class="mw-container mw-send"><span class="pay-eyebrow">V4.2 / EXTERNAL BLOCKCHAIN DIAGNOSTIC</span><h1>Observe.<br><em>Never assume.</em></h1>
+<section class="pay-section"><span class="pay-status">READ ONLY</span><h2>Inspect a BCH mainnet transaction</h2><p>Checks a real transaction using the existing opt-in NOWNodes diagnostic. No keys, no balance estimates, no invoice settlement.</p>
+<form method="get"><label for="txid">Transaction ID (TXID)</label><input id="txid" name="txid" value="{{ txid }}" maxlength="64" pattern="[a-fA-F0-9]{64}" autocomplete="off" spellcheck="false" required>
+{% if invoice %}<input type="hidden" name="invoice" value="{{ invoice.id }}"><p>Reference invoice: {{ invoice.id }} · {{ invoice.amount_satoshis }} sat · {{ invoice.network }}</p>{% endif %}
+<button class="pay-primary" type="submit">Inspect transaction →</button></form>
+{% if error %}<div class="pay-pending" role="alert">{{ error }}</div>{% endif %}
+{% if report %}<div class="pay-pending" role="status"><strong>External provider observation — NOT payment confirmation</strong><br>TXID: <code>{{ report.txid }}</code><br>Network: {{ report.network }}<br>Confirmations reported: {{ report.confirmations }}<br>Block height: {{ report.block_height }}<br>Observed: {{ report.observed_at }}<br>{% if invoice %}Outputs listing this invoice address: {{ matched_satoshis }} sat (unverified attribution).{% endif %}</div>{% endif %}
+<div class="pay-pending">The diagnostic is disabled unless the server explicitly configures BCHFLOW_V49_ENABLE_REAL_DIAGNOSTIC=1 and BCHFLOW_V48_PRIMARY_KEY. Single-provider observations are not consensus verification, wallet ownership proof, spendable balance, or authorization to fulfill an order. Signing, broadcast and settlement remain blocked.</div></section></div></div>
+{% endblock %}

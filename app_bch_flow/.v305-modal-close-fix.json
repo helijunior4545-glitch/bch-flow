@@ -1,0 +1,13 @@
+{
+  "version": "V305",
+  "files": {
+    "static/bch_wallet_v301/wallet.css": {
+      "before": "e5eed9569f79a771dca2ca7d9fb511a7e7baf595a47cc0fa5c48354b96e4e212",
+      "after": "366aadf6e731078df6c2f27c661b5d8b31a3e5566355cbf809fb82c5fe0904f0"
+    },
+    "static/bch_wallet_v301/wallet.js": {
+      "before": "622786b61f0e1764e14ea274d97a10e8c576f90533e71fe67f053db375517c57",
+      "after": "6078b6246b52c9dcb2d3d93968606a1d9a333e29e76d82f331883a0ad3253ddb"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+BCH Flow V2.6 — explicit multi-provider Blockbook adapter, READ ONLY.
+
+Enable only after choosing and reviewing two independent HTTPS Blockbook BCH mainnet origins:
+BCHFLOW_V26_ENABLE_OBSERVATION=1
+BCHFLOW_V26_PROVIDER_A_URL=https://YOUR-TRUSTED-BCH-BLOCKBOOK-A
+BCHFLOW_V26_PROVIDER_B_URL=https://YOUR-TRUSTED-BCH-BLOCKBOOK-B
+Optional keys: BCHFLOW_V26_PROVIDER_A_KEY and BCHFLOW_V26_PROVIDER_B_KEY.
+
+No public endpoints are assumed. Do not use endpoints without confirming API format, BCH mainnet, trust and rate limits.
+The v2.6 engine does not yet replace the V2.4 page; existing V2.4 inspection still uses the old V4.3 reader.
+To exercise V2.6 without a live provider: python manage.py test app_bch_flow.tests.test_blockchain_engine_v26
+Snapshots are UTXO-only, not transaction history, verified payment, confirmed ownership, or settlement authority.
+No DB changes, signing, broadcasting, background jobs, or invoice mutation.
