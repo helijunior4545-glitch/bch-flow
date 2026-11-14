@@ -13,12 +13,20 @@ from .amounts import PaymentError, ProviderUnavailable
 def public_wallet(value):
     try:
         key = bip32.HDKey.from_base58(value)
-        if key.is_private or key.depth != 3 or key.child_number < 2**31:
+        if key.is_private:
             raise ValueError
         if key.version not in (
             networks.NETWORKS["main"]["xpub"],
             bytes.fromhex("04b24746"),
         ):
+            raise ValueError
+        standard_account = key.depth == 3 and key.child_number >= 2**31
+        electrum_segwit = (
+            key.depth == 1
+            and key.child_number == 2**31
+            and key.version == bytes.fromhex("04b24746")
+        )
+        if not (standard_account or electrum_segwit):
             raise ValueError
         # Canonical version prevents the same wallet being linked via xpub/zpub aliases.
         canonical = key.to_base58(version=networks.NETWORKS["main"]["xpub"])
