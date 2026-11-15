@@ -12,3 +12,39 @@
 @media(max-width:760px){.premium-sidebar{position:sticky;top:0;z-index:35;box-shadow:0 4px 20px #19243c08}.premium-sidebar .premium-sidebar-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:9px 0 0;border-top:1px solid var(--line)}.premium-sidebar-foot .premium-cube,.premium-sidebar-foot>small{display:none}.premium-sidebar-foot strong{font-size:10px}.premium-sidebar-foot form{margin:0}.premium-sidebar-foot button{font-size:11px}.premium-sidebar .premium-logo{margin-bottom:10px}}
 .wallet-onboarding{display:flex;align-items:center;gap:16px;border:1px solid #ef9e5b44;border-radius:16px;background:linear-gradient(110deg,#fff7ec,#fff);padding:22px;margin-top:24px}.wallet-onboarding-icon{display:grid;place-items:center;width:42px;height:42px;border:1px solid #ef9e5b33;border-radius:12px;background:#fff;color:#ed8133;flex-shrink:0}.wallet-onboarding h2{font-size:18px;margin:0 0 6px}.wallet-onboarding p{font-size:12px;color:var(--muted);margin:0}.wallet-onboarding>a{margin-left:auto;flex-shrink:0}@media(max-width:800px){.wallet-onboarding{flex-wrap:wrap;padding:18px}.wallet-onboarding>div{flex:1;min-width:170px}.wallet-onboarding>a{margin:0;width:100%}}
 @media(min-width:761px){.premium-sidebar{height:calc(100dvh - 44px);max-height:calc(100dvh - 44px)}}
+
+
+/* BCH BLAZE 2026 — wallet dashboard hierarchy; page-scoped overrides. */
+.pay-premium .bfc-dashboard-hero{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:26px 0 22px;margin:0;border-bottom:1px solid var(--line);
+}
+.pay-premium .bfc-dashboard-hero .premium-hero-copy{min-width:0}
+.pay-premium .bfc-dashboard-hero h1{
+  margin:7px 0 9px;font-size:clamp(27px,3vw,39px);letter-spacing:-.055em;
+  line-height:1.1;
+}
+.pay-premium .bfc-hero-period{color:var(--orange)}
+.pay-premium .bfc-hero-separator{display:inline-block;padding:0 7px;color:var(--orange)}
+.pay-premium .bfc-hero-subtitle{font-size:12px;line-height:1.6;max-width:520px;color:var(--muted);margin:0}
+.pay-premium .bfc-hero-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
+.pay-premium .bfc-hero-context{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:650;white-space:nowrap;color:var(--muted);padding:7px 9px;border-radius:9px;background:var(--paper)}
+.pay-premium .bfc-hero-context :is(svg,i){width:14px;height:14px}
+.pay-premium .bfc-hero-actions .premium-button{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-height:36px}
+.pay-premium .bfc-hero-actions .premium-button :is(svg,i){width:15px;height:15px}
+.pay-premium .premium-controls{margin-top:18px}
+.pay-premium .premium-wallet-heading{margin-top:20px}
+@media(max-width:1080px){
+  .pay-premium .bfc-dashboard-hero{align-items:flex-start;flex-direction:column}
+  .pay-premium .bfc-hero-actions{justify-content:flex-start}
+}
+@media(max-width:760px){
+  .pay-premium .bfc-dashboard-hero{padding:20px 0 17px;gap:15px}
+  .pay-premium .bfc-dashboard-hero h1{font-size:29px}
+  .pay-premium .bfc-hero-actions{width:100%}
+  .pay-premium .bfc-hero-context{flex-basis:100%;width:max-content}
+  .pay-premium .bfc-hero-actions .premium-button{flex:1;justify-content:center;min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .pay-premium .bfc-hero-actions *{scroll-behavior:auto}
+}
