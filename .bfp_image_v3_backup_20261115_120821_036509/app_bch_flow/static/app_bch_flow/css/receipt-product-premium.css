@@ -1,0 +1,19 @@
+/* BCH Flow product presentation — no new palette, no global overrides. */
+.bfp-product{margin:18px 0 22px;padding:0;border:1px solid var(--line);border-radius:16px;background:var(--paper);overflow:hidden;min-width:0}
+.bfp-product__eyebrow{display:flex;align-items:center;gap:8px;padding:13px 17px 0;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase}
+.bfp-product__eyebrow :is(svg,i){width:14px;height:14px;color:var(--asset-ink,var(--orange))}
+.bfp-product__main{display:flex;align-items:center;gap:14px;padding:14px 17px 17px;min-width:0}
+.bfp-product__symbol{width:46px;height:46px;flex:0 0 46px;display:grid;place-items:center;border-radius:12px;background:var(--asset-soft,var(--paper));color:var(--asset-ink,var(--orange))}
+.bfp-product__symbol :is(svg,i){width:21px;height:21px}
+.bfp-product__copy{min-width:0;flex:1}
+.bfp-product__name{display:block;font-size:14px;font-weight:700;line-height:1.4;overflow-wrap:anywhere}
+.bfp-product__desc{margin:5px 0 0!important;font-size:11px!important;line-height:1.55;color:var(--muted);overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.bfp-product__sku{display:block;margin-top:6px;font-size:10px;color:var(--muted);overflow-wrap:anywhere}
+.bfp-product__bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 17px;border-top:1px solid var(--line);font-size:11px}
+.bfp-product__bottom span{color:var(--muted)}
+.bfp-product__bottom strong{font-size:12px;font-weight:700;white-space:nowrap}
+.bfp-product__note{padding:0 17px 12px;margin:0!important;color:var(--muted);font-size:10px!important;line-height:1.5}
+/* Existing QR, amount, status and copy controls remain untouched. */
+.pay-checkout .bfp-product{margin:18px 0 22px}
+.financial-page .bfp-product{margin:16px 0 22px}
+@media(max-width:500px){.bfp-product__main{gap:11px;padding:12px 14px 15px}.bfp-product__eyebrow{padding:12px 14px 0}.bfp-product__bottom{padding:12px 14px}.bfp-product__note{padding:0 14px 12px}.bfp-product__symbol{width:40px;height:40px;flex-basis:40px}.bfp-product__bottom{align-items:flex-start;flex-wrap:wrap}}

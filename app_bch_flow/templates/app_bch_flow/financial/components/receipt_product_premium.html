@@ -4,7 +4,14 @@
 <section class="bfp-product" aria-label="{% trans 'Product or service' %}">
   <div class="bfp-product__eyebrow"><i data-lucide="package-check" aria-hidden="true"></i>{% trans "Product or service" %}</div>
   <div class="bfp-product__main">
-    <span class="bfp-product__symbol" aria-hidden="true"><i data-lucide="package"></i></span>
+    {# BFP-PRODUCT-IMAGE-V3 #}
+    {% if item.product and item.product.image %}
+      <span class="bfp-product__symbol bfp-product__symbol--image">
+        <img class="bfp-product__image" src="{{ item.product.image.url }}" alt="{{ item.name }}" loading="lazy" decoding="async">
+      </span>
+    {% else %}
+      <span class="bfp-product__symbol" aria-hidden="true"><i data-lucide="package"></i></span>
+    {% endif %}
     <div class="bfp-product__copy">
       <strong class="bfp-product__name">{{ item.name }}</strong>
       {% if item.description %}<p class="bfp-product__desc">{{ item.description|truncatechars:155 }}</p>{% endif %}

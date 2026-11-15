@@ -1,0 +1,18 @@
+{% load i18n %}
+{% with item=charge.catalog_snapshot %}
+{% if item %}
+<section class="bfp-product" aria-label="{% trans 'Product or service' %}">
+  <div class="bfp-product__eyebrow"><i data-lucide="package-check" aria-hidden="true"></i>{% trans "Product or service" %}</div>
+  <div class="bfp-product__main">
+    <span class="bfp-product__symbol" aria-hidden="true"><i data-lucide="package"></i></span>
+    <div class="bfp-product__copy">
+      <strong class="bfp-product__name">{{ item.name }}</strong>
+      {% if item.description %}<p class="bfp-product__desc">{{ item.description|truncatechars:155 }}</p>{% endif %}
+      {% if item.sku %}<small class="bfp-product__sku">SKU · {{ item.sku }}</small>{% endif %}
+    </div>
+  </div>
+  <div class="bfp-product__bottom"><span>{% trans "Catalog reference" %}</span><strong>{{ item.price }} {{ item.currency }}</strong></div>
+  {% if item.currency != charge.account.asset %}<p class="bfp-product__note">{% trans "Catalog currency differs from payment currency. No automatic conversion is implied." %}</p>{% endif %}
+</section>
+{% endif %}
+{% endwith %}

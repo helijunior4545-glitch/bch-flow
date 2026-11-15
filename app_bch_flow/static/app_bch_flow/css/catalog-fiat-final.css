@@ -1,0 +1,13 @@
+
+/* Compact, isolated input above crypto amount, inherited palette */
+.bfc-fiat{margin:15px 0 18px;padding:16px;border:1px solid var(--line,#d7dce2);border-radius:16px;background:var(--paper,#f8f9fb);min-width:0}
+.bfc-fiat__heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:11px}
+.bfc-fiat__heading strong{font-size:12px;letter-spacing:-.01em}
+.bfc-fiat__heading small{font-size:10px;opacity:.65}
+.bfc-fiat__controls{display:flex;gap:9px;min-width:0}
+.bfc-fiat__controls input{flex:1;min-width:0;min-height:44px;font-size:16px;font-variant-numeric:tabular-nums}
+.bfc-fiat__controls select{flex:0 0 95px;width:95px;min-height:44px;font-size:12px}
+.bfc-fiat__feedback{font-size:11px;line-height:1.55;margin:10px 0 0;opacity:.78}
+.bfc-fiat__feedback[data-error="true"]{color:#b34432;opacity:1}
+@media(max-width:450px){.bfc-fiat{padding:12px}.bfc-fiat__controls select{flex-basis:82px;width:82px}}
+@media(prefers-reduced-motion:reduce){.bfc-fiat *{transition:none!important}}

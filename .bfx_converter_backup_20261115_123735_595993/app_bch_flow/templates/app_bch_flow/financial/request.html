@@ -1,0 +1,122 @@
+{% extends "app_bch_flow/layouts/financial.html" %}
+{% load static i18n %}
+{% block title %}{% trans "Payment request ·" %} {{ charge.account.asset }}{% endblock %}
+{% block financial_content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-product-premium.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/checkout-request-v2.css' %}">
+<!-- BFP-CHECKOUT-REQUEST-V2 -->
+
+{% load static %}
+
+  <div class="financial-page bfp-v2" data-payment-app data-asset="{{ charge.account.asset }}">
+
+    <div class="pay-heading">
+      <div>
+        <p class="pay-eyebrow">{% trans "RECEIVE ·" %} {{ charge.account.asset }}</p>
+        <h1>{% trans "Every payment," %}<br>
+          <span>{% trans "clearly tracked." %}</span>
+        </h1>
+      </div>
+    </div>
+    <div class="pay-mode">
+      <i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}">
+      </i>
+      <strong>{{ environment_label }}</strong>
+      {% if is_sandbox %}
+        <span>{% trans "Do not send real money to this request." %}</span>
+      {% endif %}
+    </div>
+    {% if error %}
+      <div class="pay-error" role="alert">{{ error }}</div>
+    {% endif %}
+    <div class="bfp-request-grid">
+    <section class="pay-request-card bfp-request-summary">
+      <div class="pay-section-heading">
+        <span>{% trans "REQUESTED AMOUNT" %}</span>
+        <span class="pay-status">{{ status_label }}</span>
+      </div>
+      <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
+      </div>
+      <p>{{ charge.description|default:'Payment request' }}</p>
+{% include "app_bch_flow/financial/components/receipt_product_premium.html" %}
+      <div class="pay-request-meta">
+        <div>
+          <span>{% trans "Received and credited" %}</span>
+          <strong>{{ received }} {{ charge.account.asset }}</strong>
+        </div>
+        <div>
+          <span>{% trans "Expires" %}</span>
+          <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
+        </div>
+      </div>
+    </section>
+    <section class="pay-request-card bfp-request-actions">
+      <p class="bfp-v2-kicker">{% trans "Share payment request" %}</p>
+      <p class="pay-muted bfp-request-action-note">{% trans "Open the payment page or copy the link to share with your customer." %}</p>
+      <p class="pay-eyebrow">{% trans "ADDRESS / REFERENCE" %}</p>
+      <code class="pay-address">{{ charge.address }}</code>
+      <a class="pay-primary" href="{{ checkout_url }}">
+        <i data-lucide="scan-line">
+        </i>{% trans "Open payment page" %}</a>
+      <button type="button" class="pay-secondary" data-copy-link="{{ checkout_url }}">
+        <i data-lucide="copy">
+        </i>{% trans "Copy link" %}</button>
+    </section>
+    </div>
+    {% if can_write %}
+      <section class="pay-section">
+        <h2>
+          {% if is_sandbox %}{% trans "Try receiving a payment" %}{% else %}{% trans "Check with provider" %}{% endif %}
+        </h2>
+        {% if is_sandbox %}
+          <p class="pay-muted">{% trans "This action records simulated sandbox units without accessing a blockchain or bank." %}</p>
+          <form method="post" class="pay-inline-form" data-submit-feedback>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="simulate">
+            <input type="hidden" name="key" value="{{ operation_key }}">
+            <label>{% trans "Simulated amount" %}<input name="amount" required value="{{ amount }}" inputmode="decimal" maxlength="30">
+            </label>
+            <button class="pay-primary" type="submit">{% trans "Simulate receipt" %}<i data-lucide="flask-conical">
+              </i>
+            </button>
+          </form>
+        {% else %}
+          <form method="post" class="pay-inline-form" data-submit-feedback>
+            {% csrf_token %}
+            <input type="hidden" name="action" value="refresh">
+            {% if charge.account.asset != "BRL" %}
+              <label>{% trans "TXID to verify on the node" %}<input name="txid" minlength="64" maxlength="64" spellcheck="false">
+              </label>
+            {% endif %}
+            <button class="pay-primary" type="submit">{% trans "Check provider status" %}<i data-lucide="refresh-cw">
+              </i>
+            </button>
+          </form>
+          <form method="post">
+            {% csrf_token %}
+            <button class="pay-text-button" type="submit" name="action" value="prepare">{% trans "Prepare or recover provider request" %}</button>
+          </form>
+        {% endif %}
+      </section>
+    {% endif %}
+    <section class="pay-section" data-reveal>
+      <div class="pay-section-heading"><h2>{% trans "Payment trail" %}</h2><a class="pay-secondary" href="{% url 'bch_flow:financial_receipt' member.organization_id charge.pk %}"><i data-lucide="receipt-text"></i>{% trans 'View receipt' %}</a></div>
+      {% for receipt in charge.receipts.all %}
+        <div class="pay-receipt">
+          <code>{{ receipt.source_key }}</code>
+          <span>{{ receipt.confirmations }} {% trans "confirmations ·" %} {{ receipt.get_status_display }}</span>
+        </div>
+      {% empty %}
+        <div class="pay-empty">
+          <i data-lucide="clock-3">
+          </i>
+          <p>{% trans "Waiting for verifiable payment evidence." %}</p>
+        </div>
+      {% endfor %}
+    </section>
+    <div class="pay-toast" hidden role="status" aria-live="polite">
+    </div>
+  </div>
+  <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer>
+  </script>
+{% endblock %}

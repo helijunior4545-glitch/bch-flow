@@ -1,0 +1,37 @@
+/* BFP-CHECKOUT-REQUEST-V2: layout only. All colors come from existing BCH Flow tokens. */
+.pay-checkout.bfp-v2{width:min(1020px,100%);padding-inline:clamp(16px,3vw,38px)}
+.bfp-v2 .bfp-checkout-header{max-width:720px;margin:0 auto 24px;text-align:center}
+.bfp-v2 .bfp-checkout-header .pay-checkout-brand{justify-content:center;margin-bottom:16px}
+.bfp-v2 .bfp-checkout-header h1{font-size:clamp(29px,3.4vw,43px);margin:7px 0 13px}
+.bfp-v2 .bfp-checkout-header .pay-mode{justify-content:center;padding:4px 0 12px}
+.bfp-v2 .bfp-checkout-header .pay-pending{text-align:left;margin:12px 0}
+.bfp-v2 .bfp-checkout-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:0!important;overflow:hidden;gap:0}
+.bfp-v2 .bfp-checkout-summary,.bfp-v2 .bfp-checkout-payment{min-width:0;padding:clamp(22px,3vw,36px)}
+.bfp-v2 .bfp-checkout-summary{display:flex;flex-direction:column;align-items:flex-start;border-right:1px solid var(--line)}
+.bfp-v2 .bfp-checkout-payment{background:var(--paper);display:flex;flex-direction:column;justify-content:center}
+.bfp-v2 .bfp-v2-kicker{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}
+.bfp-v2 .bfp-checkout-summary .pay-amount{font-size:clamp(34px,4vw,50px);margin:12px 0 8px;line-height:1.2}
+.bfp-v2 .bfp-checkout-summary .bfp-product{width:100%;margin:18px 0 20px;background:var(--white)}
+.bfp-v2 .bfp-checkout-summary .bfp-checkout-description{font-size:12px;color:var(--muted);line-height:1.6;margin:0;overflow-wrap:anywhere}
+.bfp-v2 .bfp-checkout-summary .pay-request-meta{width:100%;grid-template-columns:1fr;gap:14px;margin:auto 0 0;padding:20px 0 0;border-bottom:0}
+.bfp-v2 .bfp-checkout-payment .pay-qr{margin:4px auto 22px;width:min(240px,100%);height:auto;aspect-ratio:1;padding:13px;background:var(--white)}
+.bfp-v2 .bfp-checkout-payment label{margin:8px 0 5px;font-size:11px}
+.bfp-v2 .bfp-checkout-payment textarea{min-height:76px;max-height:120px;resize:none;background:var(--white);font-size:11px}
+.bfp-v2 .bfp-checkout-payment .pay-primary{width:100%}
+.bfp-v2 .bfp-checkout-payment .pay-empty{width:100%;background:var(--white);padding:40px 20px}
+.bfp-v2 .pay-poll-status{margin:20px 0 8px}
+.bfp-v2 .pay-footer{margin:16px 0 28px}
+/* Authenticated payment request: same content, editorial two-column arrangement. */
+.financial-page.bfp-v2 .bfp-request-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:0;border:1px solid var(--line);border-radius:20px;overflow:hidden;background:var(--white);box-shadow:var(--shadow);margin-bottom:20px}
+.financial-page.bfp-v2 .bfp-request-grid .pay-request-card{margin:0;border:0;border-radius:0;box-shadow:none;min-width:0;padding:clamp(20px,3vw,32px)}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-request-summary{border-right:1px solid var(--line)}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-request-actions{background:var(--paper);display:flex;flex-direction:column;align-items:stretch}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-request-actions .pay-address{background:var(--white);max-height:110px;overflow:auto}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-request-actions .pay-primary,.financial-page.bfp-v2 .bfp-request-grid .bfp-request-actions .pay-secondary{width:100%;margin:0 0 10px;min-height:44px}
+.financial-page.bfp-v2 .bfp-request-grid .pay-request-meta{margin:24px 0 0;border-bottom:0;padding-bottom:0}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-product{margin:20px 0 0}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-v2-kicker{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 14px}
+.financial-page.bfp-v2 .bfp-request-grid .bfp-request-actions .bfp-request-action-note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:8px}
+@media(max-width:760px){.bfp-v2 .bfp-checkout-card{grid-template-columns:1fr}.bfp-v2 .bfp-checkout-summary{border-right:0;border-bottom:1px solid var(--line)}.bfp-v2 .bfp-checkout-summary .pay-request-meta{margin-top:18px}.financial-page.bfp-v2 .bfp-request-grid{grid-template-columns:1fr}.financial-page.bfp-v2 .bfp-request-grid .bfp-request-summary{border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:500px){.pay-checkout.bfp-v2{padding-inline:16px}.bfp-v2 .bfp-checkout-summary,.bfp-v2 .bfp-checkout-payment{padding:20px}.bfp-v2 .bfp-checkout-header h1{font-size:31px}.bfp-v2 .bfp-checkout-payment .pay-qr{width:220px}}
+@media print{.bfp-v2 .bfp-checkout-card,.financial-page.bfp-v2 .bfp-request-grid{box-shadow:none;break-inside:avoid}}

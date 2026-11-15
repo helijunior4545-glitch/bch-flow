@@ -404,7 +404,7 @@ def _secure(response):
     response["Referrer-Policy"] = "no-referrer"
     response["X-Robots-Tag"] = "noindex, nofollow"
     response["Content-Security-Policy"] = (
-        "default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
+        "default-src 'self'; img-src 'self' data: https://res.cloudinary.com; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
     )
     return response
 

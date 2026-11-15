@@ -17,9 +17,12 @@
 
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-polish.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-product-premium.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/checkout-request-v2.css' %}">
+<!-- BFP-CHECKOUT-REQUEST-V2 -->
 </head>
   <body class="pay-checkout-body">{% include "app_bch_flow/components/language_picker.html" %}{% include "app_bch_flow/components/interaction_messages.html" %}
-    <main id="main" class="pay-checkout" data-payment-app data-asset="{{ charge.account.asset }}" data-status-url="{% url 'bch_flow:financial_checkout_status' token %}" data-initial-status="{{ charge.status }}" data-received="{{ received }}" data-expired="{{ expired|yesno:'true,false' }}">
+    <main id="main" class="pay-checkout bfp-v2" data-payment-app data-asset="{{ charge.account.asset }}" data-status-url="{% url 'bch_flow:financial_checkout_status' token %}" data-initial-status="{{ charge.status }}" data-received="{{ received }}" data-expired="{{ expired|yesno:'true,false' }}">
+      <header class="bfp-checkout-header">
       <div class="pay-checkout-brand">
         <i data-lucide="wallet">
         </i>{% trans "BCH FLOW" %}</div>
@@ -35,15 +38,25 @@
       {% if is_sandbox %}
         <p class="pay-pending">{% trans "Sandbox: do not send real money. The operator records simulated confirmation in the sandbox." %}</p>
       {% endif %}
-      <section class="pay-request-card">
+      </header>
+      <section class="pay-request-card bfp-checkout-card">
+        <div class="bfp-checkout-summary">
+          <p class="bfp-v2-kicker">{% trans "Order summary" %}</p>
         <span class="pay-status" data-state="{{ charge.status }}">{{ status_label }}</span>
         <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
         </div>
-        <p>{{ charge.description }}</p>
+        <p class="bfp-checkout-description">{{ charge.description }}</p>
 {% include "app_bch_flow/financial/components/receipt_product_premium.html" %}
         {% if charge.status == "partial" %}
           <p>{% trans "Remaining:" %} {{ remaining }} {{ charge.account.asset }}</p>
         {% endif %}
+        <div class="pay-request-meta">
+          <div><span>{% trans "Received and credited" %}</span><strong>{{ received }} {{ charge.account.asset }}</strong></div>
+          <div><span>{% trans "Expires" %}</span><strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong></div>
+        </div>
+        </div>
+        <div class="bfp-checkout-payment">
+          <p class="bfp-v2-kicker">{% trans "Payment details" %}</p>
         {% if payment_payload %}
           <img class="pay-qr" src="{% url 'bch_flow:financial_qr' token %}" width="220" height="220" alt="{% if is_sandbox %}Código de demonstração, sem valor monetário{% else %}QR code desta cobrança{% endif %}">
           <label for="payment-payload">
@@ -64,15 +77,6 @@
             </p>
           </div>
         {% endif %}
-        <div class="pay-request-meta">
-          <div>
-            <span>{% trans "Received and credited" %}</span>
-            <strong>{{ received }} {{ charge.account.asset }}</strong>
-          </div>
-          <div>
-            <span>{% trans "Expires" %}</span>
-            <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
-          </div>
         </div>
       </section>
       <p class="pay-poll-status" role="status" aria-live="polite">{% trans "Checking for payment updates…" %}</p>

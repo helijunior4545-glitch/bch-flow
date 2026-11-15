@@ -1,14 +1,14 @@
 {% extends "app_bch_flow/base.html" %}
 {% load static i18n %}
 {% block title %}{% trans "Wallet" %} · {{ member.organization.name }}{% endblock %}
-{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center-premium.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-catalog-v2.css' %}">{% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/wizardconnect.css' %}">{% endif %}{% endblock %}
+{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/catalog-fiat-final.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/payment-center-premium.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-catalog-v2.css' %}">{% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/wizardconnect.css' %}">{% endif %}{% endblock %}
 {% block content %}
 
 {% load static %}
 
 
 
-<main id="main" class="pay-app pay-premium" data-payment-app data-asset="{{ asset }}">
+<main id="main" class="pay-app pay-premium" data-payment-app data-asset="{{ asset }}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
   <span class="premium-a11y" data-interaction-messages data-show-values="{% trans 'Show balances' %}" data-hide-values="{% trans 'Hide balances' %}" data-copy-success="{% trans 'Copied successfully.' %}" data-manual-copy="{% trans 'Select and copy manually.' %}"></span>
   {% include 'app_bch_flow/components/wallet_navigation.html' %}
   <div class="premium-main" id="wallet">
@@ -64,5 +64,6 @@
   <div class="pay-toast" hidden role="status" aria-live="polite"></div>
 </main>
 <script src="{% static 'app_bch_flow/js/payment-center.js' %}" defer></script>
+<script src="{% static 'app_bch_flow/js/catalog-fiat-final.js' %}" defer></script>
 <script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer></script>
 {% endblock %}

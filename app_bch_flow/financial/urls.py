@@ -46,3 +46,7 @@ urlpatterns += [
         name="merchant_mp_callback",
     ),
 ]
+
+# BCHFLOW_FINAL_CATALOG_CONVERTER_V1
+from .market_converter import rates as _bfc_rates
+urlpatterns += [path("api/market-rates/", _bfc_rates, name="financial_market_rates")]

@@ -3,10 +3,12 @@
 {% block title %}{% trans "Payment request ·" %} {{ charge.account.asset }}{% endblock %}
 {% block financial_content %}
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-product-premium.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/checkout-request-v2.css' %}">
+<!-- BFP-CHECKOUT-REQUEST-V2 -->
 
 {% load static %}
 
-  <div class="financial-page" data-payment-app data-asset="{{ charge.account.asset }}">
+  <div class="financial-page bfp-v2" data-payment-app data-asset="{{ charge.account.asset }}">
 
     <div class="pay-heading">
       <div>
@@ -27,7 +29,8 @@
     {% if error %}
       <div class="pay-error" role="alert">{{ error }}</div>
     {% endif %}
-    <section class="pay-request-card">
+    <div class="bfp-request-grid">
+    <section class="pay-request-card bfp-request-summary">
       <div class="pay-section-heading">
         <span>{% trans "REQUESTED AMOUNT" %}</span>
         <span class="pay-status">{{ status_label }}</span>
@@ -46,6 +49,10 @@
           <strong>{{ charge.expires_at|date:'d/m/Y · H:i' }}</strong>
         </div>
       </div>
+    </section>
+    <section class="pay-request-card bfp-request-actions">
+      <p class="bfp-v2-kicker">{% trans "Share payment request" %}</p>
+      <p class="pay-muted bfp-request-action-note">{% trans "Open the payment page or copy the link to share with your customer." %}</p>
       <p class="pay-eyebrow">{% trans "ADDRESS / REFERENCE" %}</p>
       <code class="pay-address">{{ charge.address }}</code>
       <a class="pay-primary" href="{{ checkout_url }}">
@@ -55,6 +62,7 @@
         <i data-lucide="copy">
         </i>{% trans "Copy link" %}</button>
     </section>
+    </div>
     {% if can_write %}
       <section class="pay-section">
         <h2>
