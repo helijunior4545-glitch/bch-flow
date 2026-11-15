@@ -1,0 +1,25 @@
+{% load i18n %}
+<dialog id="rc2-create-dialog" class="rc2-modal" aria-labelledby="rc2-create-title">
+  <div class="rc2-modal-top">
+    <div><span class="rc2-eyebrow">{% trans "PRODUCT CATALOG" %}</span><h2 id="rc2-create-title">{% trans "New product" %}</h2><p>{% trans "Save this service and return to your receipt." %}</p></div>
+    <button type="button" data-rc2-close aria-label="{% trans 'Close' %}">×</button>
+  </div>
+  <form id="rc2-create-form" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <div class="rc2-intro-grid">
+      <label class="rc2-upload"><input type="file" name="image" accept="image/png,image/jpeg,image/webp" data-rc2-image><span data-rc2-preview>▧</span><strong>{% trans "Add product image" %}</strong><small>{% trans "Optional · PNG, JPEG or WebP" %}</small></label>
+      <div class="rc2-main-fields">
+        <label><span class="rc2-label-text">{% trans "Product name" %} <span class="rc2-required">*</span></span><input name="name" maxlength="160" required placeholder="e.g. Custom software development"></label>
+        <label><span class="rc2-label-text">{% trans "SKU" %}</span><input name="sku" maxlength="64" placeholder="e.g. DEV-001"></label>
+      </div>
+    </div>
+    <label><span class="rc2-label-text">{% trans "Description" %}</span><textarea name="description" maxlength="2000" rows="3" placeholder="{% trans 'What does this service include?' %}"></textarea></label>
+    <div class="rc2-section-rule" aria-hidden="true"></div>
+    <div class="rc2-fields">
+      <label><span class="rc2-label-text">{% trans "Price" %} <span class="rc2-required">*</span></span><input name="price" inputmode="decimal" required placeholder="0.00000000"></label>
+      <label><span class="rc2-label-text">{% trans "Currency" %}</span><select name="currency" data-rc2-currency><option value="BCH">BCH</option><option value="BTC">BTC</option><option value="BRL">BRL</option></select></label>
+    </div>
+    <p class="rc2-error" role="alert" data-rc2-error hidden></p>
+    <div class="rc2-actions"><button type="button" class="rc2-cancel" data-rc2-close>{% trans "Cancel" %}</button><button type="submit" class="rc2-save">{% trans "Save & select product" %}</button></div>
+  </form>
+</dialog>

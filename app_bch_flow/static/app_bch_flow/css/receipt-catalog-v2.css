@@ -1,0 +1,63 @@
+/* BCH Flow V2.2 — isolated receipt/catalog presentation. No global form rules. */
+#receive-dialog .rc2[data-rc2],#receive-dialog .rc2[data-rc2] *,#rc2-create-dialog.rc2-modal,#rc2-create-dialog.rc2-modal *{box-sizing:border-box}
+#receive-dialog .rc2[data-rc2]{display:block;min-width:0;width:100%;margin:0 0 16px;padding:12px 0 16px;border-bottom:1px solid #e9e9e6;color:#1c2b3c}
+#receive-dialog .rc2-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+#receive-dialog .rc2-head h3{margin:4px 0 0;font-size:15px;font-weight:650;color:#1c2b3c}
+.rc2-eyebrow{display:block;color:#9b7b48;font-size:10px;font-weight:750;letter-spacing:.13em;text-transform:uppercase}
+#receive-dialog .rc2-optional{color:#87919d;font-size:11px}
+#receive-dialog .rc2-picker{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;min-width:0;width:100%}
+#receive-dialog .rc2-picker select#rc2-product-select{display:block;min-width:0;width:100%;max-width:none;height:45px;margin:0;padding:0 12px;border:1px solid #dce1e6;border-radius:10px;background:#fff;color:#25374a;font-size:13px;line-height:normal;appearance:auto}
+#receive-dialog .rc2-picker button.rc2-new{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:auto;min-width:125px;max-width:180px;height:45px;margin:0;padding:0 14px;white-space:nowrap;border:1px solid #d9dfe5;border-radius:10px;background:#f8f9fa;color:#26394d;font-size:12px;font-weight:650;line-height:1.2;cursor:pointer}
+#receive-dialog .rc2-picker button.rc2-new:hover{background:#fffaf2;border-color:#bba17a}
+/* Selected service: explicit horizontal card; no decorative vertical bar. */
+#receive-dialog .rc2-selected[data-rc2-selected]{display:grid;grid-template-columns:36px minmax(0,1fr) 32px;align-items:center;gap:11px;width:100%;min-width:0;margin:11px 0 0;padding:10px 11px;border:1px solid #e3e7eb;border-left:1px solid #e3e7eb;border-radius:11px;background:#f8fafb;box-shadow:none;transform:none;writing-mode:horizontal-tb}
+#receive-dialog .rc2-selected[data-rc2-selected][hidden]{display:none!important}
+#receive-dialog .rc2-selected .rc2-product-icon{display:grid;place-items:center;flex:none;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border:0;border-radius:9px;background:#edf1f4;color:#987746;font-size:17px;line-height:1;writing-mode:horizontal-tb}
+#receive-dialog .rc2-selected .rc2-selected-body{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:3px;min-width:0;width:100%;margin:0;padding:0;writing-mode:horizontal-tb}
+#receive-dialog .rc2-selected .rc2-selected-body strong{display:block;max-width:100%;margin:0;color:#1c2b3c;font-size:12px;font-weight:700;line-height:1.35;overflow-wrap:anywhere;white-space:normal;writing-mode:horizontal-tb}
+#receive-dialog .rc2-selected .rc2-selected-body small{display:block;max-width:100%;margin:0;color:#738195;font-size:11px;line-height:1.4;overflow-wrap:anywhere;white-space:normal;writing-mode:horizontal-tb}
+#receive-dialog .rc2-selected button[data-rc2-remove]{display:grid;place-items:center;width:30px;height:30px;min-width:30px;margin:0;padding:0;border:0;border-radius:8px;background:transparent;color:#6e7c8d;font-size:19px;line-height:1;cursor:pointer}
+#receive-dialog .rc2-selected button[data-rc2-remove]:hover{background:#e9eef2;color:#1b2b3b}
+#receive-dialog .rc2-hint{display:block;margin:9px 0 0!important;color:#788696!important;font-size:11px!important;line-height:1.5!important}
+#receive-dialog .rc2[hidden]{display:none!important}
+/* Independent native dialog, isolated from financial dialog styling. */
+#rc2-create-dialog.rc2-modal{position:fixed;inset:0;box-sizing:border-box;width:min(94vw,650px);max-width:650px;max-height:min(91dvh,840px);margin:auto;padding:0;overflow:auto;border:1px solid #e2e5e9;border-radius:19px;background:#fff;color:#1b2a3d;box-shadow:0 30px 90px #0e203544;font-family:inherit}
+#rc2-create-dialog.rc2-modal::backdrop{background:#101d2db0;backdrop-filter:blur(4px)}
+#rc2-create-dialog .rc2-modal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:0;padding:25px 28px 18px;border-bottom:1px solid #edf0f2}
+#rc2-create-dialog .rc2-modal-top h2{margin:5px 0 5px;color:#1b2a3d;font-size:23px;font-weight:700;letter-spacing:-.035em;line-height:1.2}
+#rc2-create-dialog .rc2-modal-top p{margin:0;color:#798697;font-size:12px;line-height:1.5}
+#rc2-create-dialog button[data-rc2-close]:not(.rc2-cancel){display:grid;place-items:center;flex:none;width:33px;height:33px;padding:0;border:1px solid #e4e8ec;border-radius:9px;background:#fff;color:#637387;font-size:20px;line-height:1;cursor:pointer}
+#rc2-create-dialog #rc2-create-form{display:flex;flex-direction:column;gap:16px;margin:0;padding:22px 28px 25px}
+#rc2-create-dialog .rc2-intro-grid{display:grid;grid-template-columns:165px minmax(0,1fr);align-items:stretch;gap:17px}
+#rc2-create-dialog .rc2-main-fields{display:flex;flex-direction:column;gap:13px;min-width:0}
+#rc2-create-dialog label:not(.rc2-upload){display:flex;flex-direction:column;gap:7px;min-width:0;color:#34465b;font-size:12px;font-weight:650;line-height:1.35}
+#rc2-create-dialog label span.rc2-required{display:inline;color:#a27b40}
+#rc2-create-dialog .rc2-label-text{display:block;color:#34465b}
+#rc2-create-dialog input:not([type=file]),#rc2-create-dialog textarea,#rc2-create-dialog select{display:block;box-sizing:border-box;width:100%;min-width:0;max-width:100%;margin:0;padding:11px 12px;border:1px solid #dfe4e9;border-radius:9px;background:#fff;color:#26394b;font:inherit;font-size:13px;font-weight:400;line-height:1.4;box-shadow:none}
+#rc2-create-dialog input:not([type=file]),#rc2-create-dialog select{height:43px}
+#rc2-create-dialog textarea{min-height:80px;resize:vertical}
+#rc2-create-dialog input::placeholder,#rc2-create-dialog textarea::placeholder{color:#a1aab5}
+#rc2-create-dialog .rc2-upload{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:162px;margin:0;padding:16px 12px;border:1px dashed #cbd4dd;border-radius:12px;background:#f8fafb;color:#405168;text-align:center;cursor:pointer;overflow:hidden}
+#rc2-create-dialog .rc2-upload:hover{border-color:#b7a07c;background:#fcfbf8}
+#rc2-create-dialog .rc2-upload input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#rc2-create-dialog .rc2-upload [data-rc2-preview]{display:grid;place-items:center;min-width:42px;min-height:42px;color:#aa8b5a;font-size:28px}
+#rc2-create-dialog .rc2-upload [data-rc2-preview] img{display:block;max-width:132px;max-height:94px;object-fit:contain;border-radius:7px}
+#rc2-create-dialog .rc2-upload strong{color:#34465b;font-size:12px;font-weight:650}
+#rc2-create-dialog .rc2-upload small{color:#8c99a8;font-size:10px;font-weight:400;line-height:1.45}
+#rc2-create-dialog .rc2-fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;min-width:0}
+#rc2-create-dialog .rc2-section-rule{height:1px;margin:1px 0 0;background:#edf0f2}
+#rc2-create-dialog .rc2-error{margin:0;padding:10px 12px;border-radius:9px;background:#fff1ef;color:#a73731;font-size:12px;line-height:1.5}
+#rc2-create-dialog .rc2-error[hidden]{display:none!important}
+#rc2-create-dialog .rc2-actions{display:flex;justify-content:flex-end;gap:9px;margin:3px 0 0;padding:17px 0 0;border-top:1px solid #edf0f2}
+#rc2-create-dialog .rc2-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:0;padding:0 17px;border-radius:9px;font:inherit;font-size:12px;font-weight:650;cursor:pointer}
+#rc2-create-dialog .rc2-cancel{border:1px solid #dce2e8;background:#fff;color:#405168}
+#rc2-create-dialog .rc2-save{border:1px solid #1b2e44;background:#1b2e44;color:#fff}
+#rc2-create-dialog .rc2-save:hover{background:#2d455f}
+#rc2-create-dialog .rc2-save:disabled{opacity:.6;cursor:wait}
+#rc2-create-dialog :is(input,textarea,select,button):focus-visible,#receive-dialog .rc2 :is(select,button):focus-visible{outline:2px solid #b79a6a;outline-offset:2px}
+@media(max-width:560px){#receive-dialog .rc2-picker{grid-template-columns:minmax(0,1fr)}#receive-dialog .rc2-picker button.rc2-new{width:100%;max-width:none}#rc2-create-dialog.rc2-modal{inset:auto 0 0;width:100%;max-width:none;max-height:94dvh;margin:0;border-radius:18px 18px 0 0}#rc2-create-dialog .rc2-modal-top{padding:21px 18px 16px}#rc2-create-dialog #rc2-create-form{padding:19px 18px calc(20px + env(safe-area-inset-bottom))}#rc2-create-dialog .rc2-intro-grid{grid-template-columns:1fr}#rc2-create-dialog .rc2-upload{min-height:120px}#rc2-create-dialog .rc2-fields{grid-template-columns:1fr}#rc2-create-dialog .rc2-actions button{flex:1}}
+@media(prefers-reduced-motion:no-preference){#receive-dialog .rc2-new,#rc2-create-dialog .rc2-save{transition:background .17s,border-color .17s,transform .17s}#receive-dialog .rc2-new:active,#rc2-create-dialog .rc2-save:active{transform:scale(.985)}}
+
+/* V2.3 — real product thumbnail; retain the existing selected-card geometry. */
+#receive-dialog .rc2-selected [data-rc2-thumb]{overflow:hidden;position:relative;isolation:isolate}
+#receive-dialog .rc2-selected [data-rc2-thumb] img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;max-width:none;max-height:none}

@@ -1,0 +1,35 @@
+/* BCH_FLOW_INTEGRATIONS_HEADERLESS_V8
+   Scoped to Integrations. Never alters global logo, sidebar or language picker.
+   Header Finance is removed visually only on this page. */
+@supports selector(:has(*)) {
+  .pay-premium:has(.financial-page .ig-v6-connections) .premium-main > .premium-header {
+    display: none !important;
+  }
+  .pay-premium:has(.financial-page .ig-v6-connections) .premium-main {
+    padding-top: 12px !important;
+  }
+  .pay-premium:has(.financial-page .ig-v6-connections) .financial-page {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  .pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading {
+    margin-top: 0 !important;
+    padding-top: 2px !important;
+    min-height: 96px !important;
+    margin-bottom: 9px !important;
+  }
+  .pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading::before {
+    top: -10px !important;
+    height: 103px !important;
+  }
+}
+@media (max-width: 740px) {
+  @supports selector(:has(*)) {
+    .pay-premium:has(.financial-page .ig-v6-connections) .premium-main {
+      padding-top: 10px !important;
+    }
+    .pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading {
+      min-height: 80px !important;
+    }
+  }
+}

@@ -81,3 +81,6 @@ urlpatterns = [path('dashboard/organizations/<uuid:org_id>/wallet/chipnet-observ
 # WizardConnect signs in the browser wallet; broadcast retains the existing authorization flow.
 from app_bch_flow.views.wizardconnect import signing_request as wizard_signing_request
 urlpatterns += [path("dashboard/organizations/<uuid:org_id>/wizardconnect/withdrawals/<uuid:withdrawal_id>/", wizard_signing_request, name="wizardconnect_sign_request")]
+
+# BCH FLOW MERCHANT CATALOG V1 — additive routes
+urlpatterns += [path('', include('app_merchant_catalog.urls'))]

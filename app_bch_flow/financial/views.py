@@ -143,14 +143,37 @@ def home(request, org_id):
                     account = service.ensure_account(
                         member.identity, org_id, asset, environment, wallet_id=selected_wallet_id
                     )
-                    charge = service.create_request(
-                        member.identity,
-                        account,
-                        rf.cleaned_data["amount"],
-                        rf.cleaned_data["description"],
-                        rf.cleaned_data["key"],
-                        rf.cleaned_data["payer_email"],
-                    )
+                    from app_merchant_catalog.models import MerchantProduct, ReceiptProductSnapshot
+                    from decimal import Decimal
+                    from django.db import transaction as db_transaction
+                    product_id = request.POST.get("catalog_product_id", "").strip()
+                    with db_transaction.atomic():
+                        product = None
+                        if product_id:
+                            try:
+                                product = MerchantProduct.objects.get(
+                                    pk=uuid.UUID(product_id), organization_id=org_id,
+                                    archived_at__isnull=True, currency=asset,
+                                )
+                            except (MerchantProduct.DoesNotExist, ValueError, TypeError):
+                                raise PaymentError(_("Selected product is unavailable for this currency."))
+                            if rf.cleaned_data["amount"] != units(str(product.price), asset):
+                                raise PaymentError(_("The selected product price changed. Select it again."))
+                        existing = FlowRequest.objects.filter(account=account, idempotency_key=rf.cleaned_data["key"]).first()
+                        if existing:
+                            saved = ReceiptProductSnapshot.objects.filter(request=existing).first()
+                            if (saved is None) != (product is None) or (saved and (saved.product_id != product.pk or saved.name != product.name or saved.price != product.price)):
+                                raise PaymentError(_("This request key was already used with different product details."))
+                        charge = service.create_request(
+                            member.identity, account, rf.cleaned_data["amount"],
+                            rf.cleaned_data["description"], rf.cleaned_data["key"],
+                            rf.cleaned_data["payer_email"],
+                        )
+                        if product and not existing:
+                            ReceiptProductSnapshot.objects.create(
+                                request=charge, product=product, name=product.name, sku=product.sku,
+                                description=product.description, currency=product.currency, price=product.price,
+                            )
                     # A request survives a remote timeout and can be prepared again.
                     try:
                         service.prepare_request(charge)

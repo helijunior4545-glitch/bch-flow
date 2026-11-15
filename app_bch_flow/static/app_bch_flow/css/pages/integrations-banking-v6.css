@@ -1,0 +1,31 @@
+/* BCH_FLOW_INTEGRATIONS_BANKING_MODALS_V6 - scoped to Integrations */
+.financial-page .ig-v6-connections{margin:23px 0 16px;padding:21px 23px;background:#fff;border:1px solid #e8e5df;border-radius:18px;box-shadow:0 6px 25px #2721190a}
+.financial-page .ig-v6-connections-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.financial-page .ig-v6-connections-head h2{font-size:21px;letter-spacing:-.035em;margin:4px 0}
+.financial-page .ig-v6-record-group{margin-top:18px}
+.financial-page .ig-v6-record-heading{display:flex;align-items:center;gap:9px;padding:0 0 11px;border-bottom:1px solid #eeeae4;margin-bottom:14px}
+.financial-page .ig-v6-record-heading svg{width:17px;height:17px;color:#bd862c}
+.financial-page .ig-v6-record-heading h3{font-size:13px;margin:0;font-weight:650}
+.financial-page .ig-v6-connections .pay-wallet-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px}
+.financial-page .ig-v6-connections .pay-wallet-card{margin:0;border:1px solid #eae6df;border-radius:13px;padding:15px;box-shadow:none;background:#fff}
+.financial-page .ig-v6-merchant-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:12px}
+.financial-page .ig-v6-merchant-grid .pay-integration-connection{margin:0;padding:16px;border:1px solid #eae6df;border-radius:13px;background:#fff}
+.financial-page .ig-v6-empty{font-size:12px;color:#777b81;padding:16px 0;margin:0}
+.financial-page .ig-v4-modal{width:min(640px,calc(100vw - 32px))!important;max-width:640px!important;border:1px solid #e7e4df!important;border-radius:16px!important;box-shadow:0 30px 95px #11182745!important}
+.financial-page .ig-v4-modal-header{min-height:62px!important;padding:14px 20px!important;background:#fff!important}
+.financial-page .ig-v4-modal-header h2{font-size:18px!important;letter-spacing:-.02em!important}
+.financial-page .ig-v4-modal-body{padding:18px 22px 22px!important;max-height:calc(min(82dvh,760px) - 62px)!important}
+.financial-page .ig-v4-modal-body .pay-section-heading,.financial-page .ig-v4-modal-body .pay-wallet-grid,.financial-page .ig-v4-modal-body .pay-empty{display:none!important}
+.financial-page .ig-v4-blockchain #wallet-add{order:initial!important}
+.financial-page .ig-v4-blockchain .ig-v2-details-body{display:block!important}
+.financial-page .ig-v4-blockchain #wallet-add>p.pay-muted{display:none!important}
+.financial-page .ig-v4-pix .pay-integration-grid{margin:0!important}
+.financial-page .ig-v4-pix .pay-integration-grid>section{padding:0!important}
+.financial-page .ig-v4-pix .pay-integration-grid>section h3{font-size:13px!important;margin-bottom:12px!important}
+.financial-page .ig-v4-modal :is(input,select){border-radius:9px;min-height:39px;transition:border-color .18s,box-shadow .18s}
+.financial-page .ig-v4-modal :is(input,select):focus-visible{outline:none;border-color:#b88330;box-shadow:0 0 0 3px #d6a34a24}
+.financial-page .ig-v4-modal button[type=submit]{border-radius:10px;min-height:42px}
+.financial-page .ig-v4-modal .errorlist{margin:5px 0;color:#b42318;font-size:11px}
+.financial-page .ig-v4-modal .pay-pending{font-size:11px;line-height:1.5;padding:10px 12px}
+@media(max-width:680px){.financial-page .ig-v6-connections{padding:15px}.financial-page .ig-v4-modal{width:100vw!important;max-width:none!important;height:100dvh;max-height:100dvh!important;border-radius:0!important}.financial-page .ig-v4-modal-body{max-height:calc(100dvh - 62px)!important;padding:16px!important}}
+@media(prefers-reduced-motion:reduce){.financial-page .ig-v4-modal :is(input,select){transition:none}}

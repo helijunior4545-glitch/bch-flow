@@ -1,0 +1,74 @@
+/* BCH_FLOW_INTEGRATIONS_HERO_BACKGROUND_V9
+   Hero-only visual layer. Logo, sidebar, forms and locale selector untouched. */
+.financial-page:has(.ig-v6-connections) .pay-heading {
+  position:relative !important;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  min-height:136px !important;
+  padding:19px 24px !important;
+  margin:0 0 13px !important;
+  border-radius:17px;
+  overflow:hidden;
+  background-color:#fbf9f5;
+  background-image:
+    linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.97) 31%,rgba(251,249,245,.75) 51%,rgba(251,249,245,.10) 100%),
+    url('../../images/integrations/gold-wave-v7.webp');
+  background-position:center, right center;
+  background-size:100% 100%, auto 100%;
+  background-repeat:no-repeat;
+  border:1px solid rgba(194,155,92,.13);
+}
+.financial-page:has(.ig-v6-connections) .pay-heading::before,
+.financial-page:has(.ig-v6-connections) .pay-heading::after {
+  content:none !important;
+  display:none !important;
+}
+.financial-page:has(.ig-v6-connections) .pay-heading>div {
+  position:relative;
+  z-index:1;
+  max-width:min(620px,73%);
+}
+.financial-page:has(.ig-v6-connections) .pay-heading .pay-eyebrow {
+  font-size:10px;
+  letter-spacing:.14em;
+  margin:0 0 5px;
+}
+.financial-page:has(.ig-v6-connections) .pay-heading h1 {
+  font-size:clamp(23px,2.55vw,34px);
+  line-height:1.12;
+  margin:0;
+}
+.financial-page:has(.ig-v6-connections) .pay-heading .ig-intro {
+  max-width:540px;
+  margin:8px 0 0;
+  font-size:12px;
+  line-height:1.5;
+}
+@media(max-width:950px) {
+  .financial-page:has(.ig-v6-connections) .pay-heading {
+    min-height:126px !important;
+    padding:15px 18px !important;
+    background-image:
+      linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.96) 47%,rgba(251,249,245,.48) 100%),
+      url('../../images/integrations/gold-wave-v7.webp');
+  }
+  .financial-page:has(.ig-v6-connections) .pay-heading>div {max-width:82%}
+}
+@media(max-width:600px) {
+  .financial-page:has(.ig-v6-connections) .pay-heading {
+    min-height:120px !important;
+    padding:15px !important;
+    background-image:
+      linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.96) 66%,rgba(251,249,245,.72) 100%),
+      url('../../images/integrations/gold-wave-v7.webp');
+    background-position:center,right center;
+    background-size:100% 100%,auto 100%;
+  }
+  .financial-page:has(.ig-v6-connections) .pay-heading>div {max-width:100%}
+  .financial-page:has(.ig-v6-connections) .pay-heading h1 {font-size:23px}
+  .financial-page:has(.ig-v6-connections) .pay-heading .ig-intro {font-size:11px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .financial-page:has(.ig-v6-connections) .pay-heading {transition:none}
+}

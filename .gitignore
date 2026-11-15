@@ -51,3 +51,14 @@ logs/
 .idea/
 .vscode/
 .DS_Store
+
+# BCH Flow - local data and backups
+.bchflow-backups/
+.bch_flow_landing_backups/
+private_media/
+.env
+.env.*
+!.env.example
+*.sqlite3
+__pycache__/
+*.pyc

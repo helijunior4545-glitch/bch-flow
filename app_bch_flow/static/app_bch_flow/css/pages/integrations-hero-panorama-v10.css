@@ -1,0 +1,63 @@
+/* BCH_FLOW_INTEGRATIONS_PANORAMA_V10
+   Scoped to Integrations only. Original logo and financial forms untouched. */
+@supports selector(:has(*)) {
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading {
+  position:relative!important;
+  isolation:isolate;
+  overflow:hidden!important;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  width:100%;
+  min-height:134px!important;
+  padding:18px 24px!important;
+  margin:0 0 12px!important;
+  border-radius:15px;
+  border:1px solid rgba(197,147,65,.13);
+  background-color:#fbf9f5!important;
+  background-image:
+    linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.95) 29%,rgba(251,249,245,.73) 47%,rgba(251,249,245,.08) 100%),
+    url('../../images/integrations/gold-wave-panorama-v10.webp')!important;
+  background-size:100% 100%,cover!important;
+  background-position:center,center center!important;
+  background-repeat:no-repeat,no-repeat!important;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading::before,
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading::after {
+  content:none!important;
+  display:none!important;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading>div {
+  position:relative;z-index:1;max-width:min(620px,76%);
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading .pay-eyebrow {
+  font-size:10px;letter-spacing:.13em;margin:0 0 5px;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading h1 {
+  font-size:clamp(23px,2.5vw,34px);line-height:1.13;margin:0;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading .ig-intro {
+  margin:8px 0 0;max-width:550px;font-size:12px;line-height:1.5;
+}
+@media(max-width:900px){
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading {
+  min-height:122px!important;padding:16px 18px!important;
+  background-image:
+    linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.97) 46%,rgba(251,249,245,.52) 100%),
+    url('../../images/integrations/gold-wave-panorama-v10.webp')!important;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading>div{max-width:86%}
+}
+@media(max-width:600px){
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading {
+  min-height:116px!important;padding:14px!important;
+  background-image:
+    linear-gradient(90deg,rgba(251,249,245,.99) 0%,rgba(251,249,245,.96) 67%,rgba(251,249,245,.72) 100%),
+    url('../../images/integrations/gold-wave-panorama-v10.webp')!important;
+  background-position:center,57% center!important;
+}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading>div{max-width:100%}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading h1{font-size:22px}
+.pay-premium:has(.financial-page .ig-v6-connections) .financial-page .pay-heading .ig-intro{font-size:11px}
+}
+}

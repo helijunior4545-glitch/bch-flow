@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app_bch_flow.apps.BCHFlowConfig',
+    'app_merchant_catalog.apps.MerchantCatalogConfig',
     'bch_wallet_v301',
 ]
 MIDDLEWARE = [
@@ -124,3 +125,6 @@ FLOW_MP_OAUTH = {
     'redirect_uri': env('MP_REDIRECT_URI', default=''),
     'webhook_secret_file': env('MP_WEBHOOK_SECRET_FILE', default=''),
 }
+
+# BCH CATALOG V1.1 PRIVATE MEDIA
+MEDIA_ROOT = BASE_DIR / "private_media"

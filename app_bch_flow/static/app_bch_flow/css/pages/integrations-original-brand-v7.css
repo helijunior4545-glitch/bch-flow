@@ -1,0 +1,32 @@
+/* BCH_FLOW_INTEGRATIONS_ORIGINAL_BRAND_V7 - scoped page design.
+   Global logo .premium-logo, sidebar, language picker and global header untouched. */
+.financial-page:has(.ig-v6-connections){--ig7-gold:#bf8323;--ig7-ink:#111827;--ig7-line:#e9e5de}
+.financial-page:has(.ig-v6-connections) .pay-heading{position:relative;isolation:isolate;min-height:115px;padding:10px 0 17px;margin:0 0 12px;overflow:hidden}
+.financial-page:has(.ig-v6-connections) .pay-heading::before{content:'';position:absolute;z-index:-1;right:-2%;top:0;width:69%;height:110px;background:url('../../images/integrations/gold-wave-v7.webp') center 54%/cover no-repeat;opacity:.85;mask-image:linear-gradient(90deg,transparent,#000 28%)}
+.financial-page:has(.ig-v6-connections) .pay-heading h1{font-size:clamp(25px,2.9vw,37px);letter-spacing:-.05em;line-height:1.1;margin:6px 0}
+.financial-page:has(.ig-v6-connections) .pay-heading .ig-intro{font-size:13px;max-width:550px;margin:8px 0 0}
+.financial-page:has(.ig-v6-connections) .ig-v2-band{min-height:133px!important;grid-template-columns:minmax(175px,27%) minmax(0,1fr) minmax(185px,25%)!important;border-radius:17px!important;margin-bottom:11px!important;border:1px solid var(--ig7-line)!important;box-shadow:0 6px 18px #1b24300e!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-art{min-height:133px!important;height:133px!important;position:relative;overflow:hidden}
+.financial-page:has(.ig-v6-connections) .ig-v3-art-image{height:100%!important;width:100%!important;object-fit:cover!important;object-position:center!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-copy{padding:14px 18px!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-copy h3{font-size:clamp(17px,1.6vw,22px)!important;margin:5px 0!important;letter-spacing:-.03em}
+.financial-page:has(.ig-v6-connections) .ig-v2-copy>p:not(.ig-v2-kicker){font-size:12px!important;line-height:1.45!important;max-width:460px}
+.financial-page:has(.ig-v6-connections) .ig-v2-actions{padding:0 18px!important;margin:12px 0!important;gap:9px!important;border-left:1px solid #e8e5df}
+.financial-page:has(.ig-v6-connections) .ig-v2-actions .ig-v2-primary{width:100%;min-height:41px!important;border-radius:10px!important;background:linear-gradient(180deg,#e6a22c,#ae710b)!important;border:1px solid #c68b24!important;box-shadow:inset 0 1px #fff5,0 4px 10px #a16b1b25!important;color:#fff!important;font-weight:650!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-actions .ig-v2-primary:hover{filter:brightness(1.07)!important;transform:translateY(-1px)!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-signing{background:linear-gradient(100deg,#faf8ff,#fff 80%)!important;border-color:#e2dcf5!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-blockchain{background:linear-gradient(100deg,#fff9ef,#fff 80%)!important;border-color:#eddfc7!important}
+.financial-page:has(.ig-v6-connections) .ig-v2-pix{background:linear-gradient(100deg,#f1fbf8,#fff 80%)!important;border-color:#d5ebe4!important}
+.financial-page:has(.ig-v6-connections) .ig-v6-connections{padding:17px 18px!important;margin:14px 0!important;border-radius:17px!important}
+.financial-page:has(.ig-v6-connections) .ig-v6-connections-head{margin-bottom:8px!important}
+.financial-page:has(.ig-v6-connections) .ig-v6-connections-head h2{font-size:20px!important}
+.financial-page:has(.ig-v6-connections) .ig-v6-record-group{margin-top:12px!important}
+.financial-page:has(.ig-v6-connections) .ig-v6-record-heading{margin-bottom:8px!important;padding-bottom:8px!important}
+.financial-page:has(.ig-v6-connections) .pay-wallet-card,.financial-page:has(.ig-v6-connections) .pay-integration-connection{transition:box-shadow .2s ease,border-color .2s ease,transform .2s ease}
+.financial-page:has(.ig-v6-connections) .pay-wallet-card:hover,.financial-page:has(.ig-v6-connections) .pay-integration-connection:hover{border-color:#d9c9aa;box-shadow:0 9px 22px #25201a12;transform:translateY(-1px)}
+.financial-page:has(.ig-v6-connections) .ig-v4-modal{box-shadow:0 28px 90px #161b2b45!important}
+.financial-page:has(.ig-v6-connections) .ig-v4-modal-header{border-bottom:1px solid #eee9e0!important}
+@media(max-width:950px){.financial-page:has(.ig-v6-connections) .ig-v2-band{grid-template-columns:145px minmax(0,1fr) 185px!important}.financial-page:has(.ig-v6-connections) .pay-heading::before{opacity:.45}}
+@media(max-width:740px){.financial-page:has(.ig-v6-connections) .ig-v2-band{grid-template-columns:120px minmax(0,1fr)!important}.financial-page:has(.ig-v6-connections) .ig-v2-actions{grid-column:2;border-left:0!important;margin:0 12px 12px!important;padding:0!important}.financial-page:has(.ig-v6-connections) .pay-heading::before{width:75%;opacity:.3}}
+@media(max-width:520px){.financial-page:has(.ig-v6-connections) .ig-v2-band{display:grid!important;grid-template-columns:105px minmax(0,1fr)!important}.financial-page:has(.ig-v6-connections) .ig-v2-art{height:100%!important;min-height:145px!important;grid-row:span 2}.financial-page:has(.ig-v6-connections) .ig-v2-copy{padding:12px!important}.financial-page:has(.ig-v6-connections) .ig-v2-actions{grid-column:2;margin:0 12px 12px!important}.financial-page:has(.ig-v6-connections) .pay-heading{min-height:92px}}
+@media(prefers-reduced-motion:reduce){.financial-page:has(.ig-v6-connections) .pay-wallet-card,.financial-page:has(.ig-v6-connections) .pay-integration-connection{transition:none!important;transform:none!important}}
