@@ -2,6 +2,7 @@
 {% load static i18n %}
 {% block title %}{% trans "Payment request ·" %} {{ charge.account.asset }}{% endblock %}
 {% block financial_content %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-product-premium.css' %}">
 
 {% load static %}
 
@@ -34,6 +35,7 @@
       <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
       </div>
       <p>{{ charge.description|default:'Payment request' }}</p>
+{% include "app_bch_flow/financial/components/receipt_product_premium.html" %}
       <div class="pay-request-meta">
         <div>
           <span>{% trans "Received and credited" %}</span>

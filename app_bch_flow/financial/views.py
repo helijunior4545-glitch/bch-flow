@@ -153,12 +153,16 @@ def home(request, org_id):
                             try:
                                 product = MerchantProduct.objects.get(
                                     pk=uuid.UUID(product_id), organization_id=org_id,
-                                    archived_at__isnull=True, currency=asset,
+                                    archived_at__isnull=True,
                                 )
                             except (MerchantProduct.DoesNotExist, ValueError, TypeError):
-                                raise PaymentError(_("Selected product is unavailable for this currency."))
-                            if rf.cleaned_data["amount"] != units(str(product.price), asset):
-                                raise PaymentError(_("The selected product price changed. Select it again."))
+                                raise PaymentError(_("Selected product is unavailable for this organization."))
+                            # O preco original e referencia; o valor efetivo da cobranca
+                            # e o informado pelo comerciante na moeda da carteira.
+                            # Sem cotacao verificada, nunca converter automaticamente.
+                            if request.POST.get("catalog_price_mode") == "original" and product.currency == asset:
+                                if rf.cleaned_data["amount"] != units(str(product.price), asset):
+                                    raise PaymentError(_("The selected product price changed. Select it again."))
                         existing = FlowRequest.objects.filter(account=account, idempotency_key=rf.cleaned_data["key"]).first()
                         if existing:
                             saved = ReceiptProductSnapshot.objects.filter(request=existing).first()
