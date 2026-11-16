@@ -1,5 +1,4 @@
 {% extends 'app_bch_flow/base.html' %}{% load static i18n %}
-{% block legacy_polish %}{% endblock %}
 {% block title %}Software · BCH Flow{% endblock %}
-{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/workspace-tokens.css' %}?v=2"><link rel="stylesheet" href="{% static 'merchant_catalog/software.css' %}">{% endblock %}
+{% block content_styles %}<link rel="stylesheet" href="{% static 'merchant_catalog/software.css' %}">{% endblock %}
 {% block content %}<main id="main" class="sw-shell"><header class="sw-nav"><a class="sw-brand" href="{% url 'bch_flow:software_store' %}">BCH FLOW <span>/ SOFTWARE</span></a><nav aria-label="Software"><a href="{% url 'bch_flow:software_store' %}">{% trans 'Explore' %}</a><a href="{% url 'bch_flow:software_purchases' %}">{% trans 'My software' %}</a><a href="{% url 'bch_flow:dashboard' %}">{% trans 'Workspace' %}</a></nav></header>{% block software_content %}{% endblock %}<footer class="sw-footer">{% trans 'Software from independent creators. Pay with Bitcoin, Bitcoin Cash or Pix using the methods offered by the seller.' %}</footer></main><script src="{% static 'merchant_catalog/software.js' %}" defer></script>{% endblock %}

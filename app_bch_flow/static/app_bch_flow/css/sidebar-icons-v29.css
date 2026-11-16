@@ -1,0 +1,26 @@
+
+/* V29: improve navigation icons only; preserve gold brand mark and BTC art. */
+.pay-app.pay-premium .premium-sidebar .premium-menu a svg,
+.pay-app.pay-premium .premium-sidebar .premium-menu a > i,
+.pay-app.pay-premium .premium-sidebar .premium-menu a [data-lucide]{
+ color:#e5edf7!important;
+ stroke:#e5edf7!important;
+ opacity:1!important;
+ filter:none!important;
+ width:18px!important;
+ height:18px!important;
+ flex:0 0 18px!important;
+ stroke-width:1.95!important;
+}
+.pay-app.pay-premium .premium-sidebar .premium-menu a:hover svg,
+.pay-app.pay-premium .premium-sidebar .premium-menu a.active svg,
+.pay-app.pay-premium .premium-sidebar .premium-menu a[aria-current="page"] svg{
+ color:#ffffff!important;
+ stroke:#ffffff!important;
+}
+.pay-app.pay-premium .premium-sidebar .premium-menu a:hover > i,
+.pay-app.pay-premium .premium-sidebar .premium-menu a.active > i,
+.pay-app.pay-premium .premium-sidebar .premium-menu a[aria-current="page"] > i{
+ color:#ffffff!important;
+ opacity:1!important;
+}

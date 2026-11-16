@@ -31,23 +31,23 @@ class InternationalWalletTests(TestCase):
     def test_english_is_default_even_when_browser_requests_portuguese(self):
         response = self.client.get(self.url, HTTP_ACCEPT_LANGUAGE="pt-BR,pt;q=0.9")
         self.assertContains(response, 'lang="en"')
-        self.assertContains(response, "<h1>Wallet</h1>", html=True)
+        self.assertContains(response, "One wallet.")
         self.assertNotContains(response, "Uma carteira.")
 
     def test_explicit_languages_and_rtl_are_applied(self):
         for code, text in [
-            ("pt-br", "Carteira"),
-            ("es", "Cartera"),
-            ("fr", "Portefeuille"),
-            ("de", "Wallet"),
-            ("zh-hans", "钱包"),
-            ("ja", "ウォレット"),
-            ("ar", "المحفظة"),
-            ("hi", "वॉलेट"),
+            ("pt-br", "Uma carteira."),
+            ("es", "Una cartera."),
+            ("fr", "Un portefeuille."),
+            ("de", "Eine Wallet."),
+            ("zh-hans", "一个钱包。"),
+            ("ja", "ひとつのウォレット。"),
+            ("ar", "محفظة واحدة."),
+            ("hi", "एक वॉलेट।"),
         ]:
             self.client.cookies["bchflow_language"] = code
             response = self.client.get(self.url)
-            self.assertContains(response, f"<h1>{text}</h1>", html=True)
+            self.assertContains(response, text)
             self.assertContains(response, 'dir="rtl"' if code == "ar" else 'dir="ltr"')
         self.client.cookies["bchflow_language"] = "not-supported"
         self.assertContains(self.client.get(self.url), 'lang="en"')
@@ -58,7 +58,7 @@ class InternationalWalletTests(TestCase):
         )
         self.assertEqual(response.cookies["bchflow_language"].value, "fr")
         self.assertTrue(response.cookies["bchflow_language"]["httponly"])
-        self.assertContains(self.client.get(self.url), "<h1>Portefeuille</h1>", html=True)
+        self.assertContains(self.client.get(self.url), "Un portefeuille.")
         response = self.client.post(
             reverse("set_language"),
             {"language": "en", "next": "https://untrusted.example/"},
