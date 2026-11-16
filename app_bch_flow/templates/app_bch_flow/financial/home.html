@@ -1,7 +1,7 @@
 {% extends "app_bch_flow/base.html" %}
 {% load static i18n %}
 {% block title %}{% trans "Wallet" %} · {{ member.organization.name }}{% endblock %}
-{% block theme_color %}#101722{% endblock %}
+{% block theme_color %}#121b20{% endblock %}
 {% block content_styles %}
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/catalog-fiat-final.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-catalog-v2.css' %}">
@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-european-v34.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/chart-expanded-v38.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/finance-interactions-v39.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-home-refinement.css' %}?v=1">
 {% endblock %}
 {% block content %}
 <main id="main" class="pay-app pay-premium bfr-dashboard" data-wallet-connect-url="{% url 'bch_flow:merchant_integrations' member.organization_id %}" data-payment-app data-asset="{{ asset }}" data-financial-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
