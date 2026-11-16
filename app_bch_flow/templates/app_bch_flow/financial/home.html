@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-european-v34.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/chart-expanded-v38.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/finance-interactions-v39.css' %}">
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-home-refinement.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-home-refinement.css' %}?v=3">
 {% endblock %}
 {% block content %}
 <main id="main" class="pay-app pay-premium bfr-dashboard" data-wallet-connect-url="{% url 'bch_flow:merchant_integrations' member.organization_id %}" data-payment-app data-asset="{{ asset }}" data-financial-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
@@ -55,8 +55,7 @@
 
 </div>
 <section class="premium-cards" id="operations">
-<article class="premium-balance bfr-finance" aria-labelledby="bfr-finance-title" title="{% trans 'Drag the chart to explore. Scroll or pinch to zoom. Drag the bottom corner to resize the card.' %}">
- <div class="bfr-chart-backdrop" aria-hidden="true"><div class="bfr-chart-canvas" data-financial-chart></div></div>
+<article class="premium-balance bfr-finance" aria-labelledby="bfr-finance-title">
  <div class="bfr-chart-veil" aria-hidden="true"></div>
  <div class="bfr-finance-body">
   <header class="bfr-finance-head">
@@ -70,6 +69,7 @@
     <div class="premium-big-number"><span data-private-value>{% if chipnet_observation %}{{ chipnet_observation.balance }}{% else %}{{ available }}{% endif %}</span><small>{{ asset }}</small><button type="button" data-balance-toggle aria-label="{% trans 'Hide balances' %}" aria-pressed="false" title="{% trans 'Hide balances' %}"><i data-lucide="eye"></i></button></div>
     <p class="premium-balance-note">{% if chipnet_observation %}{% trans 'Chipnet observation only; not verified settlement' %}{% elif asset == 'BRL' and not is_sandbox %}{% trans 'Gross reconciled receipts; provider determines availability' %}{% else %}{% trans 'Available in this account' %}{% endif %}</p>
   </div>
+  <div class="bfr-chart-space" aria-label="{% trans 'Market chart' %}"><div class="bfr-chart-backdrop"><div class="bfr-chart-canvas" data-financial-chart></div></div></div>
   <div class="bfr-chart-tools" role="group" aria-label="{% trans 'Chart controls' %}">
     <button type="button" data-chart-view="out" aria-label="{% trans 'Zoom out' %}" title="{% trans 'Zoom out' %}"><i data-lucide="minus"></i></button>
     <button type="button" data-chart-view="in" aria-label="{% trans 'Zoom in' %}" title="{% trans 'Zoom in' %}"><i data-lucide="plus"></i></button>
@@ -116,7 +116,7 @@
 
 </main>
 <script src="{% static 'app_bch_flow/js/lightweight-charts-v5.standalone.js' %}" defer></script>
-<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=40" defer></script>
+<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=41" defer></script>
 <script src="{% static 'app_bch_flow/js/catalog-fiat-final.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/floating-wallet-notice-v21.js' %}" defer></script>

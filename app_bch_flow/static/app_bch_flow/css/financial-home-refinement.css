@@ -145,3 +145,39 @@
   .bfr-dashboard .premium-main .bfr-chart-tools button {min-height:40px;min-width:40px;}
 }
 @media(prefers-reduced-motion:reduce){.bfr-dashboard .premium-main .bfr-chart-tools button{transition:none;}}
+
+/* Keep the plot and controls in separate layout rows, at every card size. */
+.bfr-dashboard .premium-main .bfr-finance:not(.is-expanded) {
+  min-height:550px;height:550px;max-height:1000px;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-finance-body {min-height:0;}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-space {
+  position:relative;flex:1 1 180px;min-height:140px;margin-top:16px;
+  pointer-events:auto;overflow:hidden;border-radius:8px;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-backdrop {
+  inset:0!important;width:100%!important;height:100%!important;min-height:0!important;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-canvas {
+  width:100%!important;height:100%!important;min-height:0!important;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-veil {display:none;}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-tools {
+  flex:0 0 auto;margin:12px 0 0;align-self:flex-end;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-finance-bottom {
+  flex:0 0 auto;margin-top:10px;padding-top:0;align-items:center;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-chart-status {
+  flex:1 1 160px;min-width:0;max-width:100%;line-height:1.5;
+}
+.bfr-dashboard .premium-main .bfr-finance .bfr-periods {flex:0 0 auto;margin-left:auto;}
+.bfr-dashboard .premium-main .bfr-finance .premium-balance-bottom {flex:0 0 auto;}
+@media(max-width:570px){
+  .bfr-dashboard .premium-main .bfr-finance:not(.is-expanded){min-height:610px;height:610px;}
+  .bfr-dashboard .premium-main .bfr-finance .bfr-chart-space{min-height:140px;}
+}
+@media(max-height:640px){
+  .bfr-dashboard .premium-main .bfr-finance.is-expanded .bfr-balance-overlay{display:none;}
+  .bfr-dashboard .premium-main .bfr-finance.is-expanded .bfr-chart-space{min-height:80px;}
+}
