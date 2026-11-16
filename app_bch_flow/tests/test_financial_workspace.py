@@ -46,12 +46,27 @@ class FinancialWorkspaceTests(PaymentFixture):
         self.assertNotContains(response,'data-open-dialog="receive-dialog"')
         self.assertNotContains(response,'data-open-dialog="send-dialog"')
 
+    def test_payment_dialogs_keep_bound_fields_and_error_feedback(self):
+        response=self.client.get(reverse('bch_flow:financial_home',args=[self.org.pk])+'?environment=sandbox')
+        self.assertContains(response,'financial-dialogs.css')
+        self.assertContains(response,'name="receive-amount"')
+        self.assertContains(response,'name="send-destination"')
+        self.assertContains(response,'aria-describedby="receive-description"')
+        response=self.client.post(reverse('bch_flow:financial_home',args=[self.org.pk])+'?environment=sandbox',{
+            'action':'request','receive-amount':'invalid','receive-description':'Keep my description','receive-key':'wallet-modal-errors-1'})
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,'Keep my description',status_code=200)
+        self.assertContains(response,'aria-invalid="true"',status_code=200)
+        self.assertContains(response,'data-show-errors',status_code=200)
+
 
 @skipUnless(os.environ.get('FLOW_BROWSER_TESTS')=='1','Enable FLOW_BROWSER_TESTS for Chromium checks.')
 @override_settings(FLOW_PAYMENTS_SANDBOX_ENABLED=True, PASSWORD_HASHERS=['django.contrib.auth.hashers.MD5PasswordHasher'])
 class FinancialWorkspaceBrowserTests(StaticLiveServerTestCase):
     def setUp(self):
         PaymentFixture.setUp(self)
+        charge=service.prepare_request(service.create_request(self.owner,self.account,100000,'Browser funding','browser-refinement-funding'))
+        service.simulate_receipt(self.owner,charge,100000,'browser-refinement-receipt')
 
     def test_chart_interaction_dialog_review_and_mobile_navigation(self):
         data={'base':self.live_server_url,'url':reverse('bch_flow:financial_home',args=[self.org.pk])+'?environment=sandbox',
@@ -60,4 +75,8 @@ class FinancialWorkspaceBrowserTests(StaticLiveServerTestCase):
         result=subprocess.run(['node',str(Path(__file__).with_name('financial-workspace-browser.cjs'))],
             env={**os.environ,'WALLET_BROWSER_INPUT':json.dumps(data)},capture_output=True,text=True,timeout=90)
         self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+        self.account.refresh_from_db()
+        self.assertEqual(self.account.reserved_units,100)
+        self.assertEqual(self.account.withdrawals.count(),1)
+        self.assertEqual(self.account.requests.filter(description='Browser modal receipt').count(),1)
         print(result.stdout)

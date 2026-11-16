@@ -10,5 +10,25 @@
   --ws-accent-hover: #ffb136;
   --ws-radius: 12px;
   --ws-motion: 160ms;
+  --ws-btc: #f7931a;
+  --ws-bch: #0ac18e;
+  --ws-pix: #32bcad;
+  --ws-info: #70a7fa;
+  --ws-success: #4cdaa4;
+  --ws-warning: #f4bc65;
+  --ws-danger: #f08087;
   --ws-font: Inter, system-ui, -apple-system, sans-serif;
+}
+
+[data-tone="BTC"] {
+  --coin: var(--ws-btc);
+  --coin-ink: #1c1003;
+}
+[data-tone="BCH"] {
+  --coin: var(--ws-bch);
+  --coin-ink: #03281e;
+}
+[data-tone="BRL"] {
+  --coin: var(--ws-pix);
+  --coin-ink: #062723;
 }

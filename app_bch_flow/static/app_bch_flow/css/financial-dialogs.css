@@ -1,0 +1,788 @@
+/* Payment dialogs: shared structure, asset-aware accents, native modal semantics. */
+body:has(.fw dialog[open]) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+.fw .premium-dialog {
+  --dialog-line: #39434e;
+  --dialog-muted: #a6b1bf;
+  --coin: var(--ws-accent);
+  --coin-ink: #201303;
+  background: #171d24;
+  color: var(--ws-text);
+  border: 1px solid #475361;
+  border-radius: 22px;
+  padding: 0;
+  width: min(800px, calc(100vw - 48px));
+  max-height: min(90dvh, 900px);
+  overflow: auto;
+  box-shadow:
+    0 40px 140px #0009,
+    0 0 0 1px #ffffff05,
+    inset 0 1px 0 #ffffff0c;
+  color-scheme: dark;
+}
+.fw .premium-dialog[data-tone="BTC"] {
+  --coin: var(--ws-btc);
+  --coin-ink: #241402;
+}
+.fw .premium-dialog[data-tone="BCH"] {
+  --coin: var(--ws-bch);
+  --coin-ink: #03281e;
+}
+.fw .premium-dialog[data-tone="BRL"] {
+  --coin: var(--ws-pix);
+  --coin-ink: #062723;
+}
+.fw dialog::backdrop {
+  background: #03070cb8;
+  backdrop-filter: blur(9px) saturate(0.65);
+}
+.fw .fw-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  border-bottom: 1px solid var(--dialog-line);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--coin) 6%, #1a2129),
+    #1a2129
+  );
+  margin: 0;
+}
+.fw .fw-dialog-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.fw .fw-dialog-brand > div {
+  display: grid;
+  gap: 3px;
+}
+.fw .fw-dialog-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  color: var(--coin);
+}
+.fw .fw-dialog-network {
+  font-size: 11px;
+  color: var(--dialog-muted);
+}
+.fw .fw-asset-emblem {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  background: color-mix(in srgb, var(--coin) 12%, #17222a);
+  border: 1px solid color-mix(in srgb, var(--coin) 28%, transparent);
+  color: var(--coin);
+  border-radius: 13px;
+  box-shadow: 0 4px 14px #0002;
+  flex-shrink: 0;
+}
+.fw .fw-asset-emblem svg {
+  width: 26px;
+  height: 26px;
+}
+.fw .fw-dialog-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--dialog-line);
+  background: #ffffff04;
+  color: #b5c0cd;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.fw .fw-dialog-close:hover {
+  background: #ffffff0b;
+  color: #fff;
+}
+.fw .fw-dialog-intro {
+  padding: 26px 28px 6px;
+}
+.fw .fw-dialog-intro h2 {
+  font-size: 28px;
+  letter-spacing: -0.045em;
+  margin: 0 0 8px;
+  font-weight: 650;
+}
+.fw .fw-dialog-intro p {
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--dialog-muted);
+  max-width: 580px;
+  margin: 0 0 12px;
+}
+.fw .fw-dialog-content {
+  padding: 20px 28px 28px;
+}
+.fw .fw-dialog-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  gap: 26px;
+  align-items: start;
+}
+.fw .fw-dialog-fields {
+  min-width: 0;
+  display: grid;
+  gap: 20px;
+}
+.fw .fw-field {
+  min-width: 0;
+}
+.fw .fw-field > label {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 550;
+  color: #e3e9f0;
+  margin-bottom: 8px;
+}
+.fw .fw-field > label small {
+  margin-left: auto;
+  color: #7f90a2;
+  font-size: 10px;
+  font-weight: 400;
+}
+.fw .fw-required {
+  color: var(--coin);
+  font-size: 13px;
+}
+.fw .fw-field-control {
+  position: relative;
+}
+.fw .premium-dialog input:not([type="hidden"]),
+.fw .premium-dialog select,
+.fw .premium-dialog textarea {
+  display: block;
+  width: 100%;
+  background: #10161c;
+  border: 1px solid #354250;
+  border-radius: 10px;
+  color: #f4f6f9;
+  padding: 12px 14px;
+  font: 13px/1.55 var(--ws-font);
+  margin: 0;
+  min-height: 46px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+  color-scheme: dark;
+}
+.fw .premium-dialog input::placeholder,
+.fw .premium-dialog textarea::placeholder {
+  color: #63778b;
+  opacity: 1;
+}
+.fw .premium-dialog input:hover,
+.fw .premium-dialog select:hover,
+.fw .premium-dialog textarea:hover {
+  border-color: #566578;
+}
+.fw .premium-dialog input:focus,
+.fw .premium-dialog select:focus,
+.fw .premium-dialog textarea:focus {
+  outline: none;
+  border-color: var(--coin);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--coin) 12%, transparent);
+  background: #111a22;
+}
+.fw .premium-dialog textarea {
+  resize: vertical;
+  min-height: 84px;
+  max-height: 180px;
+}
+.fw .premium-dialog .fw-field-amount input:not([type="hidden"]) {
+  font-size: 25px;
+  font-weight: 550;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  padding: 13px 68px 13px 14px;
+  min-height: 62px;
+}
+.fw .fw-field-unit {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  color: var(--coin);
+  padding: 4px 6px;
+  border: 1px solid color-mix(in srgb, var(--coin) 22%, transparent);
+  background: color-mix(in srgb, var(--coin) 8%, transparent);
+  border-radius: 5px;
+  pointer-events: none;
+}
+.fw .fw-field-help {
+  font-size: 11px;
+  color: var(--dialog-muted);
+  margin: 6px 0 0;
+}
+.fw .premium-dialog .errorlist {
+  list-style: none;
+  padding: 0;
+  color: #ffacb1;
+  font-size: 11px;
+  margin: 7px 0 0;
+  line-height: 1.6;
+}
+.fw .fw-field.has-error input {
+  border-color: var(--ws-danger);
+}
+.fw .fw-dialog-summary {
+  border: 1px solid #354351;
+  border-radius: 13px;
+  background: linear-gradient(155deg, #1d2833, #17212b);
+  padding: 18px;
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  min-width: 0;
+}
+.fw .fw-summary-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #8eabc3;
+  font-size: 9px;
+  font-weight: 650;
+  letter-spacing: 0.07em;
+  margin-bottom: 6px;
+}
+.fw .fw-summary-label svg {
+  width: 14px;
+  height: 14px;
+  color: #81b6e1;
+}
+.fw .fw-dialog-summary > strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.fw .fw-dialog-summary > span {
+  color: var(--dialog-muted);
+  font-size: 11px;
+}
+.fw .fw-summary-divider {
+  height: 1px;
+  background: #354351;
+  margin: 9px 0;
+}
+.fw .fw-summary-feature {
+  display: flex;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+.fw .fw-summary-feature > svg {
+  width: 16px;
+  height: 16px;
+  color: var(--coin);
+  margin-top: 2px;
+}
+.fw .fw-summary-feature strong {
+  font-size: 11px;
+  font-weight: 550;
+}
+.fw .fw-summary-feature p {
+  font-size: 10px;
+  line-height: 1.65;
+  color: var(--dialog-muted);
+  margin: 4px 0 0;
+}
+.fw .fw-summary-safety {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #354351;
+  padding-top: 14px;
+  margin-top: 8px;
+  color: #92b8d8;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.fw .fw-summary-safety svg {
+  width: 15px;
+  height: 15px;
+  color: #83b5dd;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.fw .fw-summary-balance {
+  font-size: 20px !important;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.fw .fw-summary-balance small {
+  font-size: 10px;
+  color: var(--coin);
+  font-weight: 500;
+}
+.fw .fw-dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 28px;
+  border-top: 1px solid var(--dialog-line);
+  background: #121920;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+}
+.fw .fw-dialog-footer > div {
+  display: flex;
+  gap: 9px;
+}
+.fw .fw-dialog-footer > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: #89a0b4;
+}
+.fw .fw-dialog-footer > span svg {
+  width: 13px;
+  height: 13px;
+  color: #86b5dc;
+}
+.fw .premium-dialog .premium-button {
+  min-height: 42px;
+  border-radius: 9px;
+  font-size: 12px;
+  padding: 10px 14px;
+}
+.fw .premium-dialog .fw-asset-button {
+  background: var(--coin);
+  border-color: var(--coin);
+  color: var(--coin-ink);
+  font-weight: 650;
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--coin) 13%, transparent);
+}
+.fw .premium-dialog .fw-asset-button:hover {
+  background: color-mix(in srgb, var(--coin) 82%, white);
+  border-color: color-mix(in srgb, var(--coin) 82%, white);
+}
+.fw .fw-dialog-steps {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  margin: 22px 0 4px;
+  font-size: 10px;
+  color: #8192a4;
+}
+.fw .fw-dialog-steps li {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  flex: 1;
+}
+.fw .fw-dialog-steps li:not(:last-child)::after {
+  content: "";
+  flex: 1;
+  max-width: 50px;
+  height: 1px;
+  background: #354351;
+  margin: 0 12px;
+}
+.fw .fw-dialog-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  border: 1px solid #405060;
+  font-size: 10px;
+}
+.fw .fw-dialog-steps li[aria-current="step"] {
+  color: #f0f4f9;
+}
+.fw .fw-dialog-steps li[aria-current="step"] > span {
+  background: color-mix(in srgb, var(--coin) 14%, transparent);
+  border-color: var(--coin);
+  color: var(--coin);
+}
+.fw .fw-dialog-steps li.is-complete > span {
+  background: color-mix(in srgb, var(--coin) 12%, transparent);
+  color: var(--coin);
+  border-color: var(--coin);
+}
+.fw .fw-dialog-steps svg {
+  width: 12px;
+  height: 12px;
+}
+.fw .fw-review-dialog {
+  width: min(580px, calc(100vw - 48px));
+}
+.fw .fw-review-amount {
+  display: grid;
+  gap: 7px;
+  border-radius: 12px;
+  padding: 20px;
+  background: color-mix(in srgb, var(--coin) 6%, #142028);
+  border: 1px solid color-mix(in srgb, var(--coin) 24%, #354351);
+}
+.fw .fw-review-amount > span {
+  font-size: 11px;
+  color: var(--dialog-muted);
+}
+.fw .fw-review-amount > strong {
+  font-size: 30px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+.fw .fw-review-amount small {
+  font-size: 14px;
+  color: var(--coin);
+}
+.fw .premium-review > div {
+  display: grid;
+  gap: 6px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--dialog-line);
+}
+.fw .premium-review > div > span {
+  font-size: 11px;
+  color: var(--dialog-muted);
+}
+.fw .premium-review strong {
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.fw .fw-review-warning {
+  display: flex;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #d7a55533;
+  background: #d7a55509;
+  border-radius: 9px;
+  margin-top: 18px;
+}
+.fw .fw-review-warning svg {
+  width: 17px;
+  height: 17px;
+  color: var(--ws-warning);
+  flex-shrink: 0;
+}
+.fw .fw-review-warning p {
+  font-size: 11px;
+  line-height: 1.7;
+  margin: 0;
+  color: #d8c7a8;
+}
+.fw .fw-dialog-banner {
+  display: flex;
+  gap: 10px;
+  padding: 12px 28px;
+  color: var(--ws-info);
+  font-size: 12px;
+}
+.fw .fw-dialog-banner code {
+  overflow-wrap: anywhere;
+}
+/* Embedded catalog keeps its selectors; all presentation lives in this component. */
+.fw .rc2 {
+  border: 1px solid #354351;
+  background: #151e27;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 0;
+}
+.fw .rc2-head,
+.fw .rc2-picker,
+.fw .rc2-selected {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.fw .rc2-head {
+  margin-bottom: 12px;
+}
+.fw .rc2-head h3 {
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+.fw .rc2-eyebrow {
+  font-size: 8px;
+  color: #92a8bc;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+.fw .rc2-optional {
+  font-size: 9px;
+  color: #91a1b2;
+  padding: 3px 6px;
+  border: 1px solid #354351;
+  border-radius: 4px;
+}
+.fw .rc2-picker select {
+  flex: 1;
+  min-width: 0;
+  min-height: 40px;
+  font-size: 11px;
+  padding: 9px;
+}
+.fw .rc2 button {
+  background: #25323e;
+  border: 1px solid #425566;
+  color: #a9c7e2;
+  border-radius: 7px;
+  padding: 9px 10px;
+  font-size: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.fw .rc2 button:hover {
+  background: #304354;
+}
+.fw .rc2-hint,
+.fw .rc2-selected small {
+  font-size: 10px;
+  color: var(--dialog-muted);
+  line-height: 1.7;
+  margin: 9px 0 0;
+}
+.fw .rc2-selected {
+  padding: 12px 0;
+}
+.fw .rc2-selected small {
+  display: block;
+}
+.fw .rc2-selected strong {
+  font-size: 12px;
+}
+.fw .rc2-product-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.fw .rc2-pricing {
+  margin-top: 10px;
+}
+.fw .rc2-pricing label {
+  font-size: 11px;
+}
+.fw .rc2-pricing p {
+  font-size: 10px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+.fw .rc2-modal {
+  width: min(600px, calc(100vw - 48px));
+  padding: 26px;
+}
+.fw .rc2-modal-top {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.fw .rc2-modal-top h2 {
+  font-size: 24px;
+  margin: 6px 0;
+}
+.fw .rc2-modal-top p {
+  font-size: 12px;
+  color: var(--dialog-muted);
+}
+.fw .rc2-modal-top > button {
+  background: #25323e;
+  border: 1px solid #425566;
+  color: #a9c7e2;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.fw .rc2-intro-grid {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 16px;
+}
+.fw .rc2-upload {
+  padding: 14px;
+  border: 1px dashed #4c6378;
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+  background: #131c24;
+}
+.fw .rc2-upload input[type="file"] {
+  padding: 5px;
+  font-size: 9px;
+  min-height: 32px;
+  width: 100%;
+}
+.fw .rc2-upload strong {
+  font-size: 10px;
+}
+.fw .rc2-upload small {
+  font-size: 9px;
+  color: var(--dialog-muted);
+}
+.fw .rc2-upload img {
+  max-height: 90px;
+  max-width: 100%;
+  object-fit: contain;
+}
+.fw .rc2-main-fields {
+  display: grid;
+  gap: 12px;
+}
+.fw .rc2-modal form > label {
+  display: grid;
+  margin-top: 16px;
+  gap: 8px;
+}
+.fw .rc2-label-text {
+  font-size: 11px;
+  font-weight: 500;
+}
+.fw .rc2-required {
+  color: var(--ws-accent);
+}
+.fw .rc2-section-rule {
+  height: 1px;
+  background: var(--dialog-line);
+  margin: 18px 0;
+}
+.fw .rc2-fields {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 14px;
+}
+.fw .rc2-fields label {
+  display: grid;
+  gap: 8px;
+}
+.fw .rc2-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 24px;
+}
+.fw .rc2-actions button {
+  background: #25323e;
+  border: 1px solid #425566;
+  color: #c0d3e4;
+  border-radius: 8px;
+  padding: 11px 15px;
+  font-size: 12px;
+}
+.fw .rc2-actions .rc2-save {
+  background: var(--ws-accent);
+  border-color: var(--ws-accent);
+  color: #1e1201;
+  font-weight: 600;
+}
+.fw .rc2-error {
+  font-size: 11px;
+  color: #ffacb1;
+  margin-top: 14px;
+}
+.fw .premium-dialog label {
+  color: var(--ws-text);
+}
+@media (max-width: 650px) {
+  .fw .premium-dialog {
+    width: calc(100vw - 24px);
+    max-height: 92dvh;
+    border-radius: 18px;
+  }
+  .fw .fw-dialog-header {
+    padding: 16px 18px;
+  }
+  .fw .fw-dialog-intro {
+    padding: 20px 18px 0;
+  }
+  .fw .fw-dialog-intro h2 {
+    font-size: 25px;
+  }
+  .fw .fw-dialog-content {
+    padding: 18px;
+  }
+  .fw .fw-dialog-columns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .fw .fw-dialog-summary {
+    padding: 15px;
+  }
+  .fw .fw-dialog-summary .fw-summary-feature {
+    display: none;
+  }
+  .fw .fw-dialog-summary .fw-summary-safety {
+    font-size: 10px;
+    margin-top: 4px;
+  }
+  .fw .fw-dialog-footer {
+    padding: 14px 18px;
+    flex-wrap: wrap;
+  }
+  .fw .fw-dialog-footer > span {
+    flex-basis: 100%;
+    font-size: 9px;
+  }
+  .fw .fw-dialog-footer > div {
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+  }
+  .fw .fw-dialog-steps {
+    font-size: 9px;
+  }
+  .fw .fw-dialog-steps li:not(:last-child)::after {
+    margin: 0 8px;
+    max-width: 20px;
+  }
+  .fw .fw-review-dialog .fw-dialog-footer {
+    flex-wrap: nowrap;
+  }
+  .fw .fw-review-dialog .premium-button {
+    font-size: 10px;
+    padding: 10px;
+  }
+  .fw .rc2-modal {
+    padding: 18px;
+  }
+  .fw .rc2-intro-grid {
+    grid-template-columns: 1fr;
+  }
+  .fw .rc2-upload {
+    grid-template-columns: 1fr 1fr;
+  }
+  .fw .rc2-picker {
+    flex-wrap: wrap;
+  }
+  .fw .rc2-picker select {
+    flex-basis: 100%;
+  }
+  .fw .rc2-picker button {
+    margin-left: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fw .premium-dialog,
+  .fw .premium-dialog * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

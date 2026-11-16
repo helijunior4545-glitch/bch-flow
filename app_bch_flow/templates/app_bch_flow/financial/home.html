@@ -2,10 +2,11 @@
 {% block legacy_polish %}{% endblock %}
 {% block title %}{% trans 'Wallet' %} · {{ member.organization.name }}{% endblock %}
 {% block theme_color %}#0c0e10{% endblock %}
-{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/workspace-tokens.css' %}">
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-workspace.css' %}">{% endblock %}
+{% block content_styles %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/workspace-tokens.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-workspace.css' %}?v=2">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-dialogs.css' %}?v=2">{% endblock %}
 {% block content %}
-<main id="main" class="fw" data-financial-workspace data-asset="{{ asset }}" data-chart-today="{{ chart_today }}" data-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-rates-url="{% url 'bch_flow:financial_market_rates' %}" data-loading="{% trans 'Loading market data…' %}" data-unavailable="{% trans 'Market data unavailable. No example data displayed.' %}" data-market-label="{% trans 'Market quotation, not account balance' %}" data-pix-label="{% trans 'Daily credited receipts · BRL' %}">
+<main id="main" class="fw" data-tone="{{ asset }}" data-financial-workspace data-asset="{{ asset }}" data-chart-today="{{ chart_today }}" data-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-rates-url="{% url 'bch_flow:financial_market_rates' %}" data-loading="{% trans 'Loading market data…' %}" data-unavailable="{% trans 'Market data unavailable. No example data displayed.' %}" data-market-label="{% trans 'Market quotation, not account balance' %}" data-pix-label="{% trans 'Daily credited receipts · BRL' %}">
 {% include 'app_bch_flow/components/wallet_navigation.html' %}
 <div class="fw-body">
 <header class="fw-top">
@@ -35,7 +36,7 @@
 </i>{% trans 'Send' %}</button>{% endif %}{% endif %}</div>
 </section>
 <section class="fw-context">
-<nav class="fw-tabs" aria-label="{% trans 'Choose currency' %}">{% for option in asset_options %}<a href="?asset={{ option.code }}&amp;environment={% if is_demo %}sandbox{% else %}{{ environment }}{% endif %}" {% if option.code == asset %}aria-current="page"{% endif %}>{{ option.name }} / {{ option.code }}</a>{% endfor %}</nav>
+<nav class="fw-tabs" aria-label="{% trans 'Choose currency' %}">{% for option in asset_options %}<a href="?asset={{ option.code }}&amp;environment={% if is_demo %}sandbox{% else %}{{ environment }}{% endif %}" {% if option.code == asset %}aria-current="page"{% endif %}><span class="fw-currency-icon" data-tone="{{ option.code }}">{% include 'app_bch_flow/components/asset_symbol.html' with asset=option.code %}</span><span>{{ option.name }} / {{ option.code }}</span></a>{% endfor %}</nav>
 <form method="get" class="fw-environment">{% if selected_wallet %}<input type="hidden" name="wallet" value="{{ selected_wallet.pk }}">{% endif %}
 <input type="hidden" name="asset" value="{{ asset }}">
 <label for="environment">{% trans 'Environment' %}</label>
@@ -58,7 +59,7 @@
 </div>{% endif %}
 <section class="fw-metrics">
 <article>
-<span>{% if is_sandbox %}{% trans 'Simulated available' %}{% else %}{% trans 'Available' %}{% endif %} · {{ asset }}</span>
+<span class="fw-metric-label"><span class="fw-currency-icon" data-tone="{{ asset }}">{% include 'app_bch_flow/components/asset_symbol.html' with asset=asset %}</span>{% if is_sandbox %}{% trans 'Simulated available' %}{% else %}{% trans 'Available' %}{% endif %} · {{ asset }}</span>
 <div>
 <strong data-private-value>{{ available }}</strong> {{ asset }} <button type="button" class="fw-icon" data-privacy aria-label="{% trans 'Hide balances' %}" aria-pressed="false">
 <i data-lucide="eye">
@@ -67,12 +68,12 @@
 </div>
 </article>
 <article>
-<span>{% trans 'Reserved' %} · {{ asset }}</span>
+<span class="fw-metric-label"><i data-lucide="lock-keyhole"></i>{% trans 'Reserved' %} · {{ asset }}</span>
 <div>
 <strong data-private-value>{{ reserved }}</strong> {{ asset }}</div>
 </article>
 <article>
-<span>{% trans 'Open payment requests' %}</span>
+<span class="fw-metric-label"><i data-lucide="receipt-text"></i>{% trans 'Open payment requests' %}</span>
 <div>
 <strong>{{ open_requests_count }}</strong>
 </div>
@@ -113,11 +114,11 @@
 <button type="button" data-chart-zoom="out" class="fw-icon" aria-label="{% trans 'Zoom out' %}">−</button>
 </div>
 <div class="fw-quotes">
-<span>BTC / USD <output data-rate="BTC">—</output>
+<span><span class="fw-currency-icon" data-tone="BTC">{% include 'app_bch_flow/components/asset_symbol.html' with asset='BTC' %}</span>BTC / USD <output data-rate="BTC">—</output>
 </span>
-<span>BCH / USD <output data-rate="BCH">—</output>
+<span><span class="fw-currency-icon" data-tone="BCH">{% include 'app_bch_flow/components/asset_symbol.html' with asset='BCH' %}</span>BCH / USD <output data-rate="BCH">—</output>
 </span>
-<span>{% trans 'Pix · BRL payment method' %}</span>
+<span><span class="fw-currency-icon" data-tone="BRL">{% include 'app_bch_flow/components/asset_symbol.html' with asset='BRL' %}</span>{% trans 'Pix · BRL payment method' %}</span>
 </div>
 </section>
 <aside class="fw-panel fw-operate">
@@ -165,7 +166,7 @@
 </thead>
 <tbody>{% for charge in requests %}<tr data-operation data-state="{{ charge.status }}">
 <td>{{ charge.created_at|date:'SHORT_DATETIME_FORMAT' }}</td>
-<td>{% trans 'Receive' %}</td>
+<td><span class="fw-operation-icon is-receive"><i data-lucide="arrow-down-left"></i></span>{% trans 'Receive' %}</td>
 <td>
 <a href="{% url 'bch_flow:financial_request' member.organization_id charge.pk %}">{{ charge.description|default:charge.pk }}</a>
 </td>
@@ -175,7 +176,7 @@
 </td>
 </tr>{% endfor %}{% for withdrawal in withdrawals %}<tr data-operation data-state="{{ withdrawal.status }}">
 <td>{{ withdrawal.created_at|date:'SHORT_DATETIME_FORMAT' }}</td>
-<td>{% trans 'Send' %}</td>
+<td><span class="fw-operation-icon is-send"><i data-lucide="arrow-up-right"></i></span>{% trans 'Send' %}</td>
 <td>
 <a href="#withdrawals">{{ withdrawal.destination|truncatechars:28 }}</a>
 </td>
@@ -229,8 +230,8 @@
 </main>
 <script src="{% static 'app_bch_flow/js/lightweight-charts-v5.standalone.js' %}" defer>
 </script>
-<script src="{% static 'app_bch_flow/js/financial-workspace.js' %}" defer>
+<script src="{% static 'app_bch_flow/js/financial-workspace.js' %}?v=2" defer>
 </script>
-<script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer>
+<script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}?v=2" defer>
 </script>
 {% endblock %}

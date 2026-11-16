@@ -1,8 +1,10 @@
 # Financial workspace
 
 `financial/home.html` is the authenticated operations screen. It now uses a
-single `financial-workspace.css` and `financial-workspace.js`, plus shared
-`workspace-tokens.css`. Signing, receipt catalog and the chart library remain
+layout stylesheet `financial-workspace.css`, dedicated payment-dialog component
+`financial-dialogs.css`, and shared `workspace-tokens.css`. The controller is
+maintained in `frontend/src/financial-workspace.js` and bundled to the existing
+static `financial-workspace.js` entry. Signing, receipt catalog and the chart library remain
 separate components. Obsolete versioned wallet styles/scripts were removed.
 Other pages keep their legacy polish stylesheet through the base template's
 `legacy_polish` block; the wallet and software pages opt out. Software uses the
@@ -51,3 +53,38 @@ Browser checks require Chromium and Node/Playwright; they use disposable local
 PostgreSQL and controlled market data, never live money. Runtime API failures
 remain visible. Deploy with collectstatic and restart web processes. No new
 migration, environment variable or secret is required for this UI refactor.
+
+
+## Dialogs, asset colors and animation build
+
+BTC uses orange (#f7931a), BCH green (#0ac18e), and Pix turquoise (#32bcad).
+The application's primary brand remains orange. Status and function icons use
+semantic success/warning/info/error colors accompanied by text. These are design
+tokens, not financial evidence.
+
+Receive/send/review dialogs use bound Django fields and retain their original
+POST names, CSRF, validation, idempotency keys and server authorization flow.
+Payment details and account context are separated; a sticky action footer stays
+reachable on small screens. Review does not submit until explicit confirmation.
+Native dialog provides modal focus isolation and Escape semantics. The inline
+catalog uses cancelable dialog lifecycle events with a native fallback outside
+this workspace.
+
+Motion 12.23.24 supplies enter/exit transitions and staggered field entry.
+Animations respect prefers-reduced-motion. Exit is bounded if a Web Animation
+is interrupted, and closing dialogs do not steal focus from subsequent actions.
+All dependencies are bundled locally, with notices in WORKSPACE-NOTICES.txt;
+there is no runtime CDN or new framework requirement.
+
+```sh
+cd app_bch_flow
+npm ci
+npm run build:workspace
+```
+
+The generated bundle is committed for deployments without Node. After changing
+the source, rebuild and run collectstatic. The workspace-specific Vite config
+sets NODE_ENV at build time; the browser does not need a Node process shim.
+Browser tests cover actual receipt creation and one reservation under repeated
+confirmation clicks, nested dialog dismissal, focus, reduced motion, canonical
+currency colors and desktop/mobile screenshots, using a disposable sandbox.

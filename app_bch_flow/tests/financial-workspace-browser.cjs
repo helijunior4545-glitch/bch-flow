@@ -19,7 +19,7 @@ const fs = require("node:fs");
       .addCookies([
         { name: input.cookieName, value: input.cookie, url: input.base },
       ]);
-    await p.route("**/financial-workspace.js", async (route) => {
+    await p.route("**/financial-workspace.js*", async (route) => {
       const response = await route.fetch();
       const code = await response.text();
       await route.fulfill({
@@ -112,9 +112,43 @@ const fs = require("node:fs");
       path: input.artifacts + "/wallet-desktop.png",
       fullPage: true,
     });
+    for (const [asset, color] of [
+      ["BTC", "rgb(247, 147, 26)"],
+      ["BCH", "rgb(10, 193, 142)"],
+      ["BRL", "rgb(50, 188, 173)"],
+    ]) {
+      const actual = await p
+        .locator('.fw-tabs [data-tone="' + asset + '"] svg')
+        .evaluate((el) => getComputedStyle(el).color);
+      if (actual !== color)
+        throw Error(asset + " brand color incorrect: " + actual);
+    }
+    await p.emulateMedia({ reducedMotion: "no-preference" });
     await p.getByRole("button", { name: "Receive", exact: true }).click();
-    await p.locator("#receive-dialog").waitFor({ state: "visible" });
+    const receive = p.locator("#receive-dialog");
+    await receive.waitFor({ state: "visible" });
+    await receive.evaluate(async (el) => {
+      await Promise.all(
+        el
+          .getAnimations({ subtree: true })
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
+    await p.screenshot({
+      path: input.artifacts + "/receive-dialog-desktop.png",
+    });
+    await p.locator("[data-rc2-new]").click();
+    await p.locator("#rc2-create-dialog").waitFor({ state: "visible" });
     await p.keyboard.press("Escape");
+    await p.locator("#rc2-create-dialog").waitFor({ state: "hidden" });
+    if (!(await receive.evaluate((el) => el.open)))
+      throw Error("Closing product dialog dismissed payment form");
+    await p.keyboard.press("Escape");
+    await receive.waitFor({ state: "hidden" });
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
+    await receive.waitFor({ state: "visible" });
+    await p.keyboard.press("Escape");
+    await receive.waitFor({ state: "hidden" });
     await p.getByRole("button", { name: "Send", exact: true }).click();
     await p.locator('[name="send-destination"]').fill("sandbox:test");
     await p.locator('[name="send-amount"]').fill("0.000001");
@@ -128,8 +162,20 @@ const fs = require("node:fs");
       "sandbox:test"
     )
       throw Error("Review destination mismatch");
+    await p.locator("#transfer-review").evaluate(async (el) => {
+      await Promise.all(
+        el
+          .getAnimations({ subtree: true })
+          .map((a) => a.finished.catch(() => {})),
+      );
+    });
+    await p.screenshot({
+      path: input.artifacts + "/review-dialog-desktop.png",
+    });
     await p.keyboard.press("Escape");
+    await p.locator("#transfer-review").waitFor({ state: "hidden" });
     await p.keyboard.press("Escape");
+    await p.locator("#send-dialog").waitFor({ state: "hidden" });
     await p.setViewportSize({ width: 390, height: 844 });
     if (
       await p.evaluate(() => document.documentElement.scrollWidth > innerWidth)
@@ -145,6 +191,24 @@ const fs = require("node:fs");
       path: input.artifacts + "/wallet-mobile.png",
       fullPage: true,
     });
+    await p.emulateMedia({ reducedMotion: "reduce" });
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
+    await receive.waitFor({ state: "visible" });
+    if (await receive.evaluate((el) => el.scrollWidth > el.clientWidth + 1))
+      throw Error("Mobile dialog overflow");
+    if (
+      await receive.evaluate((el) =>
+        el
+          .getAnimations({ subtree: true })
+          .some((a) => a.playState === "running"),
+      )
+    )
+      throw Error("Reduced motion not respected");
+    await p.screenshot({
+      path: input.artifacts + "/receive-dialog-mobile.png",
+    });
+    await p.keyboard.press("Escape");
+    await receive.waitFor({ state: "hidden" });
     await p.keyboard.press("Control+k");
     if (
       !(await p
@@ -152,6 +216,46 @@ const fs = require("node:fs");
         .evaluate((e) => e === document.activeElement))
     )
       throw Error("Search shortcut failed");
+    // Complete both actual form round trips in the disposable sandbox database.
+    await p.setViewportSize({ width: 1500, height: 1100 });
+    await p.getByRole("button", { name: "Send", exact: true }).click();
+    await p
+      .locator('[name="send-destination"]')
+      .fill("sandbox:browser-refinement");
+    await p.locator('[name="send-amount"]').fill("0.000001");
+    await p.locator('[name="send-fee_limit"]').fill("0");
+    await p
+      .getByRole("button", { name: "Review and reserve", exact: true })
+      .click();
+    await p.locator("#transfer-review").waitFor({ state: "visible" });
+    let reservations = 0;
+    p.on("request", (request) => {
+      if (
+        request.method() === "POST" &&
+        new URL(request.url()).pathname.endsWith("/payments/")
+      )
+        reservations++;
+    });
+    await Promise.all([
+      p.waitForNavigation(),
+      p.locator("[data-confirm-reservation]").evaluate((button) => {
+        button.click();
+        button.click();
+      }),
+    ]);
+    if (reservations !== 1)
+      throw Error("Reservation was submitted " + reservations + " times");
+    if ((await p.locator("#withdrawals .premium-withdrawal").count()) !== 1)
+      throw Error("Reservation did not persist");
+    await p.getByRole("button", { name: "Receive", exact: true }).click();
+    await p.locator('[name="receive-amount"]').fill("0.000002");
+    await p
+      .locator('[name="receive-description"]')
+      .fill("Browser modal receipt");
+    await Promise.all([
+      p.waitForURL("**/payments/requests/**"),
+      p.locator('#receive-dialog button[type="submit"]').click(),
+    ]);
     if (errors.length) throw Error(errors.join("\n"));
     console.log(
       "Chart zoom/pan/reset, expansion, dialogs, transfer review, mobile navigation and search passed.",
