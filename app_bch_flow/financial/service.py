@@ -688,3 +688,21 @@ def prepare_signing(actor, withdrawal):
         withdrawal.signing_payload = payload
         withdrawal.save(update_fields=["signing_payload"])
         return withdrawal
+
+
+def confirmed_payment(request):
+    """Delivery eligibility from credited receipts; callers cannot assert settlement.
+
+    Re-read account/request state so refunds, reorgs and review freezes suspend
+    future delivery, including previously issued short-lived download links.
+    """
+    from django.db.models import Sum
+    request = FlowRequest.objects.select_related('account').get(pk=request.pk)
+    if (request.account.environment != 'live' or request.account.frozen
+            or request.status not in ('paid', 'overpaid')):
+        return False
+    receipts = request.receipts.all()
+    if receipts.filter(status='review').exists():
+        return False
+    total = receipts.filter(status='credited', credited_at__isnull=False).aggregate(total=Sum('amount_units'))['total'] or 0
+    return total >= request.amount_units and request.received_units >= request.amount_units

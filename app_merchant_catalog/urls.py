@@ -9,3 +9,18 @@ urlpatterns = [
     path("dashboard/organizations/<uuid:org_id>/catalog/api/products/<uuid:product_id>/update/", views.update, name="merchant_catalog_update"),
     path("dashboard/organizations/<uuid:org_id>/catalog/api/products/<uuid:product_id>/action/", views.action, name="merchant_catalog_action"),
 ]
+
+from . import software_views as software
+urlpatterns += [
+    path('dashboard/organizations/<uuid:org_id>/catalog/sales/', software.sales, name='software_sales'),
+    path('software/', software.storefront, name='software_store'),
+    path('software/purchases/', software.purchases, name='software_purchases'),
+    path('software/products/<uuid:product_id>/', software.product, name='software_product'),
+    path('software/buy/<int:offer_id>/', software.buy, name='software_buy'),
+    path('software/orders/<uuid:order_id>/', software.order_detail, name='software_order'),
+    path('software/orders/<uuid:order_id>/status/', software.order_status, name='software_status'),
+    path('software/orders/<uuid:order_id>/download/', software.download_link, name='software_download_link'),
+    path('software/download/<str:token>/', software.download, name='software_download'),
+    path('dashboard/organizations/<uuid:org_id>/catalog/<uuid:product_id>/publish/', software.publish, name='software_publish'),
+    path('dashboard/organizations/<uuid:org_id>/catalog/releases/<uuid:release_id>/offers/', software.add_offer, name='software_offer'),
+]
