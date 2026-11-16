@@ -36,7 +36,11 @@
     const width = Math.round(box.width), height = Math.round(box.height);
     if (width < 80 || height < 80) return;
     try {
+      const range = scope.chart.timeScale().getVisibleLogicalRange();
       scope.chart.resize(width, height);
+      // Lightweight Charts otherwise keeps bar spacing on a wider drawing area,
+      // which can leave half the chart empty after expand/collapse.
+      if (range) scope.chart.timeScale().setVisibleLogicalRange(range);
     } catch (_) { /* A chart can be destroyed during an asset switch. */ }
   }
   function scheduleFinancialChartFit(scope) {
