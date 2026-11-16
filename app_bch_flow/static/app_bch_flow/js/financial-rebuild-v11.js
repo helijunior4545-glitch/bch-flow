@@ -28,7 +28,7 @@
   function icons() {try {window.lucide?.createIcons({attrs:{'stroke-width':1.7,'aria-hidden':'true'}});} catch (_) {}}
 
 
-  // Recalculate the chart's real drawing size, then re-fit visible candles.
+  // Resize the drawing surface without discarding the user's zoom or pan.
   // ResizeObserver also handles later viewport/full-screen size changes.
   function refitFinancialChart(scope) {
     if (!scope || scope.cancelled || !scope.chart || !scope.plot?.isConnected) return;
@@ -37,7 +37,6 @@
     if (width < 80 || height < 80) return;
     try {
       scope.chart.resize(width, height);
-      scope.chart.timeScale().fitContent();
     } catch (_) { /* A chart can be destroyed during an asset switch. */ }
   }
   function scheduleFinancialChartFit(scope) {
@@ -148,7 +147,7 @@
           crosshair: {vertLine:{color:'#d4a54f66'},horzLine:{color:'#d4a54f66'}},
           rightPriceScale: {borderColor:'#ffffff22'},
           timeScale: {borderColor:'#ffffff22',timeVisible:false,secondsVisible:false},
-          handleScroll:false,handleScale:false
+          handleScroll:{mouseWheel:false,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}
         });
         const options={upColor:'#149c76',downColor:'#c4944a',
           wickUpColor:'#149c76',wickDownColor:'#c4944a',
@@ -401,6 +400,24 @@
       if (event.target.closest('[data-financial-search]')) {root.querySelector('#requests')?.scrollIntoView({behavior:'smooth',block:'start'});return;}
       const range = event.target.closest('[data-financial-range]');
       if (range) {const days = Number(range.dataset.financialRange);if (PERIODS.has(days)) loadOHLC(scope,days);return;}
+      const chartControl = event.target.closest('[data-chart-view]');
+      if (chartControl) {
+        if (!scope.chart) return;
+        const scale = scope.chart.timeScale();
+        if (chartControl.dataset.chartView === 'fit') {
+          scope.chart.priceScale('right').applyOptions({autoScale:true});
+          scale.fitContent();
+        } else {
+          const range = scale.getVisibleLogicalRange();
+          if (range) {
+            const center = (range.from + range.to) / 2;
+            const span = Math.max(4, Math.min(10000, (range.to - range.from) *
+              (chartControl.dataset.chartView === 'in' ? 0.75 : 1.333333)));
+            scale.setVisibleLogicalRange({from:center - span / 2, to:center + span / 2});
+          }
+        }
+        return;
+      }
       const expand = event.target.closest('[data-financial-expand]');
       if (expand) {
         const finance=root.querySelector('.bfr-finance');const on=finance.classList.toggle('is-expanded');
@@ -527,7 +544,7 @@
       const C = window.LightweightCharts;
       if(!C || !scope.plot) throw new Error('Chart library unavailable');
       if (!scope.chart) {
-        scope.chart=C.createChart(scope.plot,{width:scope.plot.clientWidth||300,height:scope.plot.clientHeight||240,layout:{background:{type:'solid',color:'#111b2c'},textColor:'#91a5c4',fontFamily:'Inter,system-ui,sans-serif',fontSize:10},grid:{vertLines:{color:'#ffffff0c'},horzLines:{color:'#ffffff13'}},crosshair:{vertLine:{color:'#d4a54f66'},horzLine:{color:'#d4a54f66'}},rightPriceScale:{borderColor:'#ffffff22'},timeScale:{borderColor:'#ffffff22',timeVisible:days<=1,secondsVisible:false},handleScroll:false,handleScale:false});
+        scope.chart=C.createChart(scope.plot,{width:scope.plot.clientWidth||300,height:scope.plot.clientHeight||240,layout:{background:{type:'solid',color:'#111b2c'},textColor:'#91a5c4',fontFamily:'Inter,system-ui,sans-serif',fontSize:10},grid:{vertLines:{color:'#ffffff0c'},horzLines:{color:'#ffffff13'}},crosshair:{vertLine:{color:'#d4a54f66'},horzLine:{color:'#d4a54f66'}},rightPriceScale:{borderColor:'#ffffff22'},timeScale:{borderColor:'#ffffff22',timeVisible:days<=1,secondsVisible:false},handleScroll:{mouseWheel:false,pressedMouseMove:true,horzTouchDrag:true,vertTouchDrag:false},handleScale:{axisPressedMouseMove:true,mouseWheel:true,pinch:true}});
         const opts={upColor:'#0cc06d',downColor:'#f25b59',wickUpColor:'#0cc06d',wickDownColor:'#f25b59',borderVisible:false,priceFormat:{type:'price',precision:2,minMove:.01}};
         scope.series=scope.chart.addSeries?scope.chart.addSeries(C.CandlestickSeries,opts):scope.chart.addCandlestickSeries(opts);
         if('ResizeObserver' in window){scope.observer=new ResizeObserver(()=>{if(!scope.cancelled)requestAnimationFrame(()=>refitFinancialChart(scope));});scope.observer.observe(scope.plot);}

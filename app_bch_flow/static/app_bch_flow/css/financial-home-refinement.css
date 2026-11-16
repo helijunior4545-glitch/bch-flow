@@ -87,3 +87,61 @@
 @media (prefers-reduced-motion:reduce) {
   .bfr-dashboard .premium-main :is(.premium-button,.premium-org,.bfr-search,.premium-wallet-switcher a,.bfr-assets nav a,.premium-ledger summary) { transition: none; }
 }
+
+/* Asset marks: cut-out SVG symbols need a contrasting solid surface. */
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset {
+  min-height:40px;padding:7px 10px;gap:7px;border-radius:10px;
+  background:#1c2a3b;color:#dce5ee;border:1px solid #425166;
+  box-shadow:none;font-size:11px;font-weight:600;transform:none;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset[aria-current=page] {
+  background:#314155;border-color:#f2ad45;color:#fff;
+  box-shadow:inset 0 -2px #f2ad45;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset-icon {
+  width:25px;height:25px;flex:0 0 25px;background:#fff!important;
+  border:0;border-radius:50%;box-shadow:none;transform:none;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark {width:23px;height:23px;}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--btc {color:#b56a00!important;}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--bch {color:#087b48!important;}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset-brl .premium-asset-icon {background:#e7fff6!important;}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--brl {color:#006b55!important;width:18px;height:18px;}
+.bfr-dashboard .premium-main .bfr-asset-mark {background:#fff!important;border:1px solid #e0e6e1;}
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--btc {color:#a85c00!important;}
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--bch {color:#087b48!important;}
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--brl {color:#006b55!important;}
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--btc {color:#ffb347;}
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--bch {color:#65dfac;}
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--brl {color:#78decb;}
+/* Existing native dialogs remain outside premium-main. */
+.bfr-dashboard .premium-main .bfr-icon-button,
+.bfr-dashboard .premium-main .bfr-chart-tools button {
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-width:34px;min-height:34px;border-radius:8px;border:1px solid #526178;
+  background:#213045;color:#e6edf5;box-shadow:none;cursor:pointer;
+  transition:background-color .16s,border-color .16s;
+}
+.bfr-dashboard .premium-main .bfr-chart-tools {display:flex;gap:5px;align-self:flex-end;margin:12px 0 4px;pointer-events:auto;}
+.bfr-dashboard .premium-main .bfr-chart-tools button {font-family:inherit;font-size:10px;font-weight:500;line-height:1.4;padding:6px 9px;}
+.bfr-dashboard .premium-main .bfr-chart-tools svg {width:14px;height:14px;}
+.bfr-dashboard .premium-main .bfr-chart-tools button:active {background:#3b4e65;}
+.bfr-dashboard .premium-main .bfr-periods {background:#19283a;padding:4px;border:1px solid #3a4a60;border-radius:10px;gap:3px;}
+.bfr-dashboard .premium-main .bfr-periods button {border:1px solid transparent;border-radius:7px;min-height:30px;background:transparent;color:#bfcddd;box-shadow:none;font-weight:550;}
+.bfr-dashboard .premium-main .bfr-periods button[aria-pressed=true] {background:#33475c;border-color:#5e748d;color:#fff;box-shadow:none;}
+.bfr-dashboard .premium-main .bfr-finance:not(.is-expanded) {resize:vertical;min-height:390px;max-height:850px;align-self:start;height:390px;}
+.bfr-dashboard .premium-main .bfr-chart-backdrop {pointer-events:auto;cursor:grab;}
+.bfr-dashboard .premium-main .bfr-chart-backdrop:active {cursor:grabbing;}
+.bfr-dashboard .premium-main .bfr-chart-veil {opacity:.55;}
+.bfr-dashboard .premium-main .bfr-finance.is-expanded .bfr-chart-veil {opacity:.15;}
+.bfr-dashboard .premium-main .bfr-finance.is-expanded {max-height:calc(100dvh - 4dvh);}
+@media(hover:hover){
+  .bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset:hover {background:#35465c;border-color:#8a9cb0;transform:none;}
+  .bfr-dashboard .premium-main :is(.bfr-chart-tools button,.bfr-icon-button):hover {background:#354960;border-color:#a5b5c8;}
+}
+@media(max-width:570px){
+  .bfr-dashboard .premium-main .bfr-finance:not(.is-expanded) {min-height:410px;height:410px;}
+  .bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset {min-height:42px;padding:7px 10px;}
+  .bfr-dashboard .premium-main .bfr-chart-tools button {min-height:40px;min-width:40px;}
+}
+@media(prefers-reduced-motion:reduce){.bfr-dashboard .premium-main .bfr-chart-tools button{transition:none;}}
