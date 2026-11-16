@@ -1,0 +1,14 @@
+/* Shared wallet / software foundations. */
+:root {
+  --ws-bg: #0c0e10;
+  --ws-surface: #16191d;
+  --ws-raised: #1e2227;
+  --ws-text: #f1f2f3;
+  --ws-muted: #a3aab3;
+  --ws-line: #343a42;
+  --ws-accent: #ff9900;
+  --ws-accent-hover: #ffb136;
+  --ws-radius: 12px;
+  --ws-motion: 160ms;
+  --ws-font: Inter, system-ui, -apple-system, sans-serif;
+}

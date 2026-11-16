@@ -1,0 +1,32 @@
+{% load i18n %}
+    {% for withdrawal in withdrawals %}<article class="premium-withdrawal">
+<div class="premium-withdrawal-head">
+<div>
+<strong>{{ withdrawal.formatted_amount }} {{ asset }}</strong>
+<small>{{ withdrawal.destination }}</small>
+</div>
+<span class="premium-status" data-state="{{ withdrawal.status }}">{{ withdrawal.friendly_status }}</span>
+</div>
+<p>{% trans "Maximum fee:" %} {{ withdrawal.formatted_fee_limit }} {{ asset }} · {% trans "Total reserved:" %} {{ withdrawal.formatted_reservation }} {{ asset }}</p>{% if withdrawal.txid %}<code class="premium-txid">{{ withdrawal.txid }}</code>{% endif %}
+    {% if can_approve %}{% if withdrawal.status == 'pending' or withdrawal.status == 'approved' %}{% if not is_sandbox and asset != 'BRL' %}<form method="post" class="premium-inline-form" data-submit-feedback>{% csrf_token %}<input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+<button name="action" value="prepare_send" class="premium-button premium-button-outline" type="submit">{% trans "Prepare for external signing" %}</button>{% if withdrawal.signing_payload %}<a class="premium-button premium-button-outline" href="{% url 'bch_flow:financial_signing_package' member.organization_id withdrawal.pk %}">{% trans "Download signing package" %}</a>{% endif %}</form>{% endif %}<form method="post" class="premium-approval" data-submit-feedback>{% csrf_token %}<input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+<input type="hidden" name="action" value="approve">
+<label>{% trans "Confirm your password" %}<input type="password" name="password" autocomplete="current-password" maxlength="200" required>
+</label>
+<button class="premium-button premium-button-outline" type="submit">{% trans "Authorize for 5 minutes" %}</button>
+</form>{% endif %}
+    {% if withdrawal.status == 'approved' and asset == 'BCH' and environment == 'live' and selected_wallet.provider == 'nownodes' %}<button type="button" class="premium-button wizard-sign-button" data-wizard-sign="{% url 'bch_flow:wizardconnect_sign_request' member.organization_id withdrawal.pk %}">
+<i data-lucide="scan-line">
+</i>{% trans 'Sign with WizardConnect' %}</button>{% endif %}
+    {% if withdrawal.status == 'approved' %}<form method="post" class="premium-approval" data-submit-feedback>{% csrf_token %}<input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+<input type="hidden" name="action" value="submit">{% if not is_sandbox %}<label>{% trans "Externally signed transaction (hex only; never a private key)" %}<textarea name="raw_transaction" required maxlength="1000000" spellcheck="false" autocomplete="off">
+</textarea>
+</label>{% endif %}<button class="premium-button premium-button-orange" type="submit">{% if is_sandbox %}{% trans "Execute simulated transfer" %}{% else %}{% trans "Validate and broadcast" %}{% endif %}</button>
+</form>{% endif %}
+    {% if withdrawal.status == 'pending' or withdrawal.status == 'approved' %}<form method="post" class="premium-inline-form">{% csrf_token %}<input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+<button name="action" value="cancel" type="submit" class="premium-link-button">{% trans "Cancel and release reservation" %}</button>
+</form>{% endif %}
+    {% if withdrawal.status == 'unknown' or withdrawal.status == 'submitting' %}<p>{% trans "Broadcast verification is pending. Funds remain reserved; do not create another withdrawal." %}</p>
+<form method="post">{% csrf_token %}<input type="hidden" name="withdrawal" value="{{ withdrawal.pk }}">
+<button class="premium-button premium-button-outline" type="submit" name="action" value="recover">{% trans "Check broadcast on node" %}</button>
+</form>{% endif %}{% endif %}</article>{% empty %}<p class="premium-no-data">{% trans "No withdrawals recorded." %}</p>{% endfor %}
