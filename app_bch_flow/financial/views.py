@@ -259,13 +259,10 @@ def home(request, org_id):
         # Chipnet watch-only data: never credit FlowAccount from this observation.
         from app_bch_flow.financial.chipnet_balance_v52 import observe_chipnet_balance
         chipnet_observation = observe_chipnet_balance()
-    from .workspace import workspace_context
-    presentation = workspace_context(org_id, environment, account)
     return render(
         request,
         "app_bch_flow/financial/home.html",
         {
-            **presentation,
             "member": member,
             "wizard_relays": relay_urls(),
             "wallets": wallets,

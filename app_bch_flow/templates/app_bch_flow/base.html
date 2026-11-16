@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-refinement.css' %}">
 <script src="{% static 'app_bch_flow/vendor/lucide.min.js' %}" defer></script>
 <script src="{% static 'app_bch_flow/js/flow-ui.js' %}" defer></script>
-{% block extra_head %}{% endblock %}{% block legacy_polish %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-polish.css' %}">{% endblock %}{% block content_styles %}{% endblock %}</head><body>
+{% block extra_head %}{% endblock %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-polish.css' %}">{% block content_styles %}{% endblock %}</head><body>
 <a class="skip" href="#main">{% trans 'Skip to content' %}</a>
 {% include 'app_bch_flow/components/language_picker.html' %}
 {% include 'app_bch_flow/components/interaction_messages.html' %}
