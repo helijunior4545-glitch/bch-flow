@@ -1,2 +1,28 @@
 {% extends 'merchant_catalog/software_base.html' %}{% load i18n %}
-{% block software_content %}<section class="sw-hero"><p class="sw-eyebrow">{% trans 'TOOLS FOR BUILDERS' %}</p><h1>{% trans 'Less setup.' %}<br><span>{% trans 'More building.' %}</span></h1><p>{% trans 'Purpose-built software. Source code, documentation and a clear license, delivered after payment confirmation.' %}</p><div class="sw-chips"><span>Bitcoin</span><span>Bitcoin Cash</span><span>Pix</span></div></section><section aria-label="Software catalog" class="sw-grid">{% for item in items %}<article class="sw-card"><div class="sw-card-top"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><span class="sw-badge">v{{ item.release.version }}</span></div><p class="sw-eyebrow">{{ item.product.organization.name }}</p><h2><a href="{% url 'bch_flow:software_product' item.product.pk %}">{{ item.product.name }}</a></h2><p>{{ item.product.description|truncatechars:160 }}</p><div class="sw-offers">{% for offer in item.offers %}<span>{{ offer.price_label }} {{ offer.method_label }}</span>{% endfor %}</div><a class="sw-button sw-secondary" href="{% url 'bch_flow:software_product' item.product.pk %}">{% trans 'View software' %} <span aria-hidden="true">↗</span></a></article>{% empty %}<article class="sw-card sw-empty"><h2>{% trans 'The next useful tool starts here.' %}</h2><p>{% trans 'No software is published yet. Sellers can publish a ZIP release from their product catalog after configuring a receiving account.' %}</p><a class="sw-button" href="{% url 'bch_flow:dashboard' %}">{% trans 'Open workspace' %}</a></article>{% endfor %}</section>{% endblock %}
+{% block software_content %}
+<section class="sw-hero sw-store-hero" aria-labelledby="software-title">
+  <div class="sw-hero-copy"><p class="sw-eyebrow"><span class="sw-brand-dot" aria-hidden="true"></span> {% trans 'TOOLS FOR BUILDERS' %}</p>
+    <h1 id="software-title">{% trans 'Less setup.' %}<br><span>{% trans 'More building.' %}</span></h1>
+    <p>{% trans 'Purpose-built software. Source code, documentation and a clear license, delivered after payment confirmation.' %}</p>
+    <a class="sw-button" href="#software-catalog">{% trans 'Explore software' %}<span aria-hidden="true">↓</span></a>
+    <div class="sw-chips" aria-label="{% trans 'Payment methods offered by sellers' %}"><span>Bitcoin</span><span>Bitcoin Cash</span><span>Pix</span></div>
+  </div>
+  <aside class="sw-delivery-preview" aria-label="{% trans 'What you receive' %}">
+    <div class="sw-preview-head"><span class="sw-preview-mark" aria-hidden="true">&lt;/&gt;</span><span>BCH FLOW <small>SOFTWARE</small></span><span class="sw-preview-format">.zip</span></div>
+    <p class="sw-eyebrow">{% trans 'What you receive' %}</p><h2>{% trans 'Built to be yours.' %}</h2>
+    <ul class="sw-package-list"><li><span aria-hidden="true">01</span><strong>{% trans 'Source code' %}</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li><li><span aria-hidden="true">02</span><strong>README</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li><li><span aria-hidden="true">03</span><strong>{% trans 'License' %}</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li></ul>
+    <p class="sw-preview-note"><span aria-hidden="true"><i data-lucide="corner-down-right"></i></span> {% trans 'Delivered after payment confirmation.' %}</p>
+  </aside>
+</section>
+<section class="sw-catalog-section" id="software-catalog" aria-labelledby="catalog-title">
+  <header class="sw-section-heading"><div><p class="sw-eyebrow">{% trans 'THE COLLECTION' %}</p><h2 id="catalog-title">{% trans 'Software for your next move.' %}</h2></div><span class="sw-catalog-count">{{ items|length }} {% trans 'available' %}</span></header>
+  <div class="sw-grid">{% for item in items %}
+    <article class="sw-card"><div class="sw-card-top"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><span class="sw-badge">v{{ item.release.version }}</span></div>
+      <p class="sw-eyebrow">{{ item.product.organization.name }}</p><h2><a href="{% url 'bch_flow:software_product' item.product.pk %}">{{ item.product.name }}</a></h2><p>{{ item.product.description|truncatechars:160 }}</p>
+      <div class="sw-card-delivery"><span>{% trans 'Source code' %}</span><span>README</span><span>{% trans 'License' %}</span></div>
+      <div class="sw-offers">{% for offer in item.offers %}<span>{{ offer.price_label }} {{ offer.method_label }}</span>{% endfor %}</div>
+      <a class="sw-button sw-secondary" href="{% url 'bch_flow:software_product' item.product.pk %}">{% trans 'View software' %} <span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></a>
+    </article>
+  {% empty %}<article class="sw-card sw-empty"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><div><p class="sw-eyebrow">{% trans 'THE COLLECTION' %}</p><h2>{% trans 'The next useful tool starts here.' %}</h2><p>{% trans 'No software is published yet. Sellers can publish a ZIP release from their product catalog after configuring a receiving account.' %}</p><a class="sw-button" href="{% url 'bch_flow:dashboard' %}">{% trans 'Open workspace' %}<span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></a></div></article>{% endfor %}</div>
+</section>
+{% endblock %}
