@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import transaction
 from django.db.models import Max
 from django.utils import timezone
@@ -12,7 +13,7 @@ def ordered_products(org_id, include_archived=False):
 
 
 def serialize(product):
-    return {"id": str(product.pk), "name": product.name, "sku": product.sku,
+    return {"publish_url": reverse("bch_flow:software_publish", args=[product.organization_id, product.pk]), "id": str(product.pk), "name": product.name, "sku": product.sku,
             "description": product.description, "price": str(product.price),
             "currency": product.currency, "pinned": product.is_pinned,
             "position": product.position, "archived": bool(product.archived_at),

@@ -45,6 +45,7 @@
         <span class="pay-status" data-state="{{ charge.status }}">{{ status_label }}</span>
         <div class="pay-amount">{{ amount }}<small>{{ charge.account.asset }}</small>
         </div>
+        {% if charge.software_order %}<p><a href="{% url 'bch_flow:software_order' charge.software_order.pk %}">{% trans "Return to your software purchase" %}</a></p>{% endif %}
         <p class="bfp-checkout-description">{{ charge.description }}</p>
 {% include "app_bch_flow/financial/components/receipt_product_premium.html" %}
         {% if charge.status == "partial" %}

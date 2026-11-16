@@ -40,3 +40,55 @@ class ReceiptProductSnapshot(models.Model):
 
     class Meta:
         db_table = "bchflow_receipt_product_snapshot"
+
+
+class SoftwareRelease(models.Model):
+    """Published releases are append-only; purchases retain their exact artifact."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product = models.ForeignKey(MerchantProduct, on_delete=models.PROTECT, related_name="releases")
+    version = models.CharField(max_length=40)
+    archive = models.FileField(upload_to="software/releases/%Y/%m/")
+    sha256 = models.CharField(max_length=64, editable=False)
+    size_bytes = models.PositiveBigIntegerField(editable=False)
+    requirements = models.TextField(max_length=2000)
+    license_text = models.TextField(max_length=12000)
+    notes = models.TextField(max_length=2000, blank=True)
+    published_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=("product", "version"), name="software_product_version")]
+        ordering = ("-published_at",)
+
+
+class SoftwareOffer(models.Model):
+    release = models.ForeignKey(SoftwareRelease, on_delete=models.PROTECT, related_name="offers")
+    account = models.ForeignKey("app_bch_flow.FlowAccount", on_delete=models.PROTECT)
+    seller = models.ForeignKey("app_bch_flow.BCHIdentity", on_delete=models.PROTECT)
+    amount_units = models.PositiveBigIntegerField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=("release", "account"), name="software_offer_account"),
+            models.CheckConstraint(condition=Q(amount_units__gt=0, amount_units__lte=2100000000000000), name="software_offer_amount"),
+        ]
+
+
+class SoftwareOrder(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    buyer = models.ForeignKey("app_bch_flow.BCHIdentity", on_delete=models.PROTECT, related_name="software_orders")
+    offer = models.ForeignKey(SoftwareOffer, on_delete=models.PROTECT)
+    payment = models.OneToOneField("app_bch_flow.FlowRequest", on_delete=models.PROTECT, related_name="software_order")
+    idempotency_key = models.UUIDField()
+    product_name = models.CharField(max_length=160)
+    license_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+        constraints = [models.UniqueConstraint(fields=("buyer", "idempotency_key"), name="software_buyer_operation")]
+
+
+class SoftwareDownload(models.Model):
+    order = models.ForeignKey(SoftwareOrder, on_delete=models.PROTECT, related_name="downloads")
+    created_at = models.DateTimeField(auto_now_add=True)

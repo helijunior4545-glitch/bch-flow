@@ -1,0 +1,2 @@
+{% extends 'merchant_catalog/software_base.html' %}{% load i18n %}
+{% block software_content %}<section class="sw-hero"><h1>{% trans 'We could not complete this step.' %}</h1><p role="alert">{{ error }}</p><a href="{% url 'bch_flow:software_purchases' %}" class="sw-button">{% trans 'Check my purchases' %}</a></section>{% endblock %}
