@@ -1,0 +1,89 @@
+/* Wallet home refinement. Intentionally scoped outside dialogs and expanded charts. */
+.bfr-dashboard {
+  --eu-bg: #f5f5f3;
+  --eu-line: #e5e7e6;
+  --eu-text: #202726;
+  --eu-muted: #68726f;
+  --eu-gold: #ff9500;
+  --eu-radius: 18px;
+  --eu-shadow: 0 2px 6px #15211b03, 0 8px 24px #15211b03;
+  --bfr-ink: #202726;
+  --bfr-sub: #68726f;
+}
+.bfr-dashboard > .premium-main { padding-bottom: 40px; }
+.bfr-dashboard .premium-header { border-bottom: 1px solid var(--eu-line); margin-bottom: 20px; }
+.bfr-dashboard .premium-org { color: var(--eu-text); }
+.bfr-dashboard .bfr-search { border-radius: 10px; box-shadow: none; background: #ffffffa6; }
+.bfr-dashboard .bfr-search kbd { background: #f2f3f1; color: #6b726e; }
+.bfr-dashboard .bfr-ticker { border-radius: 12px; background: #ffffffb3; box-shadow: none; margin-bottom: 18px; }
+.bfr-dashboard .premium-hero { padding-left: 0; min-height: 150px; margin-bottom: 18px; }
+.bfr-dashboard .premium-hero h1 { font-weight: 650; line-height: 1.15; }
+.bfr-dashboard .premium-hero h1 em { color: #a65b00; }
+.bfr-dashboard .premium-hero-description { max-width: 540px; line-height: 1.7; }
+.bfr-dashboard .premium-eyebrow { color: #727973; font-weight: 600; letter-spacing: .14em; }
+.bfr-dashboard .bfr-hero-art { opacity: .6; }
+/* Retain the dark navigation and the existing mark, with the brand's actual orange. */
+.bfr-dashboard .premium-sidebar { background: #121b20; }
+.bfr-dashboard .premium-logo-mark { background: #ff9500; color: #111713; box-shadow: none; }
+.bfr-dashboard.pay-app.pay-premium .premium-sidebar .premium-menu a.active,
+.bfr-dashboard.pay-app.pay-premium .premium-sidebar .premium-menu a[aria-current="page"],
+.bfr-dashboard.pay-app.pay-premium .premium-sidebar .premium-menu a.bfr-current {
+  background: #ffffff0c !important; border-color: #ffffff14 !important;
+  box-shadow: inset 3px 0 #ff9500 !important; color: #fff !important;
+}
+.bfr-dashboard .premium-sidebar .space-dock-link { background: #ffffff04; border-color: #ffffff18; box-shadow: none; }
+.bfr-dashboard .premium-main .premium-controls { margin-bottom: 12px; }
+.bfr-dashboard .premium-main .premium-env { background: #fff; }
+.bfr-dashboard .premium-main .premium-mode { border-color: #e1e6e2; background: #eef2ee; border-radius: 12px; }
+.bfr-dashboard .premium-main .premium-cards { gap: 18px; margin-bottom: 22px; }
+.bfr-dashboard .premium-main :is(.premium-receive,.premium-send) { background: #fff; padding: 24px; }
+.bfr-dashboard .premium-main .premium-section-title { align-items: flex-start; gap: 12px; }
+.bfr-dashboard .premium-main .premium-section-title h2 { font-size: 15px; line-height: 1.45; letter-spacing: -.025em; font-weight: 650; }
+.bfr-dashboard .premium-main .premium-section-title p { color: var(--eu-muted); font-size: 12px; line-height: 1.65; }
+.bfr-dashboard .premium-main .premium-round-icon { background: #fff4e5; color: #985300; border: 1px solid #ffe5be; border-radius: 12px; box-shadow: none; }
+.bfr-dashboard .premium-main .premium-qr-placeholder { border: 1px dashed #dce1dc; border-radius: 14px; background: #f8faf7; color: #758077; }
+.bfr-dashboard .premium-main .premium-preview-input { background: #f7f8f6; border: 1px solid #e7eae5; border-radius: 10px; box-shadow: none; }
+.bfr-dashboard .premium-main .premium-preview-input span { color: #778078; }
+.bfr-dashboard .premium-main .premium-send-preview > p { color: var(--eu-muted); line-height: 1.7; }
+/* Descendant of premium-main deliberately excludes all native payment dialogs. */
+.bfr-dashboard .premium-main .premium-button { border-radius: 10px; font-weight: 650; box-shadow: none; min-height: 42px; }
+.bfr-dashboard .premium-main .premium-button-orange { background: #ff9500; border-color: #ff9500; color: #20190e; }
+.bfr-dashboard .premium-main .premium-button-outline { background: #fff; border-color: #d9dfd9; color: #25332a; }
+.bfr-dashboard .premium-main .premium-big-number { font-variant-numeric: tabular-nums; letter-spacing: -.045em; }
+.bfr-dashboard .premium-main .premium-history :is(td,th),
+.bfr-dashboard .premium-main .premium-ledger-row { font-variant-numeric: tabular-nums; }
+.bfr-dashboard .premium-main .premium-history th { font-size: 10px; letter-spacing: .07em; font-weight: 600; background: #fafbf9; }
+.bfr-dashboard .premium-main .premium-history td { padding-top: 16px; padding-bottom: 16px; }
+.bfr-dashboard .premium-main .premium-history tbody tr:last-child td { border-bottom: 0; }
+.bfr-dashboard .premium-main .premium-history-title h2,
+.bfr-dashboard .premium-main .bfr-panel header h2 { font-size: 14px; font-weight: 650; }
+.bfr-dashboard .premium-main .bfr-assets nav a[aria-current="page"] { background: #fff6e9; border-color: #f3d8b1; }
+.bfr-dashboard .premium-main .bfr-assets nav a { min-height: 54px; }
+.bfr-dashboard .premium-main .premium-ledger summary { cursor: pointer; }
+.bfr-dashboard .premium-main .premium-footer { color: #768079; line-height: 1.7; }
+/* Feedback stays on real interactive targets. No new click handlers or interception. */
+.bfr-dashboard .premium-main :is(.premium-button,.premium-org,.bfr-search,.premium-wallet-switcher a,.bfr-assets nav a,.premium-ledger summary) {
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.bfr-dashboard .premium-main :is(a,button,select,input,textarea,summary):focus-visible,
+.bfr-dashboard .premium-sidebar :is(a,button):focus-visible { outline: 2px solid #c16b00; outline-offset: 4px; }
+@media (hover:hover) {
+  .bfr-dashboard .premium-main .premium-button-orange:hover { background: #ffa51f; border-color: #ffa51f; box-shadow: 0 3px 12px #ff950022; }
+  .bfr-dashboard .premium-main .premium-button-outline:hover { background: #f7f8f5; border-color: #b7c1b8; }
+  .bfr-dashboard .premium-main .bfr-search:hover { background: #fff; border-color: #bfc8bf; }
+  .bfr-dashboard .premium-main .premium-history tbody tr:hover { background: #fafbf8; }
+  .bfr-dashboard .premium-main .bfr-assets nav a:hover { border-color: #d6c3a5; }
+  .bfr-dashboard .premium-main .premium-ledger summary:hover { color: #935500; }
+}
+.bfr-dashboard .premium-main .premium-button:active { box-shadow: inset 0 2px 4px #16201a16; }
+.bfr-dashboard .premium-main :is(.premium-detail-section,.premium-history,.premium-ledger) { scroll-margin-top: 20px; }
+@media (max-width:800px) {
+  .bfr-dashboard .premium-header { margin-bottom: 14px; padding-bottom: 14px !important; }
+  .bfr-dashboard .premium-hero { min-height: 125px; margin-bottom: 12px; padding-right: 12%; }
+  .bfr-dashboard .premium-hero h1 { font-size: clamp(26px,6vw,34px); }
+  .bfr-dashboard .bfr-hero-art { opacity: .25; }
+  .bfr-dashboard .premium-main :is(.premium-receive,.premium-send) { padding: 20px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .bfr-dashboard .premium-main :is(.premium-button,.premium-org,.bfr-search,.premium-wallet-switcher a,.bfr-assets nav a,.premium-ledger summary) { transition: none; }
+}
