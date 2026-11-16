@@ -1,0 +1,221 @@
+/* Finance card: one layout for compact, resized and expanded states.
+   All selectors stay inside the wallet; payment dialogs retain their own styles. */
+.bfr-dashboard .premium-main .bfr-finance {
+  --finance-line: #425166;
+  --finance-muted: #b8c7d9;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  height: 100%;
+  min-height: 348px;
+  max-height: 850px;
+  padding: 0;
+  overflow: hidden;
+  resize: vertical;
+  isolation: isolate;
+  transform: none;
+  border: 1px solid #4c5664;
+  border-radius: 18px;
+  background: #111b2c;
+  color: #f7f9ff;
+  box-shadow: 0 4px 16px #1724370c;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-body {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto auto;
+  flex: 1;
+  min-height: 0;
+  gap: 6px;
+  padding: 14px 16px;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-head,
+.bfr-dashboard .bfr-finance .bfr-finance-title,
+.bfr-dashboard .bfr-finance .bfr-finance-actions {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-head { justify-content: space-between; }
+.bfr-dashboard .bfr-finance .bfr-finance-title { flex: 1; }
+.bfr-dashboard .bfr-finance .bfr-finance-title > div { min-width: 0; }
+.bfr-dashboard .bfr-finance .bfr-finance-title h2 {
+  margin: 0 0 2px;
+  color: #f7f9ff;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-title small {
+  display: block;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--finance-muted);
+  font-size: 9px;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #ffb34710;
+  color: #ffbd65;
+}
+.bfr-dashboard .bfr-finance .bfr-finance-icon svg { width: 19px; height: 19px; }
+.bfr-dashboard .bfr-finance .premium-assets { display: flex; gap: 4px; }
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 32px;
+  padding: 5px 7px;
+  border: 1px solid var(--finance-line);
+  border-radius: 8px;
+  background: #1c2a3b;
+  color: #dce5ee;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  box-shadow: none;
+  transform: none;
+  white-space: nowrap;
+  transition: background-color 160ms, border-color 160ms;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset[aria-current=page] {
+  border-color: #e7a143;
+  background: #314155;
+  color: #fff;
+  box-shadow: inset 0 -2px #e7a143;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: none;
+  transform: none;
+}
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark { width: 19px; height: 19px; }
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--btc { color: #b56a00; }
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--bch { color: #087b48; }
+.bfr-dashboard.pay-premium .premium-main .premium-assets .flow-asset-mark--brl { color: #006b55; width: 15px; height: 15px; }
+.bfr-dashboard .premium-main .bfr-asset-mark { background: #fff; border: 1px solid #e0e6e1; }
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--btc { color: #a85c00; }
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--bch { color: #087b48; }
+.bfr-dashboard .premium-main .bfr-asset-mark .flow-asset-mark--brl { color: #006b55; }
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--btc { color: #ffb347; }
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--bch { color: #65dfac; }
+.bfr-dashboard .premium-sidebar .space-dock-assets .flow-asset-mark--brl { color: #78decb; }
+/* The balance is an overlay, not an extra row that increases the card height. */
+.bfr-dashboard .bfr-finance .bfr-chart-space {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 6px;
+}
+.bfr-dashboard .bfr-finance .bfr-chart-backdrop {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  cursor: grab;
+}
+.bfr-dashboard .bfr-finance .bfr-chart-backdrop:active { cursor: grabbing; }
+.bfr-dashboard .bfr-finance .bfr-chart-canvas { position: relative; width: 100%; height: 100%; min-height: 0; }
+.bfr-dashboard .bfr-finance .bfr-balance-overlay {
+  position: absolute;
+  inset: 6px auto auto 8px;
+  z-index: 2;
+  max-width: calc(100% - 80px);
+  margin: 0;
+  padding: 0 20px 9px 0;
+  background: linear-gradient(90deg, #111b2cf5 75%, #111b2c00);
+  pointer-events: none;
+}
+.bfr-dashboard .bfr-finance .premium-balance-kicker { margin: 0 0 3px; color: var(--finance-muted); font-size: 8px; font-weight: 600; letter-spacing: .1em; }
+.bfr-dashboard .bfr-finance .premium-big-number { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.bfr-dashboard .bfr-finance .premium-big-number > span { font-size: clamp(23px, 2.2vw, 32px); line-height: 1.2; font-weight: 700; letter-spacing: -.045em; }
+.bfr-dashboard .bfr-finance .premium-big-number > small { font-size: 10px; color: var(--finance-muted); }
+.bfr-dashboard .bfr-finance .premium-big-number button {
+  display: grid;
+  place-items: center;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: 1px solid var(--finance-line);
+  border-radius: 50%;
+  background: #213045;
+  color: #dce5ee;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.bfr-dashboard .bfr-finance .premium-big-number button svg { width: 13px; height: 13px; }
+.bfr-dashboard .bfr-finance .premium-balance-note { margin: 4px 0 0; font-size: 9px; color: var(--finance-muted); }
+/* Zoom and period controls share one compact row below the plot. */
+.bfr-dashboard .bfr-finance .bfr-finance-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+.bfr-dashboard .bfr-finance .bfr-chart-tools,
+.bfr-dashboard .bfr-finance .bfr-periods { display: flex; align-items: center; gap: 3px; margin: 0; }
+.bfr-dashboard .bfr-finance .bfr-periods { margin-left: auto; }
+.bfr-dashboard .bfr-finance :is(.bfr-chart-tools button, .bfr-periods button, .bfr-icon-button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px 6px;
+  border: 1px solid var(--finance-line);
+  border-radius: 7px;
+  background: #1c2a3b;
+  color: #dce5ee;
+  box-shadow: none;
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 550;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 160ms, border-color 160ms;
+}
+.bfr-dashboard .bfr-finance .bfr-chart-tools svg { width: 13px; height: 13px; }
+.bfr-dashboard .bfr-finance .bfr-icon-button svg { width: 15px; height: 15px; }
+.bfr-dashboard .bfr-finance .bfr-periods button[aria-pressed=true] { border-color: #7890aa; background: #33475c; color: #fff; }
+.bfr-dashboard .bfr-finance .bfr-chart-status { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 8px; line-height: 1.4; color: var(--finance-muted); }
+.bfr-dashboard .bfr-finance .premium-balance-bottom { display: flex; gap: 12px; margin: 0; padding-top: 7px; border-top: 1px solid #ffffff19; }
+.bfr-dashboard .bfr-finance .premium-balance-bottom > div { display: grid; grid-template-columns: 13px minmax(0, 1fr); flex: 1; gap: 1px 5px; min-width: 0; font-size: 8px; color: var(--finance-muted); }
+.bfr-dashboard .bfr-finance .premium-balance-bottom svg { width: 12px; height: 12px; color: #e7a143; }
+.bfr-dashboard .bfr-finance .premium-balance-bottom strong { grid-column: 2; font-size: 10px; color: #fff; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.bfr-dashboard .bfr-finance .bfr-expanded-wallet-control { display: none; }
+/* The workspace has entrance animations that establish stacking contexts.
+   Elevate the containing grid item while the chart is expanded. */
+.bfr-dashboard .premium-main:has(.bfr-finance.is-expanded) { position: relative; z-index: 100006; }
+.bfr-dashboard .premium-main .bfr-finance.is-expanded { position: fixed; inset: 4dvh 4vw; z-index: 100010; width: auto; height: auto !important; min-height: 0; max-height: none; resize: none; }
+.bfr-dashboard .bfr-finance.is-expanded .bfr-expanded-wallet-control { display: inline-flex; align-items: center; gap: 6px; font-size: 10px; }
+.bfr-dashboard .bfr-finance .bfr-expanded-wallet-control select { min-height: 30px; max-width: 148px; border: 1px solid var(--finance-line); border-radius: 7px; background: #213045; color: #fff; font: inherit; }
+body:has(.bfr-finance.is-expanded) #bfr-wallet-notice-v21 { visibility: hidden; pointer-events: none; }
+@media (hover: hover) {
+  .bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset:hover,
+  .bfr-dashboard .bfr-finance :is(.bfr-chart-tools button, .bfr-periods button, .bfr-icon-button):hover { background: #35465c; border-color: #8a9cb0; }
+}
+@media (max-width: 570px) {
+  .bfr-dashboard .premium-main .bfr-finance { height: 345px; min-height: 345px; }
+  .bfr-dashboard .bfr-finance .bfr-finance-body { padding: 12px; gap: 5px; }
+  .bfr-dashboard .bfr-finance .bfr-finance-title small { max-width: 72px; }
+  .bfr-dashboard .bfr-finance .bfr-finance-icon { display: none; }
+  .bfr-dashboard .bfr-finance .bfr-finance-actions { gap: 5px; }
+  .bfr-dashboard .bfr-finance .premium-big-number > span { font-size: 25px; }
+  .bfr-dashboard .premium-main .bfr-finance.is-expanded { inset: 10px; height: auto; min-height: 0; }
+  .bfr-dashboard .bfr-finance.is-expanded .bfr-finance-head { flex-wrap: wrap; }
+  .bfr-dashboard .bfr-finance.is-expanded .bfr-finance-actions { flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bfr-dashboard .bfr-finance *,
+  .bfr-dashboard.pay-premium .premium-main .premium-assets .premium-asset { transition: none; }
+}
