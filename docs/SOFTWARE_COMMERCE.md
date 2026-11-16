@@ -1,5 +1,24 @@
 # Software sales and automatic delivery
 
+## Software archive storage
+
+ZIP packages use their own storage selector. When the host uses
+`cloudinary_storage` for default media, software is uploaded as `raw` with
+`type=authenticated`, not through the public image backend. File IDs are unique;
+retries cannot overwrite an existing release. The authorized Django download
+endpoint obtains a short-lived signed provider URL internally, checks the archive
+hash, and streams the ZIP. The provider URL is not returned to the buyer.
+Standalone filesystem installations keep their current backend. A host can
+explicitly configure `STORAGES["software"]` for another private archive backend.
+No change to image/product storage is required. The Cloudinary Python SDK must
+already be installed on hosts using the Cloudinary media backend.
+
+After deployment run `python manage.py migrate app_merchant_catalog`. Migration
+0005 changes only the archive storage metadata; it does not delete or republish
+releases. An upload-service failure is displayed on the archive form rather
+than producing an unhandled 500. Failed uploads do not create releases or offers.
+
+
 BCH Flow sells a license to one software release, delivered as a private ZIP.
 `app_merchant_catalog` owns packages, offers, orders and download logs;
 `app_bch_flow` owns receiving accounts, provider verification and the ledger.

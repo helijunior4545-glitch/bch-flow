@@ -212,6 +212,20 @@ class SoftwareTests(TestCase):
         self.assertEqual(response.status_code,302)
         self.assertEqual(release.offers.get(account__asset='BRL').amount_units,1234)
 
+    def test_storage_failure_is_a_form_error_without_release_or_offer(self):
+        from app_merchant_catalog.software_storage import SoftwareStorageError
+        self.login(self.seller)
+        releases = SoftwareRelease.objects.count()
+        offers = SoftwareOffer.objects.count()
+        with patch.object(SoftwareRelease._meta.get_field('archive').storage, 'save',
+                          side_effect=SoftwareStorageError('The ZIP could not be stored. Please retry or contact support.')):
+            response = self.client.post(self.url('software_publish', self.org.pk, self.product.pk), {
+                'version': '2.0.0', 'archive': archive(), 'requirements': 'Python 3.11',
+                'license_text': 'Personal use', 'account': self.accounts['BTC'].pk, 'price': '0.00001'})
+        self.assertContains(response, 'The ZIP could not be stored.')
+        self.assertEqual(SoftwareRelease.objects.count(), releases)
+        self.assertEqual(SoftwareOffer.objects.count(), offers)
+
     def test_buyer_cannot_publish(self):
         self.assertEqual(self.client.get(self.url('software_publish',self.org.pk,self.product.pk)).status_code,404)
 

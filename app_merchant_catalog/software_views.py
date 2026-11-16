@@ -15,6 +15,7 @@ from app_bch_flow.views.authentication import current_identity
 from .models import MerchantProduct, SoftwareRelease, SoftwareOffer, SoftwareOrder, SoftwareDownload
 from .software import available_offers, downloadable, order_software
 from .software_forms import ReleaseForm, OfferForm
+from .software_storage import SoftwareStorageError
 from .views import access
 
 SALT = 'software-download-v1'
@@ -189,6 +190,8 @@ def publish(request, org_id, product_id):
                     sha256=form.archive_digest, size_bytes=data['archive'].size, requirements=data['requirements'],
                     license_text=data['license_text'], notes=data['notes'])
                 SoftwareOffer.objects.create(release=release, account=data['account'], seller=member.identity, amount_units=data['amount_units'])
+        except SoftwareStorageError as exc:
+            form.add_error('archive', str(exc))
         except IntegrityError:
             form.add_error('version', 'This version already exists. Publish a new version instead.')
         else:
