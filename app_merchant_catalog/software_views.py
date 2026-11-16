@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from app_bch_flow.financial.amounts import PaymentError, display
-from app_bch_flow.financial.views import checkout_url
+from app_bch_flow.financial.views import checkout_url, payment_payload_for, payment_qr_url
 from app_bch_flow.views.authentication import current_identity
 from .models import MerchantProduct, SoftwareRelease, SoftwareOffer, SoftwareOrder, SoftwareDownload
 from .software import available_offers, downloadable, order_software
@@ -124,9 +124,13 @@ def purchases(request):
 @require_GET
 def order_detail(request, order_id):
     order = owned_order(request, order_id)
+    delivery_state = state(order)
+    payload = payment_payload_for(order.payment) if delivery_state in ('waiting', 'partial', 'confirming') else ''
     return private(render(request, 'merchant_catalog/software_order.html', {
-        'order': order, 'state': state(order), 'received': display(order.payment.received_units, order.payment.account.asset), 'amount': display(order.payment.amount_units, order.payment.account.asset),
+        'order': order, 'state': delivery_state, 'received': display(order.payment.received_units, order.payment.account.asset), 'amount': display(order.payment.amount_units, order.payment.account.asset),
         'payment_url': checkout_url(order.payment),
+        'payment_payload': payload,
+        'payment_qr_url': payment_qr_url(order.payment) if payload else '',
     }))
 
 

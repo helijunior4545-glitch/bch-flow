@@ -139,6 +139,34 @@ class SoftwareTests(TestCase):
         self.assertEqual(self.buy('BRL', key=key).pk,order.pk)
         self.assertEqual(FlowRequest.objects.count(),1)
 
+    def test_preparing_order_explains_missing_qr_and_keeps_retry(self):
+        order = self.buy('BTC')
+        response = self.client.get(self.url('software_order', order.pk))
+        self.assertContains(response, 'No payment address or QR code is available.')
+        self.assertContains(response, 'Retry payment setup')
+        self.assertNotContains(response, 'class="sw-payment-qr"')
+        self.assertEqual(response.context['payment_payload'], '')
+
+    def test_prepared_order_shows_real_payment_qr_and_remaining_amount(self):
+        from app_bch_flow.financial.views import payment_payload_for
+        order = self.buy('BTC')
+        order.payment.address = '1BoatSLRHtKNngkdXEeobR76b53LETtpyT'
+        order.payment.save(update_fields=['address'])
+        response = self.client.get(self.url('software_order', order.pk))
+        self.assertContains(response, 'class="sw-payment-qr"')
+        self.assertEqual(response.context['payment_payload'],
+            'bitcoin:1BoatSLRHtKNngkdXEeobR76b53LETtpyT?amount=0.00001000')
+        qr = self.client.get(response.context['payment_qr_url'])
+        self.assertEqual(qr.status_code, 200)
+        self.assertEqual(qr['Content-Type'], 'image/svg+xml')
+        self.assertNotContains(response, 'Retry payment setup')
+        self.credit(order, amount=500)
+        self.assertTrue(payment_payload_for(order.payment).endswith('amount=0.00000500'))
+        self.credit(order, amount=500)
+        paid = self.client.get(self.url('software_order', order.pk))
+        self.assertNotContains(paid, 'class="sw-payment-qr"')
+        self.assertEqual(paid.context['state'], 'ready')
+
     def test_authenticated_download_and_signed_link(self):
         order=self.buy()
         self.credit(order)
