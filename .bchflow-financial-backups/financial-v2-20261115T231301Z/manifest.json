@@ -1,0 +1,32 @@
+[
+  {
+    "path": "app_bch_flow/templates/app_bch_flow/financial/home.html",
+    "existed": true,
+    "sha256": "d4ff55def9846f3173ceef1e374b39f67cf8ba88d22f6cc85dad3cd8723f0254"
+  },
+  {
+    "path": "app_bch_flow/financial/urls.py",
+    "existed": true,
+    "sha256": "b5fe386f6240162b1078a95da1d59446711fa7ff5939ee4cf284bdbfe8441bb5"
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/css/financial-v2.css",
+    "existed": false,
+    "sha256": null
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/js/financial-v2.js",
+    "existed": false,
+    "sha256": null
+  },
+  {
+    "path": "app_bch_flow/financial/market_candles_v2.py",
+    "existed": false,
+    "sha256": null
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/js/lightweight-charts-v5.standalone.js",
+    "existed": false,
+    "sha256": null
+  }
+]

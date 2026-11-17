@@ -1,0 +1,8 @@
+{
+  "modified": [
+    "app_bch_flow/templates/app_bch_flow/financial/home.html"
+  ],
+  "created": [
+    "app_bch_flow/static/app_bch_flow/css/sidebar-icons-v29.css"
+  ]
+}

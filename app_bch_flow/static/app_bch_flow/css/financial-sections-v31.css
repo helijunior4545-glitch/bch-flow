@@ -1,0 +1,115 @@
+
+/* V31: scoped to the financial content, preserving the Bitcoin chart and golden accents. */
+.pay-app.pay-premium .premium-main{
+ --v31-line:#e3e9f0;
+ --v31-ink:#18283f;
+ --v31-muted:#687a90;
+}
+.pay-app.pay-premium .premium-main :is(.premium-history,.premium-detail-section,.premium-ledger){
+ box-sizing:border-box;
+ width:100%;
+ min-width:0;
+ max-width:100%;
+ height:auto!important;
+ min-height:0!important;
+ margin-top:18px;
+ padding:20px 22px;
+ border:1px solid var(--v31-line);
+ border-radius:16px;
+ background:#fff;
+ box-shadow:0 5px 20px rgba(24,44,72,.045);
+}
+.pay-app.pay-premium .premium-main .premium-history-title{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ flex-wrap:wrap;
+ gap:8px 16px;
+ margin:0 0 15px;
+ min-height:24px;
+}
+.pay-app.pay-premium .premium-main .premium-history-title h2{
+ display:flex;
+ align-items:center;
+ gap:9px;
+ margin:0;
+ color:var(--v31-ink);
+ font-size:14px;
+ font-weight:700;
+ line-height:1.35;
+ letter-spacing:-.015em;
+}
+.pay-app.pay-premium .premium-main .premium-history-title h2 svg{
+ width:17px;height:17px;flex-shrink:0;
+ color:#3e536b;stroke-width:1.8;
+}
+.pay-app.pay-premium .premium-main .premium-history-title > span,
+.pay-app.pay-premium .premium-main .premium-history-title > a{
+ font-size:11px;
+ line-height:1.5;
+ color:var(--v31-muted);
+}
+.pay-app.pay-premium .premium-main .premium-detail-section > .premium-no-data{
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ text-align:center;
+ min-height:54px!important;
+ height:auto!important;
+ padding:14px 16px!important;
+ margin:0!important;
+ border:1px dashed #e5eaf0;
+ border-radius:10px;
+ background:#fafbfd;
+ color:var(--v31-muted);
+ font-size:12px;
+ line-height:1.55;
+}
+.pay-app.pay-premium .premium-main .premium-detail-section:has(> .premium-no-data){
+ padding-bottom:20px;
+}
+.pay-app.pay-premium .premium-main .premium-withdrawal{
+ padding:16px 0;
+ border-bottom:1px solid #e9edf2;
+}
+.pay-app.pay-premium .premium-main .premium-withdrawal:first-of-type{padding-top:2px}
+.pay-app.pay-premium .premium-main .premium-withdrawal:last-of-type{border-bottom:0;padding-bottom:0}
+.pay-app.pay-premium .premium-main .premium-withdrawal-head{
+ display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;
+}
+.pay-app.pay-premium .premium-main .premium-withdrawal-head strong{
+ color:var(--v31-ink);font-size:13px;
+}
+.pay-app.pay-premium .premium-main .premium-withdrawal-head small{
+ margin-top:4px;line-height:1.5;overflow-wrap:anywhere;
+}
+.pay-app.pay-premium .premium-main .premium-inline-form,
+.pay-app.pay-premium .premium-main .premium-approval{
+ display:flex;align-items:end;flex-wrap:wrap;gap:10px;margin:12px 0;
+}
+.pay-app.pay-premium .premium-main .premium-inline-form > *,
+.pay-app.pay-premium .premium-main .premium-approval > label{min-width:0}
+.pay-app.pay-premium .premium-main .premium-table-scroll{
+ max-width:100%;overflow-x:auto;
+}
+.pay-app.pay-premium .premium-main .premium-ledger summary{
+ display:flex;align-items:center;flex-wrap:wrap;gap:9px;
+ color:var(--v31-ink);font-weight:650;cursor:pointer;
+}
+.pay-app.pay-premium .premium-main .premium-ledger-row{
+ min-width:0;gap:10px;overflow-wrap:anywhere;
+}
+@media(max-width:720px){
+ .pay-app.pay-premium .premium-main :is(.premium-history,.premium-detail-section,.premium-ledger){
+  margin-top:13px;padding:15px 14px;border-radius:13px;
+ }
+ .pay-app.pay-premium .premium-main .premium-history-title{align-items:flex-start;margin-bottom:12px}
+ .pay-app.pay-premium .premium-main .premium-history-title h2{font-size:13px}
+ .pay-app.pay-premium .premium-main .premium-withdrawal-head{align-items:flex-start}
+ .pay-app.pay-premium .premium-main .premium-approval label,
+ .pay-app.pay-premium .premium-main .premium-inline-form label{flex:1 1 100%}
+ .pay-app.pay-premium .premium-main .premium-approval .premium-button,
+ .pay-app.pay-premium .premium-main .premium-inline-form .premium-button{
+  max-width:100%;white-space:normal;
+ }
+}

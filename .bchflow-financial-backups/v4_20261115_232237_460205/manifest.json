@@ -1,0 +1,8 @@
+{
+  "app_bch_flow/templates/app_bch_flow/financial/home.html": {
+    "sha256": "eb0a91898f009965b4203b6aba037320149ed0eb42f40bf2401bec12931d0d19"
+  },
+  "app_bch_flow/static/app_bch_flow/css/financial-v3.css": {
+    "sha256": "6e5d6ae31a04993ea55f6df0ff242235a972b869a89348fed4e1c8cc0a34971f"
+  }
+}

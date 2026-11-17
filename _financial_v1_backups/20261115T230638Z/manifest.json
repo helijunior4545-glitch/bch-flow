@@ -1,0 +1,28 @@
+{
+  "version": "financial-v1-stage-1",
+  "utc": "2026-11-15T23:06:38.616183+00:00",
+  "files": {
+    "app_bch_flow/templates/app_bch_flow/financial/home.html": {
+      "before_sha256": "e949d44dca0d5c5e0e02a96d543f4053ce235e14a9b701b071ab2c570027697f",
+      "after_sha256": "d4ff55def9846f3173ceef1e374b39f67cf8ba88d22f6cc85dad3cd8723f0254"
+    },
+    "app_bch_flow/static/app_bch_flow/js/financial-market-v1.js": {
+      "before_sha256": null,
+      "after_sha256": "934a1663e1cd3fbb0e9d53042f05c8123b7fe826e26266d8d1fc5a0dd27aec7f"
+    },
+    "app_bch_flow/static/app_bch_flow/css/financial-market-v1.css": {
+      "before_sha256": null,
+      "after_sha256": "83f58585089fd6d101a214387f82e4f31ce4fc29ed9d656162f67db5a724a729"
+    }
+  },
+  "protected": {
+    "app_bch_flow/financial/views.py": "686baa601bdd9f1fb39f1b446876bcc33b5996ea743ee00a99a97448f6258a4b",
+    "app_bch_flow/financial/urls.py": "b5fe386f6240162b1078a95da1d59446711fa7ff5939ee4cf284bdbfe8441bb5",
+    "app_bch_flow/static/app_bch_flow/js/payment-center.js": "28beebc72d1e5019bbdf3d649d398fe6da19e4d115ae18dbba592d2419a78d47",
+    "app_bch_flow/static/app_bch_flow/css/payment-center-premium.css": "1dbf35a921c47a59c197d6a67ebd00af03dd5db488f16018d47156931d0e88a7",
+    "app_bch_flow/templates/app_bch_flow/base.html": "d596d261414fb156b1ed83d741f5e5088d18858e06e54da4f395179caf755280",
+    "app_bch_flow/templates/app_bch_flow/components/wallet_navigation.html": "088e413d474744bbdc7c69a2df9624df8b569f6d2c40887f42f28b8317f4a663",
+    "app_bch_flow/financial/market_converter.py": "da1fc3dcb229c0e43372fb873814858f466940db0fe0ae934cfd1e1a9682b86a"
+  },
+  "note": "No synthetic market prices; chart rendering awaits verified OHLC integration."
+}

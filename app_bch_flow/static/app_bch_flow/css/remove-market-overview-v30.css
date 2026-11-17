@@ -1,0 +1,4 @@
+
+/* V30: mark only the redundant Market overview panel for removal.
+   Do not touch Bitcoin chart, rates data, payment widgets or other cards. */
+[data-bfr-market-overview-removed-v30] { display:none!important; }

@@ -1,0 +1,53 @@
+{
+  "version": 11,
+  "files": [
+    {
+      "path": "app_bch_flow/financial/urls.py",
+      "existed": true,
+      "old_sha256": "b5fe386f6240162b1078a95da1d59446711fa7ff5939ee4cf284bdbfe8441bb5",
+      "new_sha256": "8f342a05c3d39c2399cde440d74daa412e0fb6be4d14170f104e6f9ca412f971"
+    },
+    {
+      "path": "app_bch_flow/templates/app_bch_flow/financial/home.html",
+      "existed": true,
+      "old_sha256": "e949d44dca0d5c5e0e02a96d543f4053ce235e14a9b701b071ab2c570027697f",
+      "new_sha256": "930708373db126bbe21c354c187083dd99fadbe6496ec2a47478bfd39753ff41"
+    },
+    {
+      "path": "app_bch_flow/static/app_bch_flow/css/financial-rebuild-v11.css",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "46c345ee574c4b93bd75585c04ea0fadc3a9dd36ba562adbed0926f417a8002d"
+    },
+    {
+      "path": "app_bch_flow/static/app_bch_flow/js/financial-rebuild-v11.js",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "dbc66109b36749d5762e621ac47bac2900fe79bf811c38ed8ed86091e543f159"
+    },
+    {
+      "path": "app_bch_flow/financial/financial_live_ohlc.py",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "dbe104461acf56e7e6f740cc59caca1169bae687bdac40effea07b7fd9f0cedb"
+    },
+    {
+      "path": "app_bch_flow/static/app_bch_flow/img/financial-v11-bull.webp",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "5938d6fc45fe17187f103ee2a3e40c3e74f43470c2ab43471d29bc38052c8595"
+    },
+    {
+      "path": "app_bch_flow/static/app_bch_flow/img/financial-v11-sidebar.webp",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "614c03acb6c320119748a805bf32f6aadf225ed55ac1513412dca02ae021d2f3"
+    },
+    {
+      "path": "app_bch_flow/static/app_bch_flow/js/lightweight-charts-v5.standalone.js",
+      "existed": false,
+      "old_sha256": null,
+      "new_sha256": "bcdca2a528db7c9b386918c99c544bde3eda3f0204ec2d23a64411d4cb4686c9"
+    }
+  ]
+}

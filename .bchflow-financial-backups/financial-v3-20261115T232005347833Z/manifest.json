@@ -1,0 +1,22 @@
+[
+  {
+    "path": "app_bch_flow/templates/app_bch_flow/financial/home.html",
+    "existed": true,
+    "sha256": "d330bdb1d151d8f578de7877501878da6949dd818b4d11600dcf112675eab480"
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/css/financial-v3.css",
+    "existed": false,
+    "sha256": null
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/js/financial-v3.js",
+    "existed": false,
+    "sha256": null
+  },
+  {
+    "path": "app_bch_flow/static/app_bch_flow/img/financial-hero-v3.webp",
+    "existed": false,
+    "sha256": null
+  }
+]

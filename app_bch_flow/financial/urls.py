@@ -50,3 +50,7 @@ urlpatterns += [
 # BCHFLOW_FINAL_CATALOG_CONVERTER_V1
 from .market_converter import rates as _bfc_rates
 urlpatterns += [path("api/market-rates/", _bfc_rates, name="financial_market_rates")]
+
+# BCH_FLOW_FINANCIAL_V11_READ_ONLY_OHLC
+from .financial_live_ohlc import candles as _bfr_live_ohlc
+urlpatterns += [path("api/live-ohlc/", _bfr_live_ohlc, name="financial_live_ohlc")]

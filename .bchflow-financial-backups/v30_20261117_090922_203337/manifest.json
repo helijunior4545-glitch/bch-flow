@@ -1,0 +1,9 @@
+{
+  "modified": [
+    "app_bch_flow/templates/app_bch_flow/financial/home.html"
+  ],
+  "created": [
+    "app_bch_flow/static/app_bch_flow/css/remove-market-overview-v30.css",
+    "app_bch_flow/static/app_bch_flow/js/remove-market-overview-v30.js"
+  ]
+}
