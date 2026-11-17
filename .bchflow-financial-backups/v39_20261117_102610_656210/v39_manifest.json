@@ -1,0 +1,13 @@
+{
+  "modified": {
+    "app_bch_flow/static/app_bch_flow/js/financial-rebuild-v11.js": {
+      "original_sha256": "8958f876b7e77bc687761d64bca4e1a13aac79e36c87e57ae04f340dd359c95e",
+      "installed_sha256": "a046af6f743e8dc1a6db2a182d3fa904d80e1e4fd1930bbe308a665c06b0c5c1"
+    },
+    "app_bch_flow/templates/app_bch_flow/financial/home.html": {
+      "original_sha256": "73c40dd5cb698cf18ea414b553af90368f205b6d7f8fc4405f60fb2169ea0f54",
+      "installed_sha256": "caa0b177a773dad3601598bad7a798ab12ebd9214fa18ee90bd487085f53f176"
+    }
+  },
+  "css_sha256": "f1fbd053d64fde51ac56b1f2e7ad2872f9bdd63b11ab5aa52fcce3627c414d3d"
+}

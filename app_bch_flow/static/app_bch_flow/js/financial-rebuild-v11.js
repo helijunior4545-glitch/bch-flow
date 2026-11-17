@@ -78,6 +78,102 @@
     controls.insertBefore(label,controls.firstChild);
   }
 
+
+  // V39: preserve expanded state across a full, authoritative Django navigation.
+  // This is intentionally used only for navigation while Finance is expanded:
+  // the server will re-render wallet identity, forms, CSRF and balances.
+  const V39_EXPANDED_KEY = 'bfr-v39-expanded-navigation';
+  function rememberExpandedFor(url) {
+    try {
+      sessionStorage.setItem(V39_EXPANDED_KEY, JSON.stringify({
+        pathname: url.pathname,
+        search: url.search,
+        expires: Date.now() + 30000
+      }));
+    } catch (_) { /* A private browser may disable sessionStorage. */ }
+  }
+  function restoreExpandedAfterNavigation(scope) {
+    let data;
+    try {
+      const raw = sessionStorage.getItem(V39_EXPANDED_KEY);
+      if (raw) data = JSON.parse(raw);
+      sessionStorage.removeItem(V39_EXPANDED_KEY);
+    } catch (_) { return; }
+    if (!data || Date.now() > data.expires ||
+        data.pathname !== location.pathname || data.search !== location.search) return;
+    const panel = scope.root.querySelector('.bfr-finance');
+    if (!panel) return;
+    panel.classList.add('is-expanded');
+    panel.querySelector('[data-financial-expand]')?.setAttribute('aria-expanded','true');
+    document.body.style.overflow='hidden';
+    scheduleFinancialChartFit(scope);
+  }
+
+  // BRL/Pix is a payment rail, not a cryptocurrency. Until a genuine FX-history
+  // endpoint exists, render a *normalized, synthetic index* rather than inventing
+  // USD/BRL prices, wallet balances or settlement-market data.
+  function renderBRLIllustrative(scope) {
+    if (scope.cancelled || scope.root.dataset.asset !== 'BRL') return;
+    const C = window.LightweightCharts;
+    if (!C || !scope.plot) {
+      chartStatus(scope, 'BRL/Pix · illustrative chart unavailable');
+      return;
+    }
+    const today = Math.floor(Date.now() / 86400000) * 86400;
+    let previous = 100;
+    const rows = [];
+    for (let i = 0; i < 30; i++) {
+      const open = previous;
+      const close = Math.max(96, open + Math.sin(i * 0.63) * 0.25 +
+        Math.cos(i * 0.35) * 0.13 + 0.025);
+      const high = Math.max(open, close) + 0.12 + Math.abs(Math.sin(i * 1.2)) * 0.12;
+      const low = Math.min(open, close) - 0.12 - Math.abs(Math.cos(i * 0.91)) * 0.10;
+      rows.push({
+        time: today - (29 - i) * 86400,
+        open: Number(open.toFixed(3)),
+        high: Number(high.toFixed(3)),
+        low: Number(low.toFixed(3)),
+        close: Number(close.toFixed(3))
+      });
+      previous = close;
+    }
+    try {
+      if (!scope.chart) {
+        scope.chart = C.createChart(scope.plot, {
+          width: scope.plot.clientWidth || 300,
+          height: scope.plot.clientHeight || 240,
+          layout: {background: {type:'solid', color:'#111b2c'},
+            textColor:'#91a5c4',fontFamily:'Inter,system-ui,sans-serif',fontSize:10},
+          grid: {vertLines:{color:'#ffffff0c'},horzLines:{color:'#ffffff13'}},
+          crosshair: {vertLine:{color:'#d4a54f66'},horzLine:{color:'#d4a54f66'}},
+          rightPriceScale: {borderColor:'#ffffff22'},
+          timeScale: {borderColor:'#ffffff22',timeVisible:false,secondsVisible:false},
+          handleScroll:false,handleScale:false
+        });
+        const options={upColor:'#149c76',downColor:'#c4944a',
+          wickUpColor:'#149c76',wickDownColor:'#c4944a',
+          borderVisible:false,
+          priceFormat:{type:'price',precision:2,minMove:0.01}};
+        scope.series=scope.chart.addSeries
+          ? scope.chart.addSeries(C.CandlestickSeries, options)
+          : scope.chart.addCandlestickSeries(options);
+        if ('ResizeObserver' in window) {
+          scope.observer = new ResizeObserver(() => {
+            if(!scope.cancelled) requestAnimationFrame(() => refitFinancialChart(scope));
+          });
+          scope.observer.observe(scope.plot);
+        }
+      }
+      scope.series.setData(rows);
+      scope.chart.timeScale().fitContent();
+      scope.root.querySelector('.bfr-finance')?.classList.add('bfr-brl-demo-v39');
+      chartStatus(scope, 'BRL/Pix · SIMULATED index (base 100) · not real FX data');
+      scheduleFinancialChartFit(scope);
+    } catch (_) {
+      chartStatus(scope, 'BRL/Pix · illustrative chart unavailable; balances unaffected');
+    }
+  }
+
   function destroy() {
     if (!current) return;
     current.cancelled = true;
@@ -168,6 +264,12 @@
     const here = document.querySelector(SELECTOR);
     const keepExpanded = !!here?.querySelector('.bfr-finance.is-expanded');
     const url = new URL(address, location.href);
+    if (keepExpanded && !popstate && url.origin === location.origin &&
+        url.pathname === location.pathname && url.href !== location.href) {
+      rememberExpandedFor(url);
+      location.assign(url.href);
+      return;
+    }
     if (url.origin !== location.origin || url.pathname !== location.pathname) {
       location.assign(url.href); return;
     }
@@ -450,9 +552,10 @@
     const activeMenu=root.querySelector('.premium-menu a[href]');
     root.querySelectorAll('.premium-menu a').forEach(el=>{try {if(new URL(el.href).pathname===location.pathname) el.classList.add('bfr-current');}catch(_){}});
     icons(); attachExpandedWalletPicker(scope); bindActions(scope);
+    restoreExpandedAfterNavigation(scope);
     loadRates(scope);
     if(ASSETS.has(root.dataset.asset))loadOHLC(scope,7);
-    else chartStatus(scope,'Pix / BRL · no cryptocurrency OHLC market');
+    else renderBRLIllustrative(scope);
     scope.timers.push(setInterval(()=>{if(!document.hidden&&!scope.cancelled)loadRates(scope);},90000));
     scope.timers.push(setInterval(()=>{if(!document.hidden&&!scope.cancelled&&ASSETS.has(root.dataset.asset))loadOHLC(scope,scope.days);},240000));
   }
