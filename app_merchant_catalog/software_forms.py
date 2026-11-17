@@ -5,6 +5,11 @@ from app_bch_flow.financial.amounts import units, PaymentError
 from .software import inspect_archive
 
 
+class GuestCheckoutForm(forms.Form):
+    email = forms.EmailField(max_length=254, label='Email for this purchase',
+                             widget=forms.EmailInput(attrs={'autocomplete': 'email', 'placeholder': 'you@example.com'}))
+
+
 class ReleaseForm(forms.Form):
     version = forms.RegexField(r'^[0-9A-Za-z][0-9A-Za-z._-]{0,39}$', max_length=40)
     archive = forms.FileField(help_text='ZIP, up to 100 MB. Include README.md and LICENSE.txt.')

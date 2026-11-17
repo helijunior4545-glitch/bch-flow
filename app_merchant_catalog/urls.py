@@ -14,10 +14,13 @@ from . import software_views as software
 urlpatterns += [
     path('dashboard/organizations/<uuid:org_id>/catalog/sales/', software.sales, name='software_sales'),
     path('software/', software.storefront, name='software_store'),
+    path('software/forget-access/', software.forget_guest_access, name='software_forget_guest'),
+    path('software/access/<str:token>/', software.recover, name='software_recover'),
     path('software/purchases/', software.purchases, name='software_purchases'),
     path('software/products/<uuid:product_id>/', software.product, name='software_product'),
     path('software/buy/<int:offer_id>/', software.buy, name='software_buy'),
     path('software/orders/<uuid:order_id>/', software.order_detail, name='software_order'),
+    path('software/orders/<uuid:order_id>/retry/', software.retry_payment, name='software_retry'),
     path('software/orders/<uuid:order_id>/status/', software.order_status, name='software_status'),
     path('software/orders/<uuid:order_id>/download/', software.download_link, name='software_download_link'),
     path('software/download/<str:token>/', software.download, name='software_download'),

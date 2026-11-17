@@ -348,6 +348,12 @@ class SoftwareTests(TestCase):
 
 class ConcurrentSoftwareOrdersTests(TransactionTestCase):
     def test_simultaneous_duplicate_purchases_create_one_order_and_charge(self):
+        self.simultaneous_orders(guest=False)
+
+    def test_simultaneous_guest_purchases_create_one_order_and_charge(self):
+        self.simultaneous_orders(guest=True)
+
+    def simultaneous_orders(self, guest):
         from concurrent.futures import ThreadPoolExecutor
         from threading import Barrier
         from django.db import close_old_connections
@@ -359,12 +365,15 @@ class ConcurrentSoftwareOrdersTests(TransactionTestCase):
             sha256='a'*64,size_bytes=1,requirements='Python',license_text='Personal')
         account=FlowAccount.objects.create(organization=org,asset='BCH',environment='live')
         offer=SoftwareOffer.objects.create(release=release,account=account,seller=seller,amount_units=1000)
+        import secrets
+        guest_token = secrets.token_urlsafe(32)
         barrier=Barrier(2);key=uuid.uuid4()
         def buy(_):
             close_old_connections()
             try:
                 barrier.wait(timeout=10)
-                return order_software(buyer,offer.pk,key).pk
+                return order_software(None if guest else buyer,offer.pk,key,
+                    guest_email='guest@concurrent.invalid',guest_token=guest_token).pk
             finally:
                 close_old_connections()
         with patch('app_bch_flow.financial.service.prepare_request'):

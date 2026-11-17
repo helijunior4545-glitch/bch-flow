@@ -1,5 +1,39 @@
 # Software sales and automatic delivery
 
+## Guest checkout and order access
+
+Customers can buy without a BCH Flow login. The checkout collects a validated
+email address for the order and a payment method. It never creates a BCHIdentity
+account for a guest and never treats knowledge of an email address as proof of
+ownership. Existing signed-in purchases and downloads continue to work.
+
+A random 256-bit HttpOnly, SameSite=Lax browser cookie identifies the guest;
+only its SHA-256 digest is stored. Cookies are Secure outside DEBUG and browser
+access expires after 30 days. Guest creation and duplicate checkout operations
+are serialized by row locks and database constraints. Payment idempotency keys
+include the purchasing principal, preventing collisions between guests.
+
+Every guest order shows a private signed recovery link. Saving that link is the
+recovery method; this implementation does not automatically send email. Opening
+the link on another browser restores only the specified order through the Django
+session. It does not grant access to other orders made by the same guest. The
+recovery link is durable (until the signing key or guest digest is revoked),
+whereas generated download links last five minutes and still require ownership
+and authoritative payment confirmation on every request. Treat the recovery link
+as a password. Clearing browser access removes cookies/grants, not the order or
+saved recovery link. Never log or expose these links in analytics.
+
+The order page displays a QR only after the real payment provider supplies a
+payment address/payload. Retrying an existing order uses an owner-checked POST
+endpoint and never creates another order, including after recovery on a different
+browser. Expired, frozen, reversed or unconfirmed payments cannot unlock delivery.
+
+Deployment: apply `python manage.py migrate app_merchant_catalog` (migration 0006)
+before serving the new code. The migration retains existing orders and adds
+nullable guest ownership with an exactly-one-owner constraint. Guest orders have
+an email snapshot visible in seller sales. No email-provider settings are needed.
+
+
 ## Software archive storage
 
 ZIP packages use their own storage selector. When the host uses

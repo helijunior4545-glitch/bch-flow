@@ -11,6 +11,7 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db import transaction
 from django.test import override_settings
 from app_bch_flow.identity.sessions import COOKIE_NAME
+from app_merchant_catalog.software_access import GUEST_COOKIE
 from app_bch_flow.financial import service
 from app_bch_flow.models import FlowRequest
 from app_merchant_catalog.models import SoftwareOrder
@@ -38,20 +39,31 @@ class SoftwareBrowserTests(StaticLiveServerTestCase):
         self.assertEqual(result.returncode,0,result.stdout+result.stderr)
         print(result.stdout.strip())
 
-    def test_purchase_confirmation_and_download_on_desktop_and_mobile(self):
+    def test_guest_purchase_confirmation_and_download_on_desktop_and_mobile(self):
+        self.purchase_and_download(sign_in=False)
+
+    def test_account_purchase_still_works(self):
+        self.purchase_and_download(sign_in=True)
+
+    def purchase_and_download(self, sign_in):
         artifacts=Path(os.environ.get('FLOW_BROWSER_ARTIFACTS','/tmp/bch-software-browser'))
         artifacts.mkdir(parents=True,exist_ok=True)
         result=artifacts/'purchase-session.json'
-        with patch('app_bch_flow.financial.service.prepare_request'):
+        def prepare(charge):
+            charge.address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
+            charge.save(update_fields=['address'])
+            return charge
+        with patch('app_bch_flow.financial.service.prepare_request', side_effect=prepare):
             self.browser({'phase':'purchase','base':self.live_server_url,
                 'product':self.url('software_product',self.product.pk),'artifacts':str(artifacts),
-                'result':str(result),'cookieName':COOKIE_NAME})
+                'result':str(result),'cookieName':COOKIE_NAME if sign_in else GUEST_COOKIE,'signIn':sign_in})
         order=SoftwareOrder.objects.get()
+        self.assertEqual(order.buyer_id is None, not sign_in)
         with transaction.atomic():
             charge=FlowRequest.objects.select_for_update().get(pk=order.payment_id)
             service._receipt(service._locked(charge.account_id),charge,'browser:fixture',1000,2,2)
         session=json.loads(result.read_text())
         self.browser({'phase':'download','base':self.live_server_url,'order':session['url'],
-            'cookie':session['cookie'],'artifacts':str(artifacts)})
+            'cookie':session['cookie'],'recovery':session.get('recovery'),'artifacts':str(artifacts)})
         result.unlink()
         self.assertEqual(hashlib.sha256((artifacts/'software-download.zip').read_bytes()).hexdigest(),self.release.sha256)

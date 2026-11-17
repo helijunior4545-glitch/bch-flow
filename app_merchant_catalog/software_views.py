@@ -3,6 +3,7 @@ import uuid
 from django.core import signing
 from django.core.paginator import Paginator
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -14,7 +15,9 @@ from app_bch_flow.financial.views import checkout_url, payment_payload_for, paym
 from app_bch_flow.views.authentication import current_identity
 from .models import MerchantProduct, SoftwareRelease, SoftwareOffer, SoftwareOrder, SoftwareDownload
 from .software import available_offers, downloadable, order_software
-from .software_forms import ReleaseForm, OfferForm
+from .software_forms import ReleaseForm, OfferForm, GuestCheckoutForm
+from .software_access import (GRANTS_KEY, browser_token, guest_order_filter,
+                              recovery_order, recovery_url, set_guest_cookie, token_digest)
 from .software_storage import SoftwareStorageError
 from .views import access
 
@@ -57,39 +60,59 @@ def product(request, product_id):
     if not release:
         raise Http404
     offers = decorate_offers(list(available_offers().filter(release=release)))
-    return private(render(request, 'merchant_catalog/software_product.html', {
+    buyer = current_identity(request)
+    response = private(render(request, 'merchant_catalog/software_product.html', {
         'product': item, 'release': release, 'offers': offers, 'operation': uuid.uuid4(),
-        'buyer': current_identity(request),
+        'buyer': buyer, 'checkout_form': GuestCheckoutForm(),
     }))
+    return set_guest_cookie(response, browser_token(request)) if buyer is None else response
 
 
 @require_POST
 def buy(request, offer_id):
     buyer = current_identity(request)
-    if buyer is None:
-        return redirect('bch_flow:login')
+    token = browser_token(request) if buyer is None else ''
+    form = GuestCheckoutForm(request.POST) if buyer is None else None
+    if form is not None and not form.is_valid():
+        return private(render(request, 'merchant_catalog/software_error.html',
+                              {'error': _('Enter a valid email address to continue.')}, status=400))
+    email = form.cleaned_data['email'] if form else ''
     try:
-        order = order_software(buyer, offer_id, request.POST.get('operation'))
+        order = order_software(buyer, offer_id, request.POST.get('operation'),
+                               guest_email=email, guest_token=token)
     except SoftwareOffer.DoesNotExist:
         raise Http404 from None
     except PaymentError as exc:
         try:
             key = uuid.UUID(request.POST.get('operation', ''))
-            order = SoftwareOrder.objects.filter(buyer=buyer, idempotency_key=key, offer_id=offer_id).first()
+            owner = {'buyer': buyer} if buyer else {'guest__token_digest': token_digest(token)}
+            order = SoftwareOrder.objects.filter(**owner, idempotency_key=key, offer_id=offer_id).first()
         except (ValueError, TypeError, AttributeError):
             order = None
-        if order:
-            # Remote timeouts retain a recoverable purchase, never create another charge.
-            return redirect('bch_flow:software_order', order_id=order.pk)
-        return private(render(request, 'merchant_catalog/software_error.html', {'error': str(exc)}, status=400))
-    return redirect('bch_flow:software_order', order_id=order.pk)
+        if order is None:
+            return private(render(request, 'merchant_catalog/software_error.html', {'error': str(exc)}, status=400))
+    response = private(redirect('bch_flow:software_order', order_id=order.pk))
+    return set_guest_cookie(response, token) if buyer is None else response
 
 
 def owned_order(request, order_id):
     buyer = current_identity(request)
-    if buyer is None:
-        raise Http404
-    return get_object_or_404(SoftwareOrder.objects.select_related('payment__account', 'offer__release__product'), pk=order_id, buyer=buyer)
+    allowed = guest_order_filter(request)
+    if buyer is not None:
+        allowed |= Q(buyer=buyer)
+    return get_object_or_404(SoftwareOrder.objects.select_related(
+        'guest', 'payment__account', 'offer__release__product').filter(allowed), pk=order_id)
+
+
+@require_GET
+def recover(request, token):
+    order = recovery_order(token)
+    grants = dict(list(request.session.get(GRANTS_KEY, {}).items())[-49:])
+    grants[str(order.pk)] = token
+    request.session[GRANTS_KEY] = grants
+    response = private(redirect('bch_flow:software_order', order_id=order.pk))
+    response['Referrer-Policy'] = 'no-referrer'
+    return response
 
 
 def state(order):
@@ -112,13 +135,24 @@ def state(order):
 @require_GET
 def purchases(request):
     buyer = current_identity(request)
-    if buyer is None:
-        return redirect('bch_flow:login')
-    orders = Paginator(SoftwareOrder.objects.filter(buyer=buyer).select_related('offer__release', 'payment__account'), 20).get_page(request.GET.get('page'))
+    allowed = guest_order_filter(request)
+    if buyer is not None:
+        allowed |= Q(buyer=buyer)
+    orders = Paginator(SoftwareOrder.objects.filter(allowed).select_related(
+        'offer__release', 'payment__account'), 20).get_page(request.GET.get('page'))
     for order in orders:
         order.delivery_state = state(order)
         order.delivery_label = STATE_LABELS[order.delivery_state]
     return private(render(request, 'merchant_catalog/software_purchases.html', {'orders': orders}))
+
+
+@require_POST
+def forget_guest_access(request):
+    from .software_access import GUEST_COOKIE
+    request.session.pop(GRANTS_KEY, None)
+    response = private(redirect('bch_flow:software_purchases'))
+    response.delete_cookie(GUEST_COOKIE, path='/', samesite='Lax')
+    return response
 
 
 @require_GET
@@ -128,10 +162,22 @@ def order_detail(request, order_id):
     payload = payment_payload_for(order.payment) if delivery_state in ('waiting', 'partial', 'confirming') else ''
     return private(render(request, 'merchant_catalog/software_order.html', {
         'order': order, 'state': delivery_state, 'received': display(order.payment.received_units, order.payment.account.asset), 'amount': display(order.payment.amount_units, order.payment.account.asset),
+        'recovery_url': recovery_url(request, order) if order.guest_id else '',
         'payment_url': checkout_url(order.payment),
         'payment_payload': payload,
         'payment_qr_url': payment_qr_url(order.payment) if payload else '',
     }))
+
+
+@require_POST
+def retry_payment(request, order_id):
+    from app_bch_flow.financial import service
+    order = owned_order(request, order_id)
+    try:
+        service.prepare_request(order.payment)
+    except PaymentError:
+        pass  # The saved order continues to show its actual preparation state.
+    return private(redirect('bch_flow:software_order', order_id=order.pk))
 
 
 @require_GET
@@ -145,7 +191,7 @@ def download_link(request, order_id):
     order = owned_order(request, order_id)
     if not downloadable(order):
         return private(JsonResponse({'error': 'Payment is not confirmed for download.'}, status=409))
-    token = signing.dumps({'order': str(order.pk), 'buyer': str(order.buyer_id)}, salt=SALT)
+    token = signing.dumps({'order': str(order.pk), 'buyer': str(order.buyer_id), 'guest': str(order.guest_id)}, salt=SALT)
     return private(redirect(reverse('bch_flow:software_download', kwargs={'token': token})))
 
 
@@ -154,7 +200,8 @@ def download(request, token):
     try:
         data = signing.loads(token, salt=SALT, max_age=300)
         order = owned_order(request, data['order'])
-        if data['buyer'] != str(order.buyer_id) or not downloadable(order):
+        if (data['buyer'] != str(order.buyer_id) or
+                (order.guest_id and data.get('guest') != str(order.guest_id)) or not downloadable(order)):
             raise Http404
     except (signing.BadSignature, KeyError, ValueError, TypeError):
         raise Http404 from None

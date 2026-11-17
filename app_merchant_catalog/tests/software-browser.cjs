@@ -11,11 +11,15 @@ const fs = require('node:fs');
     if(input.cookie) await page.context().addCookies([{name:input.cookie.name,value:input.cookie.value,url:input.base}]);
     if(input.phase === 'purchase') {
       await page.goto(input.base+input.product);
-      await page.getByRole('link',{name:'Sign in to purchase'}).click();
-      await page.getByLabel('Email',{exact:true}).fill('buyer@software.invalid');
-      await page.getByLabel('Password',{exact:true}).fill('long-software-password-123');
-      await page.getByRole('button',{name:'Sign in',exact:true}).click();
-      await page.waitForURL('**'+input.product);
+      if (input.signIn) {
+        await page.getByRole('link',{name:'Sign in',exact:true}).click();
+        await page.getByLabel('Email',{exact:true}).fill('buyer@software.invalid');
+        await page.getByLabel('Password',{exact:true}).fill('long-software-password-123');
+        await page.getByRole('button',{name:'Sign in',exact:true}).click();
+        await page.waitForURL('**'+input.product);
+      } else {
+        await page.getByLabel('Email for this purchase').fill('guest@software.invalid');
+      }
       await page.screenshot({path:input.artifacts+'/software-product-desktop.png',fullPage:true});
       await page.setViewportSize({width:390,height:844});
       if(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth)) throw Error('Product overflows mobile viewport');
@@ -29,7 +33,8 @@ const fs = require('node:fs');
       if(await page.getByRole('button',{name:'Download software'}).isVisible()) throw Error('Unpaid download exposed');
       await page.screenshot({path:input.artifacts+'/software-order-pending.png',fullPage:true});
       const cookie=(await page.context().cookies()).find(c=>c.name===input.cookieName);
-      fs.writeFileSync(input.result,JSON.stringify({url:page.url(),cookie}),{mode:0o600});
+      const recovery = await page.locator('#software-access-link').count() ? await page.locator('#software-access-link').inputValue() : null;
+      fs.writeFileSync(input.result,JSON.stringify({url:page.url(),cookie,recovery}),{mode:0o600});
     } else {
       await page.goto(input.order);
       await page.getByRole('heading',{name:'Your software is ready.'}).waitFor();
@@ -41,6 +46,14 @@ const fs = require('node:fs');
       await page.screenshot({path:input.artifacts+'/software-order-ready.png',fullPage:true});
       await page.setViewportSize({width:390,height:844});
       if(await page.evaluate(()=>document.documentElement.scrollWidth > innerWidth)) throw Error('Order overflows mobile viewport');
+    }
+    if (input.recovery) {
+      const recovered = await browser.newContext();
+      const restored = await recovered.newPage();
+      await restored.goto(input.recovery);
+      await restored.getByRole('heading',{name:'Your software is ready.'}).waitFor();
+      if (await restored.locator('input[type=password]').count()) throw Error('Recovery asked for a login');
+      await recovered.close();
     }
     if(errors.length) throw Error(errors.join('\n'));
     console.log('Browser '+input.phase+' passed; no JavaScript errors.');

@@ -5,11 +5,14 @@ import uuid
 import zipfile
 from pathlib import PurePosixPath
 from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.utils import timezone
 from django.db import transaction
 from app_bch_flow.financial import service
 from app_bch_flow.financial.amounts import PaymentError
 from app_bch_flow.models import BCHIdentity
-from .models import MerchantProduct, SoftwareOffer, SoftwareOrder
+from .models import MerchantProduct, SoftwareOffer, SoftwareOrder, SoftwareGuestSession
+from .software_access import TOKEN_PATTERN, token_digest
 
 MAX_ARCHIVE = 100 * 1024 * 1024
 
@@ -54,17 +57,35 @@ def available_offers():
     )
 
 
-def order_software(buyer, offer_id, key):
+def order_software(buyer, offer_id, key, *, guest_email="", guest_token=""):
     try:
         key = uuid.UUID(str(key))
     except (ValueError, TypeError, AttributeError):
         raise PaymentError('Invalid checkout operation. Reload the product page.') from None
     with transaction.atomic():
-        # Serialize double clicks across accounts and products for the same buyer.
-        buyer = BCHIdentity.objects.select_for_update().get(pk=buyer.pk, is_active=True)
-        if buyer.is_demo:
-            raise PaymentError('Demo accounts cannot purchase software.')
-        order = SoftwareOrder.objects.select_related('payment__account').filter(buyer=buyer, idempotency_key=key).first()
+        guest = None
+        if buyer is not None:
+            # Serialize double clicks for signed-in buyers, retaining old orders.
+            buyer = BCHIdentity.objects.select_for_update().get(pk=buyer.pk, is_active=True)
+            if buyer.is_demo:
+                raise PaymentError('Demo accounts cannot purchase software.')
+            email = buyer.email
+            owner = {'buyer': buyer}
+        else:
+            email = str(guest_email).strip().lower()
+            try:
+                validate_email(email)
+                if len(email) > 254 or not TOKEN_PATTERN.fullmatch(guest_token):
+                    raise ValidationError('Invalid guest checkout.')
+            except (ValidationError, TypeError):
+                raise PaymentError('Enter a valid email address to continue.') from None
+            guest, _ = SoftwareGuestSession.objects.get_or_create(token_digest=token_digest(guest_token))
+            guest = SoftwareGuestSession.objects.select_for_update().get(pk=guest.pk)
+            if guest.expires_at <= timezone.now():
+                raise PaymentError('Your checkout session expired. Reload the product page.')
+            owner = {'guest': guest}
+        order = SoftwareOrder.objects.select_related('payment__account').filter(
+            **owner, idempotency_key=key).first()
         if order:
             if str(order.offer_id) != str(offer_id):
                 raise PaymentError('This operation was already used for a different offer.')
@@ -74,9 +95,10 @@ def order_software(buyer, offer_id, key):
             product = MerchantProduct.objects.select_for_update().get(pk=offer.release.product_id)
             if product.archived_at or offer.account.organization_id != product.organization_id:
                 raise PaymentError('This software is no longer available.')
+            owner_key = (buyer.pk if buyer else guest.pk).hex
             charge = service.create_request(offer.seller, offer.account, offer.amount_units,
-                product.name[:160], 'software-' + key.hex, buyer.email)
-            order = SoftwareOrder.objects.create(buyer=buyer, offer=offer, payment=charge,
+                product.name[:160], 'software-' + owner_key + '-' + key.hex, email)
+            order = SoftwareOrder.objects.create(buyer=buyer, guest=guest, customer_email=email, offer=offer, payment=charge,
                 idempotency_key=key, product_name=product.name, license_text=offer.release.license_text)
     # Persist the order before external I/O. Retrying uses the same provider key.
     service.prepare_request(order.payment)
