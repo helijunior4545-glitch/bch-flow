@@ -27,6 +27,57 @@
   }
   function icons() {try {window.lucide?.createIcons({attrs:{'stroke-width':1.7,'aria-hidden':'true'}});} catch (_) {}}
 
+
+  // Recalculate the chart's real drawing size, then re-fit visible candles.
+  // ResizeObserver also handles later viewport/full-screen size changes.
+  function refitFinancialChart(scope) {
+    if (!scope || scope.cancelled || !scope.chart || !scope.plot?.isConnected) return;
+    const box = scope.plot.getBoundingClientRect();
+    const width = Math.round(box.width), height = Math.round(box.height);
+    if (width < 80 || height < 80) return;
+    try {
+      scope.chart.resize(width, height);
+      scope.chart.timeScale().fitContent();
+    } catch (_) { /* A chart can be destroyed during an asset switch. */ }
+  }
+  function scheduleFinancialChartFit(scope) {
+    requestAnimationFrame(() => requestAnimationFrame(() => refitFinancialChart(scope)));
+    // Expanded-card CSS has a transition in some prior versions.
+    window.setTimeout(() => refitFinancialChart(scope), 280);
+  }
+  function attachExpandedWalletPicker(scope) {
+    const root = scope?.root;
+    const source = root?.querySelector('.premium-wallet-switcher[data-financial-navigation]');
+    const controls = root?.querySelector('.bfr-finance-actions');
+    if (!source || !controls || controls.querySelector('.bfr-expanded-wallet-control')) return;
+    const links = Array.from(source.querySelectorAll('a[href]'));
+    if (links.length < 2) return;
+    const label = document.createElement('label');
+    label.className = 'bfr-expanded-wallet-control';
+    const caption = document.createElement('span');
+    caption.textContent = 'Wallet';
+    const select = document.createElement('select');
+    select.setAttribute('aria-label', 'Switch wallet');
+    for (const link of links) {
+      const option = document.createElement('option');
+      option.value = link.href;
+      option.textContent = (link.textContent || '').replace(/\s+/g, ' ').trim();
+      option.selected = link.getAttribute('aria-current') === 'page';
+      select.append(option);
+    }
+    select.addEventListener('change', () => {
+      if (!select.value) return;
+      const address = new URL(select.value, location.href);
+      if (address.origin !== location.origin || address.pathname !== location.pathname) {
+        location.assign(address.href);
+      } else {
+        navigate(address.href);
+      }
+    });
+    label.append(caption,select);
+    controls.insertBefore(label,controls.firstChild);
+  }
+
   function destroy() {
     if (!current) return;
     current.cancelled = true;
@@ -115,6 +166,7 @@
   async function navigate(address, popstate = false) {
     navigationController?.abort();
     const here = document.querySelector(SELECTOR);
+    const keepExpanded = !!here?.querySelector('.bfr-finance.is-expanded');
     const url = new URL(address, location.href);
     if (url.origin !== location.origin || url.pathname !== location.pathname) {
       location.assign(url.href); return;
@@ -161,6 +213,14 @@
         }
         stabilizeWizard(updated);
         mount(updated);
+        // Asset/wallet switches must not silently close an expanded chart.
+        if (keepExpanded && updated) {
+          const panel = updated.querySelector('.bfr-finance');
+          panel?.classList.add('is-expanded');
+          panel?.querySelector('[data-financial-expand]')?.setAttribute('aria-expanded','true');
+          document.body.style.overflow = 'hidden';
+          scheduleFinancialChartFit(current);
+        }
         window.scrollTo({top:savedScrollY,behavior:'instant'});
       };
       commit();
@@ -244,7 +304,7 @@
         const finance=root.querySelector('.bfr-finance');const on=finance.classList.toggle('is-expanded');
         expand.setAttribute('aria-expanded',String(on));
         document.body.style.overflow=on?'hidden':'';
-        requestAnimationFrame(() => scope.chart?.resize(scope.plot.clientWidth,scope.plot.clientHeight));
+        scheduleFinancialChartFit(scope);
         return;
       }
       const copy = event.target.closest('[data-copy-value],[data-copy-link]');
@@ -368,7 +428,7 @@
         scope.chart=C.createChart(scope.plot,{width:scope.plot.clientWidth||300,height:scope.plot.clientHeight||240,layout:{background:{type:'solid',color:'#111b2c'},textColor:'#91a5c4',fontFamily:'Inter,system-ui,sans-serif',fontSize:10},grid:{vertLines:{color:'#ffffff0c'},horzLines:{color:'#ffffff13'}},crosshair:{vertLine:{color:'#d4a54f66'},horzLine:{color:'#d4a54f66'}},rightPriceScale:{borderColor:'#ffffff22'},timeScale:{borderColor:'#ffffff22',timeVisible:days<=1,secondsVisible:false},handleScroll:false,handleScale:false});
         const opts={upColor:'#0cc06d',downColor:'#f25b59',wickUpColor:'#0cc06d',wickDownColor:'#f25b59',borderVisible:false,priceFormat:{type:'price',precision:2,minMove:.01}};
         scope.series=scope.chart.addSeries?scope.chart.addSeries(C.CandlestickSeries,opts):scope.chart.addCandlestickSeries(opts);
-        if('ResizeObserver' in window){scope.observer=new ResizeObserver(()=>{if(!scope.cancelled&&scope.chart&&scope.plot.clientWidth&&scope.plot.clientHeight)scope.chart.resize(scope.plot.clientWidth,scope.plot.clientHeight);});scope.observer.observe(scope.plot);}
+        if('ResizeObserver' in window){scope.observer=new ResizeObserver(()=>{if(!scope.cancelled)requestAnimationFrame(()=>refitFinancialChart(scope));});scope.observer.observe(scope.plot);}
       }
       scope.series.setData(rows.map(({time,open,high,low,close})=>({time,open,high,low,close})));
       scope.chart.timeScale().fitContent();
@@ -389,7 +449,7 @@
     current=scope;
     const activeMenu=root.querySelector('.premium-menu a[href]');
     root.querySelectorAll('.premium-menu a').forEach(el=>{try {if(new URL(el.href).pathname===location.pathname) el.classList.add('bfr-current');}catch(_){}});
-    icons(); bindActions(scope);
+    icons(); attachExpandedWalletPicker(scope); bindActions(scope);
     loadRates(scope);
     if(ASSETS.has(root.dataset.asset))loadOHLC(scope,7);
     else chartStatus(scope,'Pix / BRL · no cryptocurrency OHLC market');
@@ -413,7 +473,7 @@
     if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&document.querySelector(SELECTOR)){event.preventDefault();document.querySelector('#requests')?.scrollIntoView({behavior:'smooth'});}
     if(event.key==='Escape'){
       const finance=document.querySelector('.bfr-finance.is-expanded');
-      if(finance){finance.classList.remove('is-expanded');document.body.style.removeProperty('overflow');const button=finance.querySelector('[data-financial-expand]');button?.setAttribute('aria-expanded','false');button?.focus();requestAnimationFrame(()=>current?.chart?.resize(current.plot.clientWidth,current.plot.clientHeight));}
+      if(finance){finance.classList.remove('is-expanded');document.body.style.removeProperty('overflow');const button=finance.querySelector('[data-financial-expand]');button?.setAttribute('aria-expanded','false');button?.focus();scheduleFinancialChartFit(current);}
     }
   });
   window.addEventListener('pagehide',destroy,{once:true});

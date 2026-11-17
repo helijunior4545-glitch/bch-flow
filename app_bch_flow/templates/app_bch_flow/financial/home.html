@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-rebuild-v11.css' %}?v=20">
 {% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/wizardconnect.css' %}">{% endif %}
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-european-v34.css' %}">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/chart-expanded-v38.css' %}">
 {% endblock %}
 {% block content %}
 <main id="main" class="pay-app pay-premium bfr-dashboard" data-wallet-connect-url="{% url 'bch_flow:merchant_integrations' member.organization_id %}" data-payment-app data-asset="{{ asset }}" data-financial-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
@@ -108,7 +109,7 @@
 
 </main>
 <script src="{% static 'app_bch_flow/js/lightweight-charts-v5.standalone.js' %}" defer></script>
-<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=37" defer></script>
+<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=38" defer></script>
 <script src="{% static 'app_bch_flow/js/catalog-fiat-final.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/floating-wallet-notice-v21.js' %}" defer></script>
