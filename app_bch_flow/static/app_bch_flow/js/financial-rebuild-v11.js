@@ -103,16 +103,21 @@
       status.textContent = active ? 'Unavailable for this account' : 'Not connected · BCH only';
       const action = document.createElement('a');
       action.className = 'bfr-wizard-open';
-      const href = new URL(location.href);
-      href.searchParams.set('asset','BCH');
-      action.href = href.href;
-      action.textContent = active ? 'Manage in Integrations' : 'Open BCH wallet';
-      if (active) {
-        const integrations = root.querySelector('.premium-menu a[href*="/integrations/"]');
-        if (integrations) action.href = integrations.href;
-        else action.remove();
+      // Wallet setup belongs to Integrations, not to the BCH asset tab.
+      // Resolve the existing Django-rendered route; do not hard-code organization IDs.
+      const integrations = root.querySelector('.premium-menu a[href*="/integrations/"]')
+        || root.querySelector('.premium-header-right a[href*="/integrations/"]')
+        || root.querySelector('[data-bfr-wallet-unconnected-v21][data-integrations-url]');
+      const setupUrl = integrations?.getAttribute('data-integrations-url')
+        || integrations?.getAttribute('href');
+      action.textContent = active ? 'Manage in Integrations' : 'Connect wallet';
+      if (setupUrl) {
+        action.href = new URL(setupUrl, location.href).href;
+        // Do not use AJAX asset navigation for an Integrations link.
+        action.removeAttribute('data-financial-navigation');
       } else {
-        action.setAttribute('data-financial-navigation','');
+        // Fail closed instead of directing users back to the BCH wallet screen.
+        action.remove();
       }
       standby.append(indicator,title,status,action);
       mode.after(standby);

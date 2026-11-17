@@ -7,13 +7,14 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/receipt-catalog-v2.css' %}">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-rebuild-v11.css' %}?v=20">
 {% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/wizardconnect.css' %}">{% endif %}
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/remove-market-overview-v30.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-sections-v31.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/align-recent-assets-v33.css' %}">{% endblock %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-european-v34.css' %}">
+{% endblock %}
 {% block content %}
 <main id="main" class="pay-app pay-premium bfr-dashboard" data-payment-app data-asset="{{ asset }}" data-financial-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
 <span class="premium-a11y" data-interaction-messages data-show-values="{% trans 'Show balances' %}" data-hide-values="{% trans 'Hide balances' %}" data-copy-success="{% trans 'Copied successfully.' %}" data-manual-copy="{% trans 'Select and copy manually.' %}"></span>
-{% include 'app_bch_flow/components/wallet_navigation.html' %}
+{% include 'app_bch_flow/components/wallet_navigation.html' %}<button class="bfr-eu-backdrop" type="button" aria-label="Close navigation"></button>
 <div class="premium-main" id="wallet">
-<header class="premium-header"><a class="premium-org" href="{% url 'bch_flow:v3_workspace' member.organization_id %}"><i data-lucide="landmark"></i><span>{{ member.organization.name }}</span><i data-lucide="chevron-down"></i></a><button class="bfr-search" type="button" data-financial-search><i data-lucide="search"></i><span>Find transactions and transfers</span><kbd>Ctrl K</kbd></button><div class="premium-header-right">{% if can_approve and not is_demo %}<a href="{% url 'bch_flow:merchant_integrations' member.organization_id %}" aria-label="{% trans 'Integrations' %}"><i data-lucide="plug"></i></a>{% endif %}<span class="premium-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span></div></header>
+<header class="premium-header"><button class="bfr-eu-menu-button" type="button" aria-controls="bfr-eu-sidebar" aria-expanded="false" aria-label="Open navigation"><i data-lucide="menu"></i></button><a class="premium-org" href="{% url 'bch_flow:v3_workspace' member.organization_id %}"><i data-lucide="landmark"></i><span>{{ member.organization.name }}</span><i data-lucide="chevron-down"></i></a><button class="bfr-search" type="button" data-financial-search><i data-lucide="search"></i><span>Find transactions and transfers</span><kbd>Ctrl K</kbd></button><div class="premium-header-right">{% if can_approve and not is_demo %}<a href="{% url 'bch_flow:merchant_integrations' member.organization_id %}" aria-label="{% trans 'Integrations' %}"><i data-lucide="plug"></i></a>{% endif %}<span class="premium-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span></div></header>
 <div class="bfr-workspace-top" aria-label="Financial workspace">
 <section class="bfr-ticker" aria-label="Indicative market quotations" data-financial-ticker>
  <div><span class="bfr-coin-icon btc">₿</span><strong>BTC / USD</strong><output data-financial-rate="BTC">—</output></div>
@@ -85,9 +86,7 @@
   <section class="bfr-panel bfr-assets"><header><h2><i data-lucide="layers-3"></i>{% trans 'My assets' %}</h2><small>BTC · BCH · BRL</small></header>
    <nav aria-label="Assets" data-financial-navigation>{% for option in asset_options %}<a href="?asset={{ option.code }}&amp;environment={% if is_demo %}sandbox{% else %}live{% endif %}" {% if asset == option.code %}aria-current="page"{% endif %}><span class="bfr-asset-mark bfr-asset-{{ option.code|lower }}">{% include 'app_bch_flow/components/asset_symbol.html' with asset=option.code %}</span><span><strong>{{ option.code }}</strong><small>{{ option.name }}</small></span><output>{% if option.code == 'BTC' or option.code == 'BCH' %}<span data-financial-rate="{{ option.code }}">—</span>{% else %}BRL / Pix{% endif %}</output></a>{% endfor %}</nav>
   </section>
-  <section class="bfr-panel bfr-market"><header><h2><i data-lucide="chart-candlestick"></i>{% trans 'Market overview' %}</h2><small>{{ asset }}/USD</small></header>
-   {% if asset == 'BRL' %}<p>Pix uses Brazilian Real. There is no BRL/Pix cryptocurrency candlestick market.</p>{% else %}<strong class="bfr-market-price" data-financial-market-price>—</strong><small data-financial-market-period>Observed period · 7 days</small><div class="bfr-market-metrics"><div><span>Observed high</span><strong data-financial-high>—</strong></div><div><span>Observed low</span><strong data-financial-low>—</strong></div><div><span>Range change</span><strong data-financial-change>—</strong></div></div><p>CoinGecko · OHLC · Indicative only. Never used for settlement.</p>{% endif %}
-  </section>
+  
 </aside>
 </section>
     <section class="premium-detail-section" id="withdrawals"><div class="premium-history-title"><h2><i data-lucide="shield-check"></i>{% trans "Approvals and transfers" %}</h2><span>{% trans "Reserve → authorize → broadcast" %}</span></div>
@@ -114,5 +113,6 @@
 <script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/floating-wallet-notice-v21.js' %}" defer></script>
 <script src="{% static 'app_bch_flow/js/signing-env-row-v24.js' %}?v=24" defer></script>
-<script src="{% static 'app_bch_flow/js/remove-market-overview-v30.js' %}" defer></script>
-<script src="{% static 'app_bch_flow/js/align-recent-assets-v33.js' %}" defer></script>{% endblock %}
+
+<script src="{% static 'app_bch_flow/js/financial-european-v34.js' %}" defer></script>
+{% endblock %}
