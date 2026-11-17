@@ -1,0 +1,14 @@
+{
+  "modified": [
+    "app_bch_flow/static/app_bch_flow/js/financial-rebuild-v11.js",
+    "app_bch_flow/templates/app_bch_flow/financial/home.html"
+  ],
+  "before_sha256": {
+    "app_bch_flow/static/app_bch_flow/js/financial-rebuild-v11.js": "31642fc40e5d4ebf953f891ad320a432c4ef0b848711830fd2cee0fde526bb8c",
+    "app_bch_flow/templates/app_bch_flow/financial/home.html": "3928d03df6be3742428d65f9d861e811dfa2ff655133c07bf91e78273f0163c8"
+  },
+  "after_sha256": {
+    "app_bch_flow/static/app_bch_flow/js/financial-rebuild-v11.js": "a361f6c5b27f6f1068e09179596a4aff86bba2f3dc3fc91227d31fb1c1fdf123",
+    "app_bch_flow/templates/app_bch_flow/financial/home.html": "2ad3173fab72c9f6932b1d167ff56aae555b340a8406d6f777981ea16bb4f8b2"
+  }
+}
