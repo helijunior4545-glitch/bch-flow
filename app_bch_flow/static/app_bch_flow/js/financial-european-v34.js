@@ -1,65 +1,76 @@
-
-/* BCH Flow V34: only mobile menu behavior and accessibility. Financial controllers
-   remain the responsibility of financial-rebuild-v11.js and payment scripts. */
-(function(){
- 'use strict';
- if(window.__bfrEuropeanV34)return;
- window.__bfrEuropeanV34=true;
- var body=document.body;
- var query=function(s){return document.querySelector(s)};
- var media=window.matchMedia('(max-width:800px)');
- function root(){return query('#main.bfr-dashboard')}
- function sidebar(){var r=root();return r&&r.querySelector('.premium-sidebar')}
- function syncState(open){
-  var s=sidebar(),b=query('.bfr-eu-menu-button');
-  if(!s||!b)return;
-  if(!media.matches)open=false;
-  body.classList.toggle('bfr-eu-open',!!open);
-  b.setAttribute('aria-expanded',String(!!open));
-  if(media.matches)s.setAttribute('aria-hidden',String(!open));
-  else s.removeAttribute('aria-hidden');
- }
- function close(restore){
-  syncState(false);
-  if(restore){var b=query('.bfr-eu-menu-button');if(b)b.focus({preventScroll:true})}
- }
- function init(){
-  var s=sidebar();if(!s)return;
-  s.id='bfr-eu-sidebar';
-  if(!s.querySelector('.bfr-eu-close')){
-   var b=document.createElement('button');
-   b.type='button';b.className='bfr-eu-close';
-   b.setAttribute('aria-label','Close navigation');
-   b.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>';
-   s.insertBefore(b,s.firstChild);
+/* One responsive drawer lifecycle, including server-rendered AJAX replacements. */
+(() => {
+  'use strict';
+  if (window.__bfrEuropeanV34) return;
+  window.__bfrEuropeanV34 = true;
+  const media = matchMedia('(max-width:800px)');
+  const root = () => document.querySelector('#main.bfr-dashboard');
+  let mounted = null, lockedMain = null, previousInert = false, savedY = 0;
+  function unlock() {
+    const wasLocked = document.body.classList.contains('bfr-eu-open');
+    document.body.classList.remove('bfr-eu-open');
+    document.documentElement.classList.remove('bfr-drawer-scroll-lock');
+    if (lockedMain) lockedMain.inert = previousInert;
+    lockedMain = null;
+    if (wasLocked) window.scrollTo({top:savedY,behavior:'instant'});
   }
-  syncState(false);
- }
- document.addEventListener('click',function(e){
-  var t=e.target instanceof Element?e.target:e.target&&e.target.parentElement;
-  if(!t||!root())return;
-  if(t.closest('.bfr-eu-menu-button')){
-   var opening=!body.classList.contains('bfr-eu-open');
-   syncState(opening);
-   if(opening){var x=sidebar().querySelector('.bfr-eu-close');if(x)x.focus({preventScroll:true})}
-   return;
+  function setOpen(open, restore = false) {
+    const page = root(), sidebar = page?.querySelector('.premium-sidebar');
+    const button = page?.querySelector('.bfr-eu-menu-button');
+    const backdrop = page?.querySelector('.bfr-eu-backdrop');
+    if (!sidebar || !button) { unlock(); return; }
+    open = Boolean(open && media.matches);
+    if (open && !document.body.classList.contains('bfr-eu-open')) {
+      savedY = window.scrollY;
+      lockedMain = page.querySelector('.premium-main');
+      previousInert = lockedMain?.inert || false;
+      if (lockedMain) lockedMain.inert = true;
+      document.documentElement.classList.add('bfr-drawer-scroll-lock');
+      document.body.classList.add('bfr-eu-open');
+    } else if (!open) unlock();
+    button.setAttribute('aria-expanded',String(open));
+    sidebar.inert = media.matches && !open;
+    if (media.matches) sidebar.setAttribute('aria-hidden',String(!open));
+    else sidebar.removeAttribute('aria-hidden');
+    if (open) { sidebar.setAttribute('role','dialog'); sidebar.setAttribute('aria-modal','true'); }
+    else { sidebar.removeAttribute('role'); sidebar.removeAttribute('aria-modal'); }
+    if (backdrop) backdrop.hidden = !open;
+    if (open) sidebar.querySelector('.bfr-eu-close')?.focus({preventScroll:true});
+    else if (restore) button.focus({preventScroll:true});
   }
-  if(t.closest('.bfr-eu-close,.bfr-eu-backdrop')){close(true);return}
-  if(t.closest('.premium-sidebar .premium-menu a')){close(false)}
- });
- document.addEventListener('keydown',function(e){
-  if(!body.classList.contains('bfr-eu-open'))return;
-  if(e.key==='Escape'){e.preventDefault();close(true);return}
-  if(e.key!=='Tab')return;
-  var s=sidebar();if(!s)return;
-  var nodes=Array.prototype.slice.call(s.querySelectorAll('a,button,[tabindex="0"]')).filter(function(el){return !el.disabled&&el.getClientRects().length>0});
-  if(!nodes.length)return;
-  var first=nodes[0],last=nodes[nodes.length-1];
-  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
-  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
- });
- if(media.addEventListener)media.addEventListener('change',function(){close(false);syncState(false)});
- else media.addListener(function(){close(false);syncState(false)});
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});
- else init();
+  function init() {
+    const page = root();
+    if (page === mounted) return;
+    unlock(); mounted = page;
+    if (page) setOpen(false);
+  }
+  document.addEventListener('click', event => {
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    if (!target || !root()) return;
+    if (target.closest('.bfr-eu-menu-button')) {
+      setOpen(!document.body.classList.contains('bfr-eu-open')); return;
+    }
+    if (target.closest('.bfr-eu-close,.bfr-eu-backdrop')) { setOpen(false,true); return; }
+    if (target.closest('.premium-sidebar a')) setOpen(false);
+  });
+  document.addEventListener('keydown', event => {
+    if (!document.body.classList.contains('bfr-eu-open')) return;
+    if (event.key === 'Escape') { event.preventDefault(); setOpen(false,true); return; }
+    if (event.key !== 'Tab') return;
+    const sidebar = root()?.querySelector('.premium-sidebar');
+    const nodes = Array.from(sidebar?.querySelectorAll('a[href],button:not(:disabled),[tabindex="0"]') || [])
+      .filter(element => element.getClientRects().length && !element.closest('[hidden]'));
+    if (!nodes.length) return;
+    const first = nodes[0], last = nodes[nodes.length-1];
+    if (!sidebar.contains(document.activeElement)) { event.preventDefault(); first.focus(); }
+    else if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  });
+  media.addEventListener('change', () => setOpen(false));
+  window.addEventListener('pagehide',unlock);
+  window.addEventListener('pageshow', () => { mounted = null; init(); });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
+  // Only main-root replacement matters, not chart ticks or mutations in dialogs.
+  new MutationObserver(init).observe(document.body,{childList:true});
 })();

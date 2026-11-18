@@ -1,0 +1,328 @@
+# Spanish translations for BCH Flow software.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the BCH Flow software project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: BCH Flow software VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-17 10:14+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: es\n"
+"Language-Team: es <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+msgid "All software"
+msgstr "Todo el software"
+
+msgid "Automatic rotation"
+msgstr "Rotación automática"
+
+msgid "Back to top"
+msgstr "Volver arriba"
+
+msgid "Built around useful software and direct payments."
+msgstr "Creado para software útil y pagos directos."
+
+msgid "By"
+msgstr "Por"
+
+msgid "Choose a collection page"
+msgstr "Elige una página de la colección"
+
+msgid "Choose your software"
+msgstr "Elige tu software"
+
+msgid "Direct payments"
+msgstr "Pagos directos"
+
+msgid "Discover practical tools. Pay directly. Build something great."
+msgstr "Descubre herramientas prácticas. Paga directamente. Crea algo extraordinario."
+
+msgid "Download after confirmation"
+msgstr "Descarga tras la confirmación"
+
+msgid "Enter email & pay"
+msgstr "Introduce tu correo y paga"
+
+msgid "Explore"
+msgstr "Explorar"
+
+msgid "Explore software"
+msgstr "Explorar software"
+
+msgid "Explore the workspace"
+msgstr "Explorar el espacio de trabajo"
+
+msgid "Filter by payment method"
+msgstr "Filtrar por método de pago"
+
+msgid "Find your next tool."
+msgstr "Encuentra tu próxima herramienta."
+
+msgid "For creators"
+msgstr "Para creadores"
+
+msgid "Great software."
+msgstr "Software extraordinario."
+
+msgid "INDEPENDENT SOFTWARE"
+msgstr "SOFTWARE INDEPENDIENTE"
+
+msgid "Independent software"
+msgstr "Software independiente"
+
+msgid "Independent software, ready to explore."
+msgstr "Software independiente, listo para explorar."
+
+msgid "Independent software. Direct payments."
+msgstr "Software independiente. Pagos directos."
+
+msgid "More than a"
+msgstr "Más que una"
+
+msgid "My purchases"
+msgstr "Mis compras"
+
+msgid "Next software"
+msgstr "Siguiente software"
+
+msgid ""
+"No software is published yet. Sellers can publish a ZIP release from their product catalog after "
+"configuring a receiving account."
+msgstr ""
+"Aún no hay software publicado. Los vendedores pueden publicar una versión ZIP desde su catálogo "
+"tras configurar una cuenta de recepción."
+
+msgid "No software matches your search. Try another name or payment method."
+msgstr "Ningún software coincide con tu búsqueda. Prueba otro nombre o método de pago."
+
+msgid "Open workspace"
+msgstr "Abrir espacio de trabajo"
+
+msgid "Pause automatic rotation"
+msgstr "Pausar rotación automática"
+
+msgid "Payment methods offered by sellers"
+msgstr "Métodos de pago ofrecidos por los vendedores"
+
+msgid "Previous software"
+msgstr "Software anterior"
+
+msgid "Private purchase access"
+msgstr "Acceso privado a las compras"
+
+msgid "Publish software"
+msgstr "Publicar software"
+
+msgid "Requirements, licenses and support vary by seller."
+msgstr "Los requisitos, las licencias y el soporte varían según el vendedor."
+
+msgid "SOFTWARE"
+msgstr "SOFTWARE"
+
+msgid "Search software"
+msgstr "Buscar software"
+
+msgid "Software"
+msgstr "Software"
+
+msgid "Software collection"
+msgstr "Colección de software"
+
+msgid "Software navigation"
+msgstr "Navegación de software"
+
+msgid "Start automatic rotation"
+msgstr "Iniciar rotación automática"
+
+msgid "THE BCH FLOW PLATFORM"
+msgstr "LA PLATAFORMA BCH FLOW"
+
+msgid "THE COLLECTION"
+msgstr "LA COLECCIÓN"
+
+msgid "The next useful tool starts here."
+msgstr "La próxima herramienta útil empieza aquí."
+
+msgid "Tools to build. Payments to connect. A workspace to keep it together."
+msgstr "Herramientas para crear. Pagos para conectar. Un espacio para reunirlo todo."
+
+msgid "Version"
+msgstr "Versión"
+
+msgid "View software"
+msgstr "Ver software"
+
+msgid "Workspace"
+msgstr "Espacio de trabajo"
+
+msgid "Your next move."
+msgstr "Tu próximo paso."
+
+msgid "available"
+msgstr "disponibles"
+
+msgid "software storefront."
+msgstr "tienda de software."
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "Available after payment confirmation"
+msgstr "Disponible tras la confirmación del pago"
+
+msgid "Source code included"
+msgstr "Código fuente incluido"
+
+# Unified software creation and first-party preview video.
+
+msgid "Add software"
+msgstr "Añadir software"
+
+msgid "Edit software"
+msgstr "Editar software"
+
+msgid "Software saved"
+msgstr "Software guardado"
+
+msgid "Software catalog"
+msgstr "Catálogo de software"
+
+msgid "Software name"
+msgstr "Nombre del software"
+
+msgid "Choose a software image"
+msgstr "Elige una imagen del software"
+
+msgid "Save software"
+msgstr "Guardar software"
+
+msgid "Receiving account"
+msgstr "Cuenta receptora"
+
+msgid "Requirements"
+msgstr "Requisitos"
+
+msgid "License and support"
+msgstr "Licencia y soporte"
+
+msgid "Release notes"
+msgstr "Notas de la versión"
+
+msgid "Software package"
+msgstr "Paquete del software"
+
+msgid "Play preview"
+msgstr "Reproducir vista previa"
+
+msgid "Pause preview"
+msgstr "Pausar vista previa"
+
+msgid "Preview video"
+msgstr "Vídeo de demostración"
+
+msgid "Remove video"
+msgstr "Eliminar vídeo"
+
+msgid "A preview video is attached."
+msgstr "Hay un vídeo de demostración adjunto."
+
+msgid "Upload an MP4 video up to 20 MB."
+msgstr "Sube un vídeo MP4 de hasta 20 MB."
+
+msgid "Upload a valid MP4 video."
+msgstr "Sube un vídeo MP4 válido."
+
+msgid "MP4 up to 20 MB. Use H.264 for browser compatibility. The image is used as the cover."
+msgstr "MP4 de hasta 20 MB. Usa H.264 para compatibilidad con navegadores. La imagen se usa como portada."
+
+msgid "Choose a receiving account"
+msgstr "Elige una cuenta receptora"
+
+msgid "The price currency follows the receiving account. Configure a live account in Integrations before publishing."
+msgstr "La moneda del precio corresponde a la cuenta receptora. Configura una cuenta real en Integraciones antes de publicar."
+
+msgid "ZIP up to 100 MB, including README.md and LICENSE.txt."
+msgstr "ZIP de hasta 100 MB, con README.md y LICENSE.txt."
+
+msgid "Saving a new software publishes its package and payment offer together. Existing versions purchased by customers are preserved."
+msgstr "Guardar un software nuevo publica el paquete y la oferta de pago juntos. Se conservan las versiones ya compradas por los clientes."
+
+msgid "Manage software, packages and payment offers in one place."
+msgstr "Gestiona software, paquetes y ofertas de pago en un solo lugar."
+
+msgid "The receiving account is no longer available."
+msgstr "La cuenta receptora ya no está disponible."
+
+msgid "The software files could not be stored. Please retry."
+msgstr "No se pudieron guardar los archivos del software. Inténtalo de nuevo."
+
+# Unified software creation and first-party preview video.
+
+msgid "To change a published package or payment offer, use Publish software. Catalog price edits do not change an existing offer."
+msgstr "Para cambiar un paquete u oferta de pago publicados, usa Publicar software. Cambiar el precio del catálogo no modifica una oferta existente."
+
+# Shared media picker and inline ZIP version updates.
+
+msgid "Choose either an image or a video, not both."
+msgstr "Elige una imagen o un vídeo, no ambos."
+
+msgid "Restore the software before publishing a version."
+msgstr "Restaura el software antes de publicar una versión."
+
+msgid "SKU or version already exists."
+msgstr "El SKU o la versión ya existe."
+
+msgid "Choose an image or video"
+msgstr "Elige una imagen o vídeo"
+
+msgid "Image up to 5 MB or MP4 video up to 20 MB. Selecting one replaces the other after saving."
+msgstr "Imagen de hasta 5 MB o vídeo MP4 de hasta 20 MB. Al elegir uno, se sustituye el otro después de guardar."
+
+msgid "Software preview"
+msgstr "Vista previa del software"
+
+msgid "Remove media"
+msgstr "Eliminar contenido"
+
+msgid "To publish a new version here, attach a ZIP and enter its version, receiving account, requirements and license. Without a ZIP, only catalog details are updated."
+msgstr "Para publicar una nueva versión aquí, adjunta un ZIP e indica versión, cuenta receptora, requisitos y licencia. Sin ZIP, solo se actualizan los datos del catálogo."
+
+msgid "The server interrupted the upload. Check the catalog before trying again."
+msgstr "El servidor interrumpió la carga. Revisa el catálogo antes de volver a intentarlo."
+
+msgid "Reference"
+msgstr "Referencia"
+
+# Shared media picker and inline ZIP version updates.
+
+msgid "Use PNG, JPEG or WebP up to 5 MB, or MP4 video up to 20 MB."
+msgstr "Usa PNG, JPEG o WebP de hasta 5 MB, o vídeo MP4 de hasta 20 MB."
+
+# Shared media picker and inline ZIP version updates.
+
+msgid "Video conversion is unavailable. Please contact support."
+msgstr "La conversión de vídeo no está disponible. Contacta con soporte."
+
+msgid "The video could not be converted. Try a shorter MP4 video."
+msgstr "No se pudo convertir el vídeo. Prueba con un vídeo MP4 más corto."
+
+msgid "Video optimized: the first 20 seconds at most, resized and without audio."
+msgstr "Vídeo optimizado: hasta los primeros 20 segundos, con resolución reducida y sin audio."
+
+msgid "Videos are automatically optimized: only the beginning, up to 20 seconds, reduced resolution and no audio. The original on your device is unchanged."
+msgstr "Los vídeos se optimizan automáticamente: solo el comienzo, hasta 20 segundos, resolución reducida y sin audio. El original en tu dispositivo no cambia."
+
+msgid "Optimizing video before upload. Please keep this page open."
+msgstr "Optimizando el vídeo antes de subirlo. Mantén esta página abierta."
+
+msgid "The video will be optimized when saved."
+msgstr "El vídeo se optimizará al guardar."

@@ -195,7 +195,6 @@
   function stabilizeWizard(root) {
     if (!root) return;
     const active = root.dataset.asset === 'BCH' && new URL(location.href).searchParams.get('environment') !== 'sandbox';
-    const mode = root.querySelector('.premium-mode');
     let slot = root.querySelector('[data-wizardconnect]');
     // Do not invent signing authorization: only show a live connector if Django rendered it.
     if (active && slot && retainedWizard && slot !== retainedWizard) {
@@ -244,21 +243,6 @@
         }
       }
       root.querySelector('.bfr-wizard-standby')?.remove();
-    } else if (mode && !root.querySelector('.bfr-wizard-standby')) {
-      const standby = document.createElement('section');
-      standby.className = 'bfr-wizard-standby';
-      const title = document.createElement('strong'); title.textContent = 'BCH signing wallet';
-      const indicator = document.createElement('span');indicator.className='bfr-wizard-indicator';
-      const status = document.createElement('span');status.className='bfr-standby-status';
-      status.textContent = active ? 'Unavailable for this account' : 'Not connected · BCH only';
-      const action = document.createElement('a');
-      action.className = 'bfr-wizard-open';
-      // Always keep this existing button and use Django's organization-specific URL.
-      action.textContent = active ? 'Manage in Integrations' : 'Connect wallet';
-      action.href = root.dataset.walletConnectUrl;
-      action.removeAttribute('data-financial-navigation');
-      standby.append(indicator,title,status,action);
-      mode.after(standby);
     }
   }
 
@@ -566,12 +550,24 @@
     } finally {scope.controllers.delete(controller);}
   }
 
+  function markNavigation(root) {
+    root?.querySelectorAll('.premium-menu a').forEach(link => {
+      try {
+        const url = new URL(link.href);
+        const active = url.pathname === location.pathname && url.hash === location.hash;
+        link.classList.toggle('bfr-current', active);
+        if (active) link.setAttribute('aria-current', 'page');
+        else link.removeAttribute('aria-current');
+      } catch (_) {}
+    });
+  }
+  window.addEventListener('hashchange', () => markNavigation(document.querySelector(SELECTOR)));
+
   function mount(root) {
     if (!root) return;
     const scope={root,plot:root.querySelector('[data-financial-chart]'),chart:null,series:null,observer:null,controllers:new Set(),timers:[],marketController:null,cancelled:false,days:7};
     current=scope;
-    const activeMenu=root.querySelector('.premium-menu a[href]');
-    root.querySelectorAll('.premium-menu a').forEach(el=>{try {if(new URL(el.href).pathname===location.pathname) el.classList.add('bfr-current');}catch(_){}});
+    markNavigation(root);
     icons(); attachExpandedWalletPicker(scope); bindActions(scope);
     restoreExpandedAfterNavigation(scope);
     loadRates(scope);
@@ -603,44 +599,4 @@
   window.addEventListener('pagehide',destroy,{once:true});
   stabilizeWizard(document.querySelector(SELECTOR));
   mount(document.querySelector(SELECTOR));
-})();
-
-/* V20 — stable Environment placement; preserve the original Django form. */
-(() => {
-  const selector = '.bfr-dashboard';
-  function placeEnvironment() {
-    const main = document.querySelector(selector);
-    if (!main) return;
-    const cards = main.querySelector('.premium-cards#operations');
-    const form = main.querySelector('form[data-financial-environment]');
-    if (!cards || !form) return;
-    let dock = main.querySelector('[data-bfr-environment-dock]');
-    if (!dock) {
-      dock = document.createElement('div');
-      dock.className = 'bfr-environment-dock';
-      dock.dataset.bfrEnvironmentDock = '';
-      dock.setAttribute('aria-label', 'Environment');
-      const control = document.createElement('div');
-      control.className = 'bfr-environment-dock-control';
-      dock.appendChild(control);
-    }
-    const control = dock.querySelector('.bfr-environment-dock-control');
-    if (!control) return;
-    if (form.parentElement !== control) control.appendChild(form);
-    if (cards.previousElementSibling !== dock) cards.insertAdjacentElement('beforebegin', dock);
-  }
-  let scheduled = false;
-  function schedule() {
-    if (scheduled) return;
-    scheduled = true;
-    queueMicrotask(() => { scheduled = false; placeEnvironment(); });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', schedule, {once:true});
-  else schedule();
-  // Reposition only after Financial main is replaced by asynchronous navigation.
-  new MutationObserver(records => {
-    if (records.some(r => [...r.addedNodes].some(n =>
-      n.nodeType === 1 && (n.matches?.('.bfr-dashboard') || n.querySelector?.('.bfr-dashboard'))
-    ))) schedule();
-  }).observe(document.body, {childList:true});
 })();

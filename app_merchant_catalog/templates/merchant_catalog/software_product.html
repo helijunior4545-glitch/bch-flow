@@ -1,2 +1,32 @@
 {% extends 'merchant_catalog/software_base.html' %}{% load i18n %}
-{% block software_content %}<a class="sw-back" href="{% url 'bch_flow:software_store' %}">← {% trans 'All software' %}</a><div class="sw-detail"><article><p class="sw-eyebrow">{{ product.organization.name }} / v{{ release.version }}</p><h1>{{ product.name }}</h1><div class="sw-description">{{ product.description|linebreaks }}</div><section class="sw-panel"><h2>{% trans 'What you receive' %}</h2><p>{% trans 'A ZIP package with source code, README and license. Installation requirements are listed below.' %}</p><dl><dt>{% trans 'Version' %}</dt><dd>{{ release.version }}</dd><dt>{% trans 'Package size' %}</dt><dd>{{ release.size_bytes|filesizeformat }}</dd><dt>SHA-256</dt><dd class="sw-hash">{{ release.sha256 }}</dd></dl></section><section class="sw-panel"><h2>{% trans 'Requirements & installation' %}</h2>{{ release.requirements|linebreaks }}{% if release.notes %}<h3>{% trans 'Release notes' %}</h3>{{ release.notes|linebreaks }}{% endif %}</section><section class="sw-panel"><h2>{% trans 'License, support & updates' %}</h2><div class="sw-license">{{ release.license_text|linebreaks }}</div></section></article><aside class="sw-buy sw-panel"><p class="sw-eyebrow">{% trans 'ONE-TIME PURCHASE' %}</p><h2>{% trans 'Your next tool.' %}</h2><p>{% trans 'Choose a payment method. Prices are fixed by the seller in each currency.' %}</p>{% if buyer and not buyer.is_demo %}{% for offer in offers %}<form method="post" action="{% url 'bch_flow:software_buy' offer.pk %}" data-pending-form>{% csrf_token %}<input type="hidden" name="operation" value="{{ operation }}"><button class="sw-button sw-payment" type="submit"><span>{{ offer.method_label }}</span><strong>{{ offer.price_label }} {% if offer.account.asset == 'BRL' %}BRL{% endif %}</strong><span aria-hidden="true">→</span></button></form>{% endfor %}{% else %}<a class="sw-button" href="{% url 'bch_flow:login' %}?next={{ request.path|urlencode }}">{% trans 'Sign in to purchase' %}</a><p>{% trans 'Use a personal account to keep your purchases and downloads in one place.' %}</p>{% endif %}<p class="sw-fine">{% trans 'Download unlocks after the server confirms the full payment. Network confirmations may take time. Partial or late payments require further action.' %}</p></aside></div>{% endblock %}
+{% block software_content %}
+<a class="sw-back" href="{% url 'bch_flow:software_store' %}">← {% trans 'All software' %}</a>
+<div class="sw-detail">
+  <article>
+    <div class="sw-product-heading"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><p class="sw-eyebrow">{{ product.organization.name }} <span class="sw-badge">v{{ release.version }}</span></p></div>
+    <h1>{{ product.name }}</h1>
+    {% if product.image %}<img class="sw-product-cover" src="{% url 'bch_flow:software_product_image' product.pk %}" alt="{{ product.name }}" width="960" height="600">{% endif %}
+    <div class="sw-description">{{ product.description|linebreaks }}</div>
+    <section class="sw-panel"><h2>{% trans 'Included in your purchase' %}</h2><div class="sw-included"><span>{% trans 'Source code' %}</span><span>README</span><span>{% trans 'License' %}</span></div><dl><dt>{% trans 'Version' %}</dt><dd>{{ release.version }}</dd><dt>{% trans 'Package size' %}</dt><dd>{{ release.size_bytes|filesizeformat }}</dd><dt>SHA-256</dt><dd class="sw-hash">{{ release.sha256 }}</dd></dl></section>
+    <section class="sw-panel"><h2>{% trans 'Requirements & installation' %}</h2>{{ release.requirements|linebreaks }}{% if release.notes %}<h3>{% trans 'Release notes' %}</h3>{{ release.notes|linebreaks }}{% endif %}</section>
+    <details class="sw-panel"><summary>{% trans 'License, support & updates' %}</summary><div class="sw-license">{{ release.license_text|linebreaks }}</div></details>
+  </article>
+  <aside class="sw-buy sw-panel" aria-labelledby="checkout-title">
+    <p class="sw-eyebrow">{% trans 'ONE-TIME PURCHASE' %}</p><h2 id="checkout-title">{% trans 'Make it yours.' %}</h2>
+    <p>{% trans 'No account needed. Enter your email, choose a payment method and keep your private access link.' %}</p>
+    {% if buyer.is_demo %}<p>{% trans 'Demo accounts cannot make real purchases. Sign out to continue as a guest.' %}</p>
+    {% else %}
+    <form method="post" class="sw-checkout-form sw-form" data-pending-form>
+      {% csrf_token %}<input type="hidden" name="operation" value="{{ operation }}">
+      <div class="sw-checkout-step"><span aria-hidden="true">01</span><h3>{% trans 'Purchase details' %}</h3></div>
+      {% if buyer %}<p class="sw-buyer-email">{{ buyer.email }}</p>{% else %}{{ checkout_form.email.label_tag }}{{ checkout_form.email }}<p class="sw-fine">{% trans 'Used to identify this purchase. Your email alone cannot unlock a download.' %}</p>{% endif %}
+      <div class="sw-checkout-step"><span aria-hidden="true">02</span><h3>{% trans 'Choose how to pay' %}</h3></div>
+      <p class="sw-fine">{% trans 'Each price is set by the seller in the currency shown.' %}</p>
+      {% for offer in offers %}<button class="sw-button sw-payment" type="submit" formaction="{% url 'bch_flow:software_buy' offer.pk %}"><span>{{ offer.method_label }}</span><strong>{{ offer.price_label }} {% if offer.account.asset == 'BRL' %}BRL{% endif %}</strong><span aria-hidden="true">→</span></button>{% endfor %}
+    </form>
+    {% endif %}
+    <div class="sw-checkout-assurance"><i data-lucide="shield-check" aria-hidden="true"></i><p>{% trans 'Download unlocks only after the server confirms the full payment. No private wallet keys are requested.' %}</p></div>
+    {% if not buyer %}<p class="sw-fine sw-account-option">{% trans 'Already have an account?' %} <a href="{% url 'bch_flow:login' %}?next={{ request.path|urlencode }}">{% trans 'Sign in' %}</a></p>{% endif %}
+  </aside>
+</div>
+{% endblock %}

@@ -8,15 +8,15 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-rebuild-v11.css' %}?v=21">
 {% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/wizardconnect.css' %}">{% endif %}
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/floating-wallet-notice-v21.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/signing-env-row-v24.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-minimal-v28.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/sidebar-icons-v29.css' %}"><link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-european-v34.css' %}?v=2">
-<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-home-refinement.css' %}?v=4">
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/financial-home-refinement.css' %}?v=6">
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/finance-card.css' %}?v=1">
 {% endblock %}
 {% block content %}
 <main id="main" class="pay-app pay-premium bfr-dashboard" data-wallet-connect-url="{% url 'bch_flow:merchant_integrations' member.organization_id %}" data-payment-app data-asset="{{ asset }}" data-financial-ohlc-url="{% url 'bch_flow:financial_live_ohlc' %}" data-bfc-rates-url="{% url 'bch_flow:financial_market_rates' %}">
 <span class="premium-a11y" data-interaction-messages data-show-values="{% trans 'Show balances' %}" data-hide-values="{% trans 'Hide balances' %}" data-copy-success="{% trans 'Copied successfully.' %}" data-manual-copy="{% trans 'Select and copy manually.' %}"></span>
-{% include 'app_bch_flow/components/wallet_navigation.html' %}<button class="bfr-eu-backdrop" type="button" aria-label="Close navigation"></button>
+{% include 'app_bch_flow/components/wallet_navigation.html' with wallet_mobile_drawer=True %}<button class="bfr-eu-backdrop" type="button" aria-label="{% trans 'Close navigation' %}" hidden></button>
 <div class="premium-main" id="wallet">
-<header class="premium-header"><button class="bfr-eu-menu-button" type="button" aria-controls="bfr-eu-sidebar" aria-expanded="false" aria-label="Open navigation"><i data-lucide="menu"></i></button><a class="premium-org" href="{% url 'bch_flow:v3_workspace' member.organization_id %}"><i data-lucide="landmark"></i><span>{{ member.organization.name }}</span><i data-lucide="chevron-down"></i></a><button class="bfr-search" type="button" data-financial-search><i data-lucide="search"></i><span>Find transactions and transfers</span><kbd>Ctrl K</kbd></button><div class="premium-header-right">{% if can_approve and not is_demo %}<a href="{% url 'bch_flow:merchant_integrations' member.organization_id %}" aria-label="{% trans 'Integrations' %}"><i data-lucide="plug"></i></a>{% endif %}<span class="premium-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span></div></header>
+<header class="premium-header"><button class="bfr-eu-menu-button" type="button" aria-controls="bfr-eu-sidebar" aria-expanded="false" aria-label="{% trans 'Open navigation' %}"><i data-lucide="menu"></i></button><a class="premium-org" href="{% url 'bch_flow:v3_workspace' member.organization_id %}"><i data-lucide="landmark"></i><span>{{ member.organization.name }}</span><i data-lucide="chevron-down"></i></a><button class="bfr-search" type="button" data-financial-search><i data-lucide="search"></i><span>Find transactions and transfers</span><kbd>Ctrl K</kbd></button><div class="premium-header-right">{% if can_approve and not is_demo %}<a href="{% url 'bch_flow:merchant_integrations' member.organization_id %}" aria-label="{% trans 'Integrations' %}"><i data-lucide="plug"></i></a>{% endif %}<span class="premium-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span></div></header>
 <div class="bfr-workspace-top" aria-label="Financial workspace">
 <section class="bfr-ticker" aria-label="Indicative market quotations" data-financial-ticker>
  <div><span class="bfr-coin-icon btc">₿</span><strong>BTC / USD</strong><output data-financial-rate="BTC">—</output></div>
@@ -36,7 +36,17 @@
     {% if selected_wallet %}<div class="premium-wallet-heading"><div><span class="premium-eyebrow">{% trans 'SELECTED WALLET' %}</span><strong>{{ selected_wallet.name|default:selected_wallet.asset }} · {{ selected_wallet.asset }}</strong></div>{% if can_approve and not is_demo %}<a class="premium-button" href="{% url 'bch_flow:merchant_integrations' member.organization_id %}"><i data-lucide="plus"></i>{% trans 'Manage wallets' %}</a>{% endif %}</div>{% endif %}
     {% if wallet_readonly %}<div class="premium-alert" role="status">{% trans 'Archived wallet. Its history remains available. Restore it in Integrations to create new operations.' %}</div>{% endif %}
     {% if wallets %}<nav class="premium-wallet-switcher" data-financial-navigation aria-label="{% trans 'Choose wallet' %}">{% for wallet in wallets %}<a href="?asset={{ wallet.asset }}&amp;environment={{ wallet.environment }}&amp;wallet={{ wallet.pk }}" {% if selected_wallet.pk == wallet.pk %}aria-current="page"{% endif %}><i data-lucide="wallet"></i><span>{{ wallet.name|default:wallet.asset }}<small>{{ wallet.wallet_fingerprint|slice:':8' }}</small></span></a>{% endfor %}{% if legacy_account %}<a href="?asset={{ asset }}&amp;environment={{ environment }}&amp;wallet=legacy" {% if not selected_wallet %}aria-current="page"{% endif %}>{% trans 'Legacy / Core account' %}</a>{% endif %}</nav>{% endif %}
-    <div class="premium-controls"><form class="premium-env" method="get" data-financial-environment><input type="hidden" name="asset" value="{{ asset }}">{% if selected_wallet %}<input type="hidden" name="wallet" value="{{ selected_wallet.pk }}" data-live-wallet>{% endif %}<label for="environment">{% trans "Environment" %}</label><div class="premium-env-select"><select name="environment" id="environment">
+    <div class="premium-mode {% if is_sandbox %}is-sandbox{% endif %}" role="note"><i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}"></i><div><strong>{{ environment_label }}</strong><span>{% if is_sandbox %}{% trans "Simulated balances. No real money is moved." %}{% else %}{% trans "Balances reflect reconciled receipts, not the total wallet or bank balance." %}{% endif %}</span></div></div>
+    {% if error %}<div class="premium-alert" role="alert"><i data-lucide="circle-alert"></i>{{ error }}</div>{% endif %}
+    {% if account.frozen %}<div class="premium-alert" role="alert">{% trans "Account under review. New operations are blocked." %}</div>{% endif %}
+
+
+</div>
+<div class="bfr-environment-dock bfr-env-sign-row" data-bfr-environment-dock aria-label="{% trans 'Environment' %}">
+{% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}{% include 'app_bch_flow/components/wizardconnect.html' %}{% else %}
+<section class="bfr-wizard-standby"><span class="bfr-wizard-indicator" aria-hidden="true"></span><strong>{% trans 'BCH signing wallet' %}</strong><span class="bfr-standby-status">{% if asset == 'BCH' and environment != 'sandbox' %}{% trans 'Unavailable for this account' %}{% else %}{% trans 'Not connected · BCH only' %}{% endif %}</span>{% if can_approve and not is_demo %}<a class="bfr-wizard-open" href="{% url 'bch_flow:merchant_integrations' member.organization_id %}">{% trans 'Connect wallet' %}</a>{% endif %}</section>
+{% endif %}
+<div class="bfr-environment-dock-control"><form class="premium-env" method="get" data-financial-environment><input type="hidden" name="asset" value="{{ asset }}">{% if selected_wallet %}<input type="hidden" name="wallet" value="{{ selected_wallet.pk }}" data-live-wallet>{% endif %}<label for="environment">{% trans "Environment" %}</label><div class="premium-env-select"><select name="environment" id="environment">
 {% if not sandbox_only %}
 <option value="live" {% if environment == 'live' %}selected{% endif %}>{% trans "Real transfers" %}</option>
 {% if asset == 'BRL' %}
@@ -47,11 +57,6 @@
 {% endif %}
 <option value="sandbox" {% if environment == 'sandbox' %}selected{% endif %}>{% trans "Sandbox" %}</option>
 </select><button type="submit">{% trans "Open" %}</button></div></form></div>
-    <div class="premium-mode {% if is_sandbox %}is-sandbox{% endif %}" role="note"><i data-lucide="{% if is_sandbox %}flask-conical{% else %}shield-check{% endif %}"></i><div><strong>{{ environment_label }}</strong><span>{% if is_sandbox %}{% trans "Simulated balances. No real money is moved." %}{% else %}{% trans "Balances reflect reconciled receipts, not the total wallet or bank balance." %}{% endif %}</span></div></div>
-    {% if error %}<div class="premium-alert" role="alert"><i data-lucide="circle-alert"></i>{{ error }}</div>{% endif %}
-    {% if account.frozen %}<div class="premium-alert" role="alert">{% trans "Account under review. New operations are blocked." %}</div>{% endif %}
-    {% if asset == 'BCH' and environment == 'live' and can_approve and not is_demo %}{% include 'app_bch_flow/components/wizardconnect.html' %}{% endif %}
-
 </div>
 <section class="premium-cards" id="operations">
 <article class="premium-balance bfr-finance" aria-labelledby="bfr-finance-title">
@@ -95,7 +100,7 @@
   <section class="bfr-panel bfr-assets"><header><h2><i data-lucide="layers-3"></i>{% trans 'My assets' %}</h2><small>BTC · BCH · BRL</small></header>
    <nav aria-label="Assets" data-financial-navigation>{% for option in asset_options %}<a href="?asset={{ option.code }}&amp;environment={% if is_demo %}sandbox{% else %}live{% endif %}" {% if asset == option.code %}aria-current="page"{% endif %}><span class="bfr-asset-mark bfr-asset-{{ option.code|lower }}">{% include 'app_bch_flow/components/asset_symbol.html' with asset=option.code %}</span><span><strong>{{ option.code }}</strong><small>{{ option.name }}</small></span><output>{% if option.code == 'BTC' or option.code == 'BCH' %}<span data-financial-rate="{{ option.code }}">—</span>{% else %}BRL / Pix{% endif %}</output></a>{% endfor %}</nav>
   </section>
-  
+
 </aside>
 </section>
     <section class="premium-detail-section" id="withdrawals"><div class="premium-history-title"><h2><i data-lucide="shield-check"></i>{% trans "Approvals and transfers" %}</h2><span>{% trans "Reserve → authorize → broadcast" %}</span></div>
@@ -116,12 +121,10 @@
   <div class="pay-toast" hidden role="status" aria-live="polite"></div>
 
 </main>
+<script src="{% static 'app_bch_flow/js/financial-european-v34.js' %}?v=3" defer></script>
 <script src="{% static 'app_bch_flow/js/lightweight-charts-v5.standalone.js' %}" defer></script>
-<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=41" defer></script>
+<script src="{% static 'app_bch_flow/js/financial-rebuild-v11.js' %}?v=42" defer></script>
 <script src="{% static 'app_bch_flow/js/catalog-fiat-final.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/receipt-catalog-v2.js' %}" defer data-financial-rehydrate></script>
 <script src="{% static 'app_bch_flow/js/floating-wallet-notice-v21.js' %}" defer></script>
-<script src="{% static 'app_bch_flow/js/signing-env-row-v24.js' %}?v=24" defer></script>
-
-<script src="{% static 'app_bch_flow/js/financial-european-v34.js' %}" defer></script>
 {% endblock %}

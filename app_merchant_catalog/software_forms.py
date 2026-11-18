@@ -1,8 +1,14 @@
 from decimal import Decimal
 from django import forms
+from django.utils.translation import gettext_lazy as _
 from app_bch_flow.models import FlowAccount
 from app_bch_flow.financial.amounts import units, PaymentError
 from .software import inspect_archive
+
+
+class GuestCheckoutForm(forms.Form):
+    email = forms.EmailField(max_length=254, label='Email for this purchase',
+                             widget=forms.EmailInput(attrs={'autocomplete': 'email', 'placeholder': 'you@example.com'}))
 
 
 class ReleaseForm(forms.Form):
@@ -53,4 +59,30 @@ class OfferForm(forms.Form):
                 data['amount_units'] = units(str(data['price']), data['account'].asset)
             except PaymentError as exc:
                 self.add_error('price', str(exc))
+        return data
+
+
+class SoftwareProductForm(ReleaseForm):
+    """One form for a product, initial release and receiving offer."""
+    name = forms.CharField(max_length=160, label=_('Software name'))
+    sku = forms.CharField(max_length=64, required=False)
+    description = forms.CharField(max_length=2000, required=False, widget=forms.Textarea)
+    image = forms.FileField(required=False)
+    video = forms.FileField(required=False)
+
+    def clean_image(self):
+        from .services import validate_image
+        upload = self.cleaned_data.get('image')
+        validate_image(upload)
+        return upload
+
+    def clean_video(self):
+        from .video_processing import normalize_video
+        upload = self.cleaned_data.get('video')
+        return normalize_video(upload) if upload else None
+
+    def clean(self):
+        data = super().clean()
+        if data.get('image') and data.get('video'):
+            raise forms.ValidationError(_('Choose either an image or a video, not both.'))
         return data

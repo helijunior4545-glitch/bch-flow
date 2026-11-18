@@ -30,24 +30,24 @@ def register(request):
         except (IntegrityError,ValidationError):
             form.add_error('email',_('Unable to register this email'))
         else:
-            token,_=create_session(identity)
+            token,_session=create_session(identity)
             response=redirect(purchase_return(request))
-            set_session_cookie(response,token)
+            set_session_cookie(response,token,request=request)
             return response
     return render(request,'app_bch_flow/authentication/register.html',{'form':form, 'next_url': request.POST.get('next', request.GET.get('next', '')), **access_context()})
 
 @require_http_methods(['GET','POST'])
 def login(request):
     identity = current_identity(request)
-    if identity is not None and not identity.is_demo:
+    if request.method == 'GET' and identity is not None and not identity.is_demo:
         return redirect(purchase_return(request))
     form=LoginForm(request.POST or None)
     if request.method=='POST' and form.is_valid():
         identity=authenticate_identity(form.cleaned_data['email'],form.cleaned_data['password'])
         if identity:
-            token,_=create_session(identity)
+            token,_session=create_session(identity)
             response=redirect(purchase_return(request))
-            set_session_cookie(response,token)
+            set_session_cookie(response,token,request=request)
             return response
         form.add_error(None,_('Invalid credentials'))
     return render(request,'app_bch_flow/authentication/login.html',{'form':form, 'next_url': request.POST.get('next', request.GET.get('next', '')), **access_context()})
@@ -56,5 +56,5 @@ def login(request):
 def logout(request):
     revoke_session(request.COOKIES.get(COOKIE_NAME))
     response=redirect('bch_flow:home')
-    clear_session_cookie(response)
+    clear_session_cookie(response,request=request)
     return response

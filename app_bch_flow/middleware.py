@@ -27,3 +27,15 @@ class JurySandboxMiddleware(MiddlewareMixin):
         if member:
             return redirect(reverse('bch_flow:financial_home', args=[member.organization_id]) + '?environment=sandbox')
         return HttpResponse(_('Demo accounts can only use the sandbox.'), status=403)
+
+
+class BCHFlowPrivacyMiddleware(MiddlewareMixin):
+    """Never cache account-bearing BCH responses across browser identities."""
+
+    def process_response(self, request, response):
+        from django.utils.cache import add_never_cache_headers, patch_vary_headers
+        match = getattr(request, 'resolver_match', None)
+        if match and {'bch_flow', 'app_bch_flow'}.intersection(match.app_names):
+            add_never_cache_headers(response)
+            patch_vary_headers(response, ('Cookie', 'Accept-Language'))
+        return response

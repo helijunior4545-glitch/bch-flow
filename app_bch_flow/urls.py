@@ -4,8 +4,10 @@ from .views.authentication import register,login,logout
 from .views.dashboard import dashboard,new_organization
 from .views import v3_workspace
 from .views.jury import enter as jury_enter
+from .views.policies import policy
 app_name='bch_flow'
 urlpatterns=[
+    path('policies/<slug:document>/', policy, name='policy'),
     path('jury/', jury_enter, name='jury_enter'),
     path('',landing.index,name='home'),
     path('register/',register,name='register'),

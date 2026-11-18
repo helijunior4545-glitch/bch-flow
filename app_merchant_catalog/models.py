@@ -1,6 +1,10 @@
 import uuid
+from datetime import timedelta
+from django.utils import timezone
 from django.db import models
 from django.db.models import Q
+from .software_storage import software_archive_storage
+from .media import catalog_video_storage
 
 class MerchantProduct(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -11,6 +15,7 @@ class MerchantProduct(models.Model):
     price = models.DecimalField(max_digits=22, decimal_places=8)
     currency = models.CharField(max_length=3, choices=[("BCH", "BCH"), ("BTC", "BTC"), ("BRL", "BRL")], default="BCH")
     image = models.FileField(upload_to="merchant_catalog/products/", blank=True)
+    video = models.FileField(upload_to="merchant_catalog/videos/", storage=catalog_video_storage, blank=True)
     is_pinned = models.BooleanField(default=False)
     position = models.PositiveIntegerField(default=0)
     archived_at = models.DateTimeField(null=True, blank=True)
@@ -47,7 +52,7 @@ class SoftwareRelease(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     product = models.ForeignKey(MerchantProduct, on_delete=models.PROTECT, related_name="releases")
     version = models.CharField(max_length=40)
-    archive = models.FileField(upload_to="software/releases/%Y/%m/")
+    archive = models.FileField(upload_to="software/releases/%Y/%m/", storage=software_archive_storage)
     sha256 = models.CharField(max_length=64, editable=False)
     size_bytes = models.PositiveBigIntegerField(editable=False)
     requirements = models.TextField(max_length=2000)
@@ -74,9 +79,23 @@ class SoftwareOffer(models.Model):
         ]
 
 
+def software_guest_expiry():
+    return timezone.now() + timedelta(days=30)
+
+
+class SoftwareGuestSession(models.Model):
+    """A browser capability, not a login account or verified email identity."""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    token_digest = models.CharField(max_length=64, unique=True, editable=False)
+    expires_at = models.DateTimeField(default=software_guest_expiry)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
 class SoftwareOrder(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    buyer = models.ForeignKey("app_bch_flow.BCHIdentity", on_delete=models.PROTECT, related_name="software_orders")
+    buyer = models.ForeignKey("app_bch_flow.BCHIdentity", on_delete=models.PROTECT, related_name="software_orders", null=True, blank=True)
+    guest = models.ForeignKey(SoftwareGuestSession, on_delete=models.PROTECT, related_name="orders", null=True, blank=True)
+    customer_email = models.EmailField(blank=True, default="")
     offer = models.ForeignKey(SoftwareOffer, on_delete=models.PROTECT)
     payment = models.OneToOneField("app_bch_flow.FlowRequest", on_delete=models.PROTECT, related_name="software_order")
     idempotency_key = models.UUIDField()
@@ -86,7 +105,19 @@ class SoftwareOrder(models.Model):
 
     class Meta:
         ordering = ("-created_at",)
-        constraints = [models.UniqueConstraint(fields=("buyer", "idempotency_key"), name="software_buyer_operation")]
+        constraints = [
+            models.UniqueConstraint(fields=("buyer", "idempotency_key"), name="software_buyer_operation"),
+            models.UniqueConstraint(fields=("guest", "idempotency_key"), name="software_guest_operation"),
+            models.CheckConstraint(
+                condition=(Q(buyer__isnull=False, guest__isnull=True) |
+                           (Q(buyer__isnull=True, guest__isnull=False) & ~Q(customer_email=""))),
+                name="software_order_one_owner",
+            ),
+        ]
+
+    @property
+    def contact_email(self):
+        return self.customer_email or (self.buyer.email if self.buyer_id else "")
 
 
 class SoftwareDownload(models.Model):

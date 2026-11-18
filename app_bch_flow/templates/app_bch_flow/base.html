@@ -7,10 +7,13 @@
 <link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-refinement.css' %}">
 <script src="{% static 'app_bch_flow/vendor/lucide.min.js' %}" defer></script>
 <script src="{% static 'app_bch_flow/js/flow-ui.js' %}" defer></script>
-{% block extra_head %}{% endblock %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-polish.css' %}">{% block content_styles %}{% endblock %}</head><body>
+{% block extra_head %}{% endblock %}<link rel="stylesheet" href="{% static 'app_bch_flow/css/flow-polish.css' %}">{% block content_styles %}{% endblock %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/consent.css' %}?v=1">
+<script src="{% static 'app_bch_flow/js/consent.js' %}?v=1" defer></script></head><body>
 <a class="skip" href="#main">{% trans 'Skip to content' %}</a>
 {% include 'app_bch_flow/components/language_picker.html' %}
 {% include 'app_bch_flow/components/interaction_messages.html' %}
 {% block content %}{% endblock %}
 <div class="flow-announcement" role="status" aria-live="polite" data-announcement></div>
+{% include 'app_bch_flow/components/consent.html' %}
 </body></html>

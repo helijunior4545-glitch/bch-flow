@@ -17,7 +17,7 @@ def serialize(product):
             "description": product.description, "price": str(product.price),
             "currency": product.currency, "pinned": product.is_pinned,
             "position": product.position, "archived": bool(product.archived_at),
-            "updated": product.updated_at.date().isoformat(), "image_url": ("image/" + str(product.pk) + "/") if product.image else ""}
+            "video_url": reverse("bch_flow:merchant_catalog_video",args=[product.organization_id,product.pk]) if product.video else "", "has_video": bool(product.video), "updated": product.updated_at.isoformat(), "image_url": ("image/" + str(product.pk) + "/") if product.image else ""}
 
 
 @transaction.atomic

@@ -1,3 +1,55 @@
-{% extends 'app_bch_flow/layouts/workspace.html' %}{% load i18n %}
+{% extends 'app_bch_flow/base.html' %}
+{% load static i18n %}
 {% block title %}{% trans 'Overview' %} · BCH Flow{% endblock %}
-{% block workspace_content %}<section class="workspace-hero" data-reveal><div><p class="eyebrow">{% trans 'YOUR FINANCIAL SPACE' %}</p><h1>{% trans 'Your finances.' %}<br><em>{% trans 'In perspective.' %}</em></h1></div><p>{% trans 'One space for each organization. Move from a clear overview to your next operation.' %}</p></section><section class="workspace-section"><div class="workspace-section-head"><div><p class="eyebrow">{% trans 'YOUR SPACES' %}</p><h2>{% trans 'Organizations' %}<small> / {{ memberships|length }}</small></h2></div><a class="pay-primary" href="{% url 'bch_flow:new_organization' %}"><i data-lucide="plus"></i>{% trans 'New organization' %}</a></div><div class="workspace-organizations">{% for membership in memberships %}<article class="workspace-organization" data-reveal><div class="workspace-monogram">{{ membership.organization.name|first|upper }}</div><h3>{{ membership.organization.name }}</h3><p>@{{ membership.organization.slug }}</p><span class="pay-status">{{ membership.get_role_display }}</span><div><a class="pay-primary" href="{% url 'bch_flow:financial_home' membership.organization_id %}">{% trans 'Open wallet' %}<i data-lucide="arrow-up-right"></i></a><a class="workspace-text-link" href="{% url 'bch_flow:v3_workspace' membership.organization_id %}">{% trans 'Manage organization' %}<i data-lucide="arrow-right"></i></a></div></article>{% empty %}<div class="flow-empty"><i data-lucide="landmark"></i><h3>{% trans 'Your first space starts here.' %}</h3><p>{% trans 'Create an organization, connect your provider and keep every operation in view.' %}</p><a class="pay-primary" href="{% url 'bch_flow:new_organization' %}">{% trans 'Create organization' %}</a></div>{% endfor %}</div></section>{% endblock %}
+{% block content_styles %}
+<link rel="stylesheet" href="{% static 'app_bch_flow/css/pages/dashboard.css' %}?v=1">
+<script src="{% static 'app_bch_flow/js/pages/dashboard.js' %}?v=1" defer></script>
+<noscript><style>.overview .overview-navigation:not([open]){display:block}</style></noscript>
+{% endblock %}
+{% block content %}
+<div class="overview" data-overview>
+  <dialog class="overview-navigation" id="overview-navigation" aria-label="{% trans 'Workspace navigation' %}">
+    <div class="overview-navigation-body">
+      <div class="overview-brand-row">
+        <a class="overview-brand" href="{% url 'bch_flow:dashboard' %}"><i data-lucide="waypoints"></i><strong>BCH FLOW</strong></a>
+        <button class="overview-icon-button overview-close" type="button" data-navigation-close aria-label="{% trans 'Close navigation' %}"><i data-lucide="x"></i></button>
+      </div>
+      <a class="overview-space" href="{% url 'bch_flow:dashboard' %}"><i data-lucide="building-2"></i><span><strong>{% trans 'My workspace' %}</strong><small>BCH FLOW</small></span></a>
+      <nav class="overview-menu" aria-label="{% trans 'Workspace navigation' %}">
+        <a href="{% url 'bch_flow:dashboard' %}" aria-current="page"><i data-lucide="house"></i>{% trans 'Overview' %}</a>
+        <a href="{% url 'bch_flow:software_store' %}"><i data-lucide="layers"></i>{% trans 'Software' %}</a>
+        <a href="{% url 'bch_flow:software_purchases' %}"><i data-lucide="download"></i>{% trans 'My software' %}</a>
+        <hr>
+        <a href="#organizations"><i data-lucide="building-2"></i>{% trans 'Organizations' %}</a>
+        <a href="{% url 'bch_flow:new_organization' %}"><i data-lucide="plus"></i>{% trans 'New organization' %}</a>
+      </nav>
+      <div class="overview-account"><span class="overview-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span><span class="overview-account-email" title="{{ identity.email }}">{{ identity.email }}</span><form method="post" action="{% url 'bch_flow:logout' %}">{% csrf_token %}<button class="overview-icon-button" aria-label="{% trans 'Sign out' %}" title="{% trans 'Sign out' %}"><i data-lucide="log-out"></i></button></form></div>
+    </div>
+  </dialog>
+  <main id="main" class="overview-main">
+    <header class="overview-header"><button class="overview-icon-button overview-toggle" type="button" data-navigation-open aria-controls="overview-navigation" aria-expanded="false" aria-label="{% trans 'Open navigation' %}" hidden><i data-lucide="menu"></i></button><a class="overview-mobile-brand" href="{% url 'bch_flow:dashboard' %}"><i data-lucide="waypoints"></i><strong>BCH FLOW</strong></a><p class="overview-breadcrumb">{% trans 'Workspace' %}<span aria-hidden="true">/</span><strong>{% trans 'Overview' %}</strong></p><span class="overview-avatar" title="{{ identity.email }}"><i data-lucide="user-round"></i><span class="overview-sr">{{ identity.email }}</span></span></header>
+    <section class="overview-hero" aria-labelledby="overview-title"><div><p class="overview-eyebrow">{% trans 'YOUR WORKSPACE' %}</p><h1 id="overview-title">{% trans 'Your organizations.' %}<br>{% trans 'One clear overview.' %}</h1><p class="overview-description">{% trans 'Choose a space to manage payments, software and your team.' %}</p></div><a class="overview-button" href="{% url 'bch_flow:new_organization' %}"><i data-lucide="plus"></i>{% trans 'New organization' %}</a></section>
+    <div class="overview-summary"><div><span class="overview-summary-icon"><i data-lucide="building-2"></i></span><span><strong>{{ memberships|length|stringformat:'02d' }}</strong> {% trans 'Organizations' %}</span></div><p>{% trans 'Wallets' %}<span aria-hidden="true"> · </span>{% trans 'Catalog' %}<span aria-hidden="true"> · </span>{% trans 'Team' %}</p><p><i data-lucide="network"></i>{% trans 'A separate space for each business' %}</p></div>
+    <section class="overview-organizations" id="organizations" aria-labelledby="organizations-title">
+      <div class="overview-section-heading"><h2 id="organizations-title">{% trans 'Your organizations' %}</h2>{% if memberships %}<div class="overview-search" data-search-control hidden><label class="overview-sr" for="organization-search">{% trans 'Find an organization' %}</label><i data-lucide="search"></i><input id="organization-search" type="search" placeholder="{% trans 'Find an organization' %}" autocomplete="off" maxlength="160" aria-controls="organization-grid"></div>{% endif %}</div>
+      <div class="overview-grid" id="organization-grid">
+        {% for membership in memberships %}
+        <article class="overview-card" data-organization>
+          <div class="overview-card-heading"><span class="overview-monogram" aria-hidden="true">{{ membership.organization.name|first|upper }}</span><div class="overview-card-identity"><h3 title="{{ membership.organization.name }}">{{ membership.organization.name }}</h3><p title="@{{ membership.organization.slug }}">@{{ membership.organization.slug }}</p></div><span class="overview-role">{% if membership.role == 'owner' %}{% trans 'Owner' %}{% elif membership.role == 'admin' %}{% trans 'Admin' %}{% elif membership.role == 'operator' %}{% trans 'Operator' %}{% else %}{% trans 'Viewer' %}{% endif %}</span></div>
+          <p class="overview-card-description">{% trans 'Your payments, products and team.' %}</p>
+          <nav class="overview-card-links" aria-label="{{ membership.organization.name }}"><a href="{% url 'bch_flow:financial_home' membership.organization_id %}"><i data-lucide="wallet"></i>{% trans 'Wallet' %}</a><a href="{% url 'bch_flow:merchant_catalog' membership.organization_id %}"><i data-lucide="layers"></i>{% trans 'Catalog' %}</a><a href="{% url 'bch_flow:v3_workspace' membership.organization_id %}"><i data-lucide="building-2"></i>{% trans 'Organization' %}</a></nav>
+          <div class="overview-card-actions"><a class="overview-button" href="{% url 'bch_flow:financial_home' membership.organization_id %}">{% trans 'Open wallet' %}<i data-lucide="arrow-up-right"></i></a><a class="overview-text-link" href="{% url 'bch_flow:v3_workspace' membership.organization_id %}">{% trans 'Manage organization' %}<i data-lucide="arrow-right"></i></a></div>
+        </article>
+        {% empty %}
+        <div class="overview-empty"><i data-lucide="building-2"></i><h3>{% trans 'Your first space starts here.' %}</h3><p>{% trans 'Create an organization, connect your provider and keep every operation in view.' %}</p><a class="overview-button" href="{% url 'bch_flow:new_organization' %}">{% trans 'Create organization' %}<i data-lucide="plus"></i></a></div>
+        {% endfor %}
+      </div>
+      <p class="overview-no-results" data-no-results hidden>{% trans 'No organizations match your search.' %}</p>
+      <p class="overview-sr" role="status" aria-live="polite" aria-atomic="true" data-search-status data-results-label="{% trans 'Organizations found:' %}"></p>
+    </section>
+    {% if memberships %}<section class="overview-create"><i data-lucide="network"></i><div><h2>{% trans 'Build your next space' %}</h2><p>{% trans 'Keep each business organized in its own workspace.' %}</p></div><a class="overview-button overview-button-outline" href="{% url 'bch_flow:new_organization' %}">{% trans 'Create organization' %}<i data-lucide="plus"></i></a></section>{% endif %}
+    <nav class="overview-quick-links" aria-label="{% trans 'Quick access' %}"><a href="{% url 'bch_flow:software_store' %}"><i data-lucide="layers"></i><strong>{% trans 'Explore software' %}</strong><i data-lucide="arrow-right"></i></a><a href="{% url 'bch_flow:software_purchases' %}"><i data-lucide="shopping-bag"></i><strong>{% trans 'My purchases' %}</strong><i data-lucide="arrow-right"></i></a><a href="#organizations"><i data-lucide="building-2"></i><strong>{% trans 'Organizations' %}</strong><i data-lucide="arrow-right"></i></a></nav>
+    <footer class="overview-footer"><a class="overview-brand" href="{% url 'bch_flow:software_store' %}"><i data-lucide="waypoints"></i><strong>BCH FLOW</strong></a><p>{% trans 'Independent software. Direct payments.' %}</p></footer>
+  </main>
+</div>
+{% endblock %}

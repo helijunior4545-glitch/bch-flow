@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 urlpatterns = [
+    path("dashboard/organizations/<uuid:org_id>/catalog/api/products/<uuid:product_id>/video/", views.video_preview, name="merchant_catalog_video"),
+    path("dashboard/organizations/<uuid:org_id>/catalog/api/software/create/", views.create_software, name="merchant_catalog_software_create"),
     path("dashboard/organizations/<uuid:org_id>/catalog/", views.index, name="merchant_catalog"),
     path("dashboard/organizations/<uuid:org_id>/catalog/api/products/", views.products, name="merchant_catalog_products"),
     path("dashboard/organizations/<uuid:org_id>/catalog/api/products/<uuid:product_id>/image/", views.image, name="merchant_catalog_image"),
@@ -14,10 +16,15 @@ from . import software_views as software
 urlpatterns += [
     path('dashboard/organizations/<uuid:org_id>/catalog/sales/', software.sales, name='software_sales'),
     path('software/', software.storefront, name='software_store'),
+    path('software/forget-access/', software.forget_guest_access, name='software_forget_guest'),
+    path('software/access/<str:token>/', software.recover, name='software_recover'),
     path('software/purchases/', software.purchases, name='software_purchases'),
+    path('software/products/<uuid:product_id>/video/', software.product_video, name='software_product_video'),
+    path('software/products/<uuid:product_id>/image/', software.product_image, name='software_product_image'),
     path('software/products/<uuid:product_id>/', software.product, name='software_product'),
     path('software/buy/<int:offer_id>/', software.buy, name='software_buy'),
     path('software/orders/<uuid:order_id>/', software.order_detail, name='software_order'),
+    path('software/orders/<uuid:order_id>/retry/', software.retry_payment, name='software_retry'),
     path('software/orders/<uuid:order_id>/status/', software.order_status, name='software_status'),
     path('software/orders/<uuid:order_id>/download/', software.download_link, name='software_download_link'),
     path('software/download/<str:token>/', software.download, name='software_download'),

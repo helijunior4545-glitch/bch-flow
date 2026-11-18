@@ -1,14 +1,35 @@
 (() => {
   'use strict';
   document.querySelectorAll('[data-pending-form]').forEach(form => {
-    form.addEventListener('submit', () => {
-      const button = form.querySelector('button[type="submit"]');
-      if (button) { button.disabled = true; button.setAttribute('aria-busy', 'true'); }
+    form.addEventListener('submit', event => {
+      const submitter = event.submitter;
+      // Keep the selected payment route even after disabling all method buttons.
+      if (submitter?.hasAttribute('formaction')) form.action = submitter.formAction;
+      form.querySelectorAll('button[type="submit"]').forEach(button => {
+        button.disabled = true;
+        if (button === submitter) button.setAttribute('aria-busy', 'true');
+      });
     });
   });
   window.addEventListener('pageshow', () => {
     document.querySelectorAll('[data-pending-form] button').forEach(button => {
       button.disabled = false; button.removeAttribute('aria-busy');
+    });
+  });
+  document.querySelectorAll('[data-sw-copy]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const input = document.getElementById(button.dataset.swCopy);
+      const label = button.querySelector('span');
+      if (!input || !label) return;
+      const original = label.textContent;
+      try {
+        await navigator.clipboard.writeText(input.value);
+        label.textContent = button.dataset.copySuccess;
+      } catch (_) {
+        input.focus(); input.select();
+        label.textContent = button.dataset.copyFallback;
+      }
+      window.setTimeout(() => { label.textContent = original; }, 3500);
     });
   });
   const root = document.querySelector('[data-software-order]');

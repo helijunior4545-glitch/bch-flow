@@ -317,3 +317,28 @@
   transition: none;
 }
 }
+
+/* Stable initial render: hidden UI must not flash before controllers mount. */
+.bfr-dashboard [hidden],.bfr-dashboard dialog:not([open]){display:none!important}
+.bfr-dashboard .premium-main,.bfr-dashboard .bfr-environment-dock,.bfr-dashboard .bfr-environment-dock-control{min-width:0}
+.bfr-dashboard .bfr-environment-dock{max-width:100%}
+.bfr-dashboard .premium-table-scroll{max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.bfr-dashboard .premium-header .premium-org{min-width:0}
+.bfr-dashboard .premium-header .premium-org span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+@media(max-width:800px){
+  html.bfr-drawer-scroll-lock,body.bfr-eu-open{overflow:hidden!important;overscroll-behavior:none}
+  body.bfr-eu-open{position:static;top:auto}
+  .bfr-dashboard .premium-sidebar{box-sizing:border-box;width:min(264px,78vw)!important;max-width:78vw!important;height:100vh!important;height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y pinch-zoom;padding-top:max(22px,env(safe-area-inset-top))!important;padding-bottom:max(22px,env(safe-area-inset-bottom))!important}
+  .bfr-dashboard .premium-sidebar>.premium-logo,.bfr-dashboard .premium-sidebar>.premium-menu,.bfr-dashboard .premium-sidebar>.premium-sidebar-foot{flex-shrink:0}
+  .bfr-dashboard .premium-sidebar>.premium-menu{min-height:0;align-items:flex-start}
+  .bfr-dashboard.pay-app.pay-premium .premium-sidebar .premium-menu a{box-sizing:border-box!important;width:100%!important;max-width:208px!important;min-width:0;min-height:44px!important}
+  .bfr-dashboard .premium-sidebar>.premium-menu{flex:none;overflow:visible!important}
+  .bfr-dashboard .premium-sidebar>.premium-logo{margin-right:30px}
+  .bfr-dashboard .premium-sidebar .premium-sidebar-foot{padding-top:18px!important}
+  .bfr-dashboard .bfr-eu-backdrop:not([hidden]){display:block;touch-action:none}
+  .bfr-dashboard .bfr-environment-dock-control{flex:1 1 100%!important;width:100%;margin-left:0!important}
+  .bfr-dashboard .bfr-environment-dock .premium-env{width:100%;flex-wrap:wrap;justify-content:space-between}
+  .bfr-dashboard .bfr-environment-dock .premium-env-select{min-width:0;flex:1}
+  .bfr-dashboard .bfr-environment-dock select{max-width:100%}
+  .bfr-dashboard .premium-dialog,.bfr-dashboard .rc2-modal{max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+}

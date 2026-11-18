@@ -1012,3 +1012,262 @@ msgstr "o usa tu cuenta"
 msgid "recent movements"
 msgstr "movimientos recientes"
 
+
+msgid "Technologies for builders"
+msgstr "Tecnologías para crear"
+
+msgid "A world of tools. One place to discover."
+msgstr "Un mundo de herramientas. Un lugar para descubrir."
+
+msgid "Explore the technologies behind the software world."
+msgstr "Explora las tecnologías del mundo del software."
+
+msgid "Pause technology animation"
+msgstr "Pausar animación de tecnologías"
+
+msgid "Start technology animation"
+msgstr "Iniciar animación de tecnologías"
+
+msgid "DISCOVER"
+msgstr "DESCUBRE"
+
+msgid "Discover tools for your next move"
+msgstr "Descubre herramientas para tu próximo paso"
+
+msgid "Explore new tools"
+msgstr "Explora nuevas herramientas"
+
+msgid "Your software. Your private purchase access."
+msgstr "Tu software. Tu acceso privado a las compras."
+
+msgid "Your purchases"
+msgstr "Tus compras"
+
+msgid "Build something useful. Share it with the world."
+msgstr "Crea algo útil. Compártelo con el mundo."
+
+msgid "For creators"
+msgstr "Para creadores"
+
+msgid "My purchases"
+msgstr "Mis compras"
+
+msgid "Pause announcements"
+msgstr "Pausar anuncios"
+
+msgid "Start announcements"
+msgstr "Iniciar anuncios"
+
+msgid "Quick links"
+msgstr "Enlaces rápidos"
+
+msgid "Open navigation"
+msgstr "Abrir navegación"
+
+msgid "Close navigation"
+msgstr "Cerrar navegación"
+
+msgid "BCH signing wallet"
+msgstr "Cartera de firma BCH"
+
+msgid "Unavailable for this account"
+msgstr "No disponible para esta cuenta"
+
+msgid "Not connected · BCH only"
+msgstr "Sin conexión · solo BCH"
+
+# Organization overview dashboard.
+
+msgid "A separate space for each business"
+msgstr "Un espacio separado para cada negocio"
+
+msgid "Admin"
+msgstr "Administrador"
+
+msgid "Build your next space"
+msgstr "Crea tu próximo espacio"
+
+msgid "Catalog"
+msgstr "Catálogo"
+
+msgid "Choose a space to manage payments, software and your team."
+msgstr "Elige un espacio para gestionar pagos, software y tu equipo."
+
+msgid "Create an organization, connect your provider and keep every operation in view."
+msgstr "Crea una organización, conecta tu proveedor y sigue cada operación."
+
+msgid "Create organization"
+msgstr "Crear organización"
+
+msgid "Explore software"
+msgstr "Explorar software"
+
+msgid "Find an organization"
+msgstr "Buscar organización"
+
+msgid "Independent software. Direct payments."
+msgstr "Software independiente. Pagos directos."
+
+msgid "Keep each business organized in its own workspace."
+msgstr "Mantén cada negocio organizado en su propio espacio."
+
+msgid "Manage organization"
+msgstr "Gestionar organización"
+
+msgid "My software"
+msgstr "Mi software"
+
+msgid "My workspace"
+msgstr "Mi espacio de trabajo"
+
+msgid "No organizations match your search."
+msgstr "Ninguna organización coincide con tu búsqueda."
+
+msgid "One clear overview."
+msgstr "Una visión general clara."
+
+msgid "Open wallet"
+msgstr "Abrir billetera"
+
+msgid "Operator"
+msgstr "Operador"
+
+msgid "Organizations"
+msgstr "Organizaciones"
+
+msgid "Organizations found:"
+msgstr "Organizaciones encontradas:"
+
+msgid "Owner"
+msgstr "Propietario"
+
+msgid "Quick access"
+msgstr "Acceso rápido"
+
+msgid "Software"
+msgstr "Software"
+
+msgid "Team"
+msgstr "Equipo"
+
+msgid "Viewer"
+msgstr "Lector"
+
+msgid "Wallets"
+msgstr "Billeteras"
+
+msgid "Workspace"
+msgstr "Espacio de trabajo"
+
+msgid "Workspace navigation"
+msgstr "Navegación del espacio de trabajo"
+
+msgid "YOUR WORKSPACE"
+msgstr "TU ESPACIO DE TRABAJO"
+
+msgid "Your first space starts here."
+msgstr "Tu primer espacio comienza aquí."
+
+msgid "Your organizations"
+msgstr "Tus organizaciones"
+
+msgid "Your organizations."
+msgstr "Tus organizaciones."
+
+msgid "Your payments, products and team."
+msgstr "Tus pagos, productos y equipo."
+
+# BCH Flow independent privacy preferences and public policies.
+
+msgid "Allow optional media"
+msgstr "Permitir contenido opcional"
+
+msgid "Always active"
+msgstr "Siempre activo"
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "Customize"
+msgstr "Personalizar"
+
+msgid "Essential only"
+msgstr "Solo esenciales"
+
+msgid "Essential storage"
+msgstr "Almacenamiento esencial"
+
+msgid "External media"
+msgstr "Contenido externo"
+
+msgid "Policies and privacy"
+msgstr "Políticas y privacidad"
+
+msgid "Privacy"
+msgstr "Privacidad"
+
+msgid "Privacy choices"
+msgstr "Preferencias de privacidad"
+
+msgid "Privacy preferences saved."
+msgstr "Preferencias de privacidad guardadas."
+
+msgid "Read our cookie policy"
+msgstr "Lee nuestra política de cookies"
+
+msgid "Save choices"
+msgstr "Guardar preferencias"
+
+msgid "Terms of use"
+msgstr "Términos de uso"
+
+msgid "Your choices"
+msgstr "Tus opciones"
+
+msgid "Your privacy, your choice."
+msgstr "Tu privacidad, tu elección."
+
+msgid "Your browser could not save this choice. It applies to this page only."
+msgstr "Tu navegador no pudo guardar esta elección. Solo se aplica a esta página."
+
+msgid "You can change your choice at any time. Optional media is off by default. Refusing it does not prevent purchases or payments."
+msgstr "Puedes cambiar tu elección en cualquier momento. El contenido opcional está desactivado por defecto. Rechazarlo no impide compras ni pagos."
+
+msgid "Required for security, sign-in, purchase access, language selection and remembering your privacy choice."
+msgstr "Necesario para seguridad, inicio de sesión, acceso a compras, selección de idioma y recordar tu elección de privacidad."
+
+msgid "Essential storage remains active. Optional external media is disabled without JavaScript."
+msgstr "El almacenamiento esencial permanece activo. El contenido externo opcional está desactivado sin JavaScript."
+
+msgid "BCH Flow uses essential storage for security, sessions and purchases. Optional external media stays blocked until you allow it."
+msgstr "BCH Flow usa almacenamiento esencial para seguridad, sesiones y compras. El contenido externo opcional permanece bloqueado hasta que lo permitas."
+
+msgid "Allows optional content hosted by third parties. Those providers may receive your IP address and use their own cookies. Videos hosted directly by BCH Flow do not need this permission."
+msgstr "Permite contenido opcional alojado por terceros. Estos proveedores pueden recibir tu dirección IP y usar sus propias cookies. Los vídeos alojados directamente por BCH Flow no necesitan este permiso."
+
+msgid "BCH Flow processes account details, organization records, purchase email addresses and payment information to provide access to its services. Payment providers process information needed to complete and verify transactions."
+msgstr "BCH Flow procesa datos de cuenta, registros de organizaciones, correos de compra e información de pago para prestar sus servicios. Los proveedores de pago procesan los datos necesarios para completar y verificar transacciones."
+
+msgid "Privacy choices are stored in this browser for up to 180 days. They are separate from other apps on this site. No account, IP address or consent history is sent to a server by this preference component."
+msgstr "Las preferencias de privacidad se guardan en este navegador hasta 180 días, separadas de otras aplicaciones del sitio. Este componente no envía cuentas, direcciones IP ni historial de consentimiento al servidor."
+
+msgid "Use Privacy choices at the bottom of any BCH Flow page to review or withdraw permission for optional external media. This does not delete purchase or payment records."
+msgstr "Usa Preferencias de privacidad al pie de cualquier página de BCH Flow para revisar o retirar el permiso de contenido externo opcional. Esto no elimina registros de compras ni pagos."
+
+msgid "Sessions, security tokens, language selection and purchase access may use cookies or browser storage. BCH Flow also saves your privacy choice in local storage. These functions do not depend on optional media permission."
+msgstr "Las sesiones, tokens de seguridad, selección de idioma y acceso a compras pueden usar cookies o almacenamiento del navegador. BCH Flow también guarda tu preferencia de privacidad en el almacenamiento local. Estas funciones no dependen del permiso de contenido opcional."
+
+msgid "External media is optional and disabled by default. Enabling it permits integrated third-party players to load. You can withdraw permission at any time. Content hosted directly by BCH Flow does not require external media permission."
+msgstr "El contenido externo es opcional y está desactivado por defecto. Activarlo permite cargar reproductores de terceros integrados. Puedes retirar el permiso en cualquier momento. El contenido alojado directamente por BCH Flow no requiere este permiso."
+
+msgid "This preference component does not add analytics or advertising trackers. Clearing browser storage removes your saved choice."
+msgstr "Este componente no añade rastreadores de análisis ni publicidad. Borrar el almacenamiento del navegador elimina tu elección guardada."
+
+msgid "Review the software description, requirements, price, license and seller support before purchasing. Buying a downloadable file does not include installation, hosting or updates unless the seller explicitly includes them."
+msgstr "Revisa descripción, requisitos, precio, licencia y soporte del vendedor antes de comprar. Comprar un archivo descargable no incluye instalación, alojamiento ni actualizaciones salvo indicación expresa del vendedor."
+
+msgid "Download access depends on the order and verified payment status. Keep private purchase links secure and check the currency, network, amount and destination before paying."
+msgstr "El acceso a la descarga depende del pedido y de la verificación del pago. Protege los enlaces privados de compra y comprueba moneda, red, importe y destino antes de pagar."
+
+msgid "Seller licenses, support and refund conditions apply alongside applicable consumer law. Privacy choices do not constitute acceptance of a software license or authorization for a payment."
+msgstr "Las licencias, el soporte y las condiciones de reembolso del vendedor se aplican junto con la legislación de consumo vigente. Las preferencias de privacidad no constituyen aceptación de una licencia ni autorización de pago."

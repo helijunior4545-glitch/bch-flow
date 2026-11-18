@@ -28,5 +28,5 @@ def enter(request):
     token, _session = create_session(identity)
     response = redirect(reverse('bch_flow:financial_home', args=[organization.pk]) + '?asset=BCH&environment=live')
     revoke_session(request.COOKIES.get(COOKIE_NAME))
-    set_session_cookie(response, token)
+    set_session_cookie(response, token, request=request)
     return response

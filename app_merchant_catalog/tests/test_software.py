@@ -139,6 +139,34 @@ class SoftwareTests(TestCase):
         self.assertEqual(self.buy('BRL', key=key).pk,order.pk)
         self.assertEqual(FlowRequest.objects.count(),1)
 
+    def test_preparing_order_explains_missing_qr_and_keeps_retry(self):
+        order = self.buy('BTC')
+        response = self.client.get(self.url('software_order', order.pk))
+        self.assertContains(response, 'No payment address or QR code is available.')
+        self.assertContains(response, 'Retry payment setup')
+        self.assertNotContains(response, 'class="sw-payment-qr"')
+        self.assertEqual(response.context['payment_payload'], '')
+
+    def test_prepared_order_shows_real_payment_qr_and_remaining_amount(self):
+        from app_bch_flow.financial.views import payment_payload_for
+        order = self.buy('BTC')
+        order.payment.address = '1BoatSLRHtKNngkdXEeobR76b53LETtpyT'
+        order.payment.save(update_fields=['address'])
+        response = self.client.get(self.url('software_order', order.pk))
+        self.assertContains(response, 'class="sw-payment-qr"')
+        self.assertEqual(response.context['payment_payload'],
+            'bitcoin:1BoatSLRHtKNngkdXEeobR76b53LETtpyT?amount=0.00001000')
+        qr = self.client.get(response.context['payment_qr_url'])
+        self.assertEqual(qr.status_code, 200)
+        self.assertEqual(qr['Content-Type'], 'image/svg+xml')
+        self.assertNotContains(response, 'Retry payment setup')
+        self.credit(order, amount=500)
+        self.assertTrue(payment_payload_for(order.payment).endswith('amount=0.00000500'))
+        self.credit(order, amount=500)
+        paid = self.client.get(self.url('software_order', order.pk))
+        self.assertNotContains(paid, 'class="sw-payment-qr"')
+        self.assertEqual(paid.context['state'], 'ready')
+
     def test_authenticated_download_and_signed_link(self):
         order=self.buy()
         self.credit(order)
@@ -211,6 +239,20 @@ class SoftwareTests(TestCase):
         response=self.client.post(self.url('software_offer',self.org.pk,release.pk),{'account':self.accounts['BRL'].pk,'price':'12.34'})
         self.assertEqual(response.status_code,302)
         self.assertEqual(release.offers.get(account__asset='BRL').amount_units,1234)
+
+    def test_storage_failure_is_a_form_error_without_release_or_offer(self):
+        from app_merchant_catalog.software_storage import SoftwareStorageError
+        self.login(self.seller)
+        releases = SoftwareRelease.objects.count()
+        offers = SoftwareOffer.objects.count()
+        with patch.object(SoftwareRelease._meta.get_field('archive').storage, 'save',
+                          side_effect=SoftwareStorageError('The ZIP could not be stored. Please retry or contact support.')):
+            response = self.client.post(self.url('software_publish', self.org.pk, self.product.pk), {
+                'version': '2.0.0', 'archive': archive(), 'requirements': 'Python 3.11',
+                'license_text': 'Personal use', 'account': self.accounts['BTC'].pk, 'price': '0.00001'})
+        self.assertContains(response, 'The ZIP could not be stored.')
+        self.assertEqual(SoftwareRelease.objects.count(), releases)
+        self.assertEqual(SoftwareOffer.objects.count(), offers)
 
     def test_buyer_cannot_publish(self):
         self.assertEqual(self.client.get(self.url('software_publish',self.org.pk,self.product.pk)).status_code,404)
@@ -306,6 +348,12 @@ class SoftwareTests(TestCase):
 
 class ConcurrentSoftwareOrdersTests(TransactionTestCase):
     def test_simultaneous_duplicate_purchases_create_one_order_and_charge(self):
+        self.simultaneous_orders(guest=False)
+
+    def test_simultaneous_guest_purchases_create_one_order_and_charge(self):
+        self.simultaneous_orders(guest=True)
+
+    def simultaneous_orders(self, guest):
         from concurrent.futures import ThreadPoolExecutor
         from threading import Barrier
         from django.db import close_old_connections
@@ -317,12 +365,15 @@ class ConcurrentSoftwareOrdersTests(TransactionTestCase):
             sha256='a'*64,size_bytes=1,requirements='Python',license_text='Personal')
         account=FlowAccount.objects.create(organization=org,asset='BCH',environment='live')
         offer=SoftwareOffer.objects.create(release=release,account=account,seller=seller,amount_units=1000)
+        import secrets
+        guest_token = secrets.token_urlsafe(32)
         barrier=Barrier(2);key=uuid.uuid4()
         def buy(_):
             close_old_connections()
             try:
                 barrier.wait(timeout=10)
-                return order_software(buyer,offer.pk,key).pk
+                return order_software(None if guest else buyer,offer.pk,key,
+                    guest_email='guest@concurrent.invalid',guest_token=guest_token).pk
             finally:
                 close_old_connections()
         with patch('app_bch_flow.financial.service.prepare_request'):

@@ -1,0 +1,22 @@
+{% load i18n %}
+<div class="bch-consent" data-bch-consent data-scope="{% url 'bch_flow:home' %}" data-saved-label="{% trans 'Privacy preferences saved.' %}" data-storage-error="{% trans 'Your browser could not save this choice. It applies to this page only.' %}">
+  <nav class="bch-consent-links" aria-label="{% trans 'Policies and privacy' %}">
+    <a href="{% url 'bch_flow:policy' 'privacy' %}">{% trans 'Privacy' %}</a><a href="{% url 'bch_flow:policy' 'terms' %}">{% trans 'Terms of use' %}</a><a href="{% url 'bch_flow:policy' 'cookies' %}">{% trans 'Cookies' %}</a><button type="button" data-bch-consent-open hidden>{% trans 'Privacy choices' %}</button>
+  </nav>
+  <section class="bch-consent-banner" data-bch-consent-banner aria-labelledby="bch-consent-title" hidden>
+    <div><h2 id="bch-consent-title">{% trans 'Your privacy, your choice.' %}</h2><p>{% trans 'BCH Flow uses essential storage for security, sessions and purchases. Optional external media stays blocked until you allow it.' %} <a href="{% url 'bch_flow:policy' 'cookies' %}">{% trans 'Read our cookie policy' %}</a></p></div>
+    <div class="bch-consent-actions"><button type="button" data-bch-consent-reject>{% trans 'Essential only' %}</button><button type="button" data-bch-consent-open>{% trans 'Customize' %}</button><button type="button" class="bch-consent-primary" data-bch-consent-accept>{% trans 'Allow optional media' %}</button></div>
+  </section>
+  <dialog class="bch-consent-dialog" aria-labelledby="bch-consent-preferences-title">
+    <form method="dialog" data-bch-consent-form>
+      <header><h2 id="bch-consent-preferences-title">{% trans 'Privacy choices' %}</h2><button type="button" data-bch-consent-close aria-label="{% trans 'Close' %}">×</button></header>
+      <p>{% trans 'You can change your choice at any time. Optional media is off by default. Refusing it does not prevent purchases or payments.' %}</p>
+      <div class="bch-consent-category"><strong>{% trans 'Essential storage' %}</strong><span>{% trans 'Always active' %}</span><p>{% trans 'Required for security, sign-in, purchase access, language selection and remembering your privacy choice.' %}</p></div>
+      <label class="bch-consent-category"><span><strong>{% trans 'External media' %}</strong><input type="checkbox" name="external_media"></span><span>{% trans 'Allows optional content hosted by third parties. Those providers may receive your IP address and use their own cookies. Videos hosted directly by BCH Flow do not need this permission.' %}</span></label>
+      <p><a href="{% url 'bch_flow:policy' 'privacy' %}">{% trans 'Privacy' %}</a> · <a href="{% url 'bch_flow:policy' 'cookies' %}">{% trans 'Cookies' %}</a></p>
+      <div class="bch-consent-actions"><button type="button" data-bch-consent-reject>{% trans 'Essential only' %}</button><button type="submit" class="bch-consent-primary">{% trans 'Save choices' %}</button></div>
+    </form>
+  </dialog>
+  <p class="bch-consent-status" role="status" aria-live="polite" data-bch-consent-status></p>
+  <noscript><p class="bch-consent-noscript">{% trans 'Essential storage remains active. Optional external media is disabled without JavaScript.' %}</p></noscript>
+</div>

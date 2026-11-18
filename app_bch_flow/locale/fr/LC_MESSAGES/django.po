@@ -1028,3 +1028,262 @@ msgstr "ou utilisez votre compte"
 msgid "recent movements"
 msgstr "mouvements récents"
 
+
+msgid "Technologies for builders"
+msgstr "Des technologies pour créer"
+
+msgid "A world of tools. One place to discover."
+msgstr "Un monde d’outils. Un lieu pour les découvrir."
+
+msgid "Explore the technologies behind the software world."
+msgstr "Découvrez les technologies de l’univers du logiciel."
+
+msgid "Pause technology animation"
+msgstr "Suspendre l’animation des technologies"
+
+msgid "Start technology animation"
+msgstr "Démarrer l’animation des technologies"
+
+msgid "DISCOVER"
+msgstr "DÉCOUVRIR"
+
+msgid "Discover tools for your next move"
+msgstr "Découvrez des outils pour votre prochaine étape"
+
+msgid "Explore new tools"
+msgstr "Explorez de nouveaux outils"
+
+msgid "Your software. Your private purchase access."
+msgstr "Vos logiciels. Votre accès privé aux achats."
+
+msgid "Your purchases"
+msgstr "Vos achats"
+
+msgid "Build something useful. Share it with the world."
+msgstr "Créez quelque chose d’utile. Partagez-le avec le monde."
+
+msgid "For creators"
+msgstr "Pour les créateurs"
+
+msgid "My purchases"
+msgstr "Mes achats"
+
+msgid "Pause announcements"
+msgstr "Suspendre les annonces"
+
+msgid "Start announcements"
+msgstr "Démarrer les annonces"
+
+msgid "Quick links"
+msgstr "Liens rapides"
+
+msgid "Open navigation"
+msgstr "Ouvrir la navigation"
+
+msgid "Close navigation"
+msgstr "Fermer la navigation"
+
+msgid "BCH signing wallet"
+msgstr "Portefeuille de signature BCH"
+
+msgid "Unavailable for this account"
+msgstr "Indisponible pour ce compte"
+
+msgid "Not connected · BCH only"
+msgstr "Non connecté · BCH uniquement"
+
+# Organization overview dashboard.
+
+msgid "A separate space for each business"
+msgstr "Un espace distinct pour chaque activité"
+
+msgid "Admin"
+msgstr "Administrateur"
+
+msgid "Build your next space"
+msgstr "Créez votre prochain espace"
+
+msgid "Catalog"
+msgstr "Catalogue"
+
+msgid "Choose a space to manage payments, software and your team."
+msgstr "Choisissez un espace pour gérer les paiements, les logiciels et votre équipe."
+
+msgid "Create an organization, connect your provider and keep every operation in view."
+msgstr "Créez une organisation, connectez votre prestataire et suivez chaque opération."
+
+msgid "Create organization"
+msgstr "Créer une organisation"
+
+msgid "Explore software"
+msgstr "Explorer les logiciels"
+
+msgid "Find an organization"
+msgstr "Rechercher une organisation"
+
+msgid "Independent software. Direct payments."
+msgstr "Logiciels indépendants. Paiements directs."
+
+msgid "Keep each business organized in its own workspace."
+msgstr "Organisez chaque activité dans son propre espace de travail."
+
+msgid "Manage organization"
+msgstr "Gérer l’organisation"
+
+msgid "My software"
+msgstr "Mes logiciels"
+
+msgid "My workspace"
+msgstr "Mon espace de travail"
+
+msgid "No organizations match your search."
+msgstr "Aucune organisation ne correspond à votre recherche."
+
+msgid "One clear overview."
+msgstr "Une vue d’ensemble claire."
+
+msgid "Open wallet"
+msgstr "Ouvrir le portefeuille"
+
+msgid "Operator"
+msgstr "Opérateur"
+
+msgid "Organizations"
+msgstr "Organisations"
+
+msgid "Organizations found:"
+msgstr "Organisations trouvées :"
+
+msgid "Owner"
+msgstr "Propriétaire"
+
+msgid "Quick access"
+msgstr "Accès rapide"
+
+msgid "Software"
+msgstr "Logiciels"
+
+msgid "Team"
+msgstr "Équipe"
+
+msgid "Viewer"
+msgstr "Lecteur"
+
+msgid "Wallets"
+msgstr "Portefeuilles"
+
+msgid "Workspace"
+msgstr "Espace de travail"
+
+msgid "Workspace navigation"
+msgstr "Navigation de l’espace de travail"
+
+msgid "YOUR WORKSPACE"
+msgstr "VOTRE ESPACE DE TRAVAIL"
+
+msgid "Your first space starts here."
+msgstr "Votre premier espace commence ici."
+
+msgid "Your organizations"
+msgstr "Vos organisations"
+
+msgid "Your organizations."
+msgstr "Vos organisations."
+
+msgid "Your payments, products and team."
+msgstr "Vos paiements, produits et équipe."
+
+# BCH Flow independent privacy preferences and public policies.
+
+msgid "Allow optional media"
+msgstr "Autoriser les médias facultatifs"
+
+msgid "Always active"
+msgstr "Toujours actif"
+
+msgid "Cookies"
+msgstr "Cookies"
+
+msgid "Customize"
+msgstr "Personnaliser"
+
+msgid "Essential only"
+msgstr "Essentiels uniquement"
+
+msgid "Essential storage"
+msgstr "Stockage essentiel"
+
+msgid "External media"
+msgstr "Médias externes"
+
+msgid "Policies and privacy"
+msgstr "Politiques et confidentialité"
+
+msgid "Privacy"
+msgstr "Confidentialité"
+
+msgid "Privacy choices"
+msgstr "Choix de confidentialité"
+
+msgid "Privacy preferences saved."
+msgstr "Préférences de confidentialité enregistrées."
+
+msgid "Read our cookie policy"
+msgstr "Lire notre politique relative aux cookies"
+
+msgid "Save choices"
+msgstr "Enregistrer les choix"
+
+msgid "Terms of use"
+msgstr "Conditions d’utilisation"
+
+msgid "Your choices"
+msgstr "Vos choix"
+
+msgid "Your privacy, your choice."
+msgstr "Votre confidentialité, votre choix."
+
+msgid "Your browser could not save this choice. It applies to this page only."
+msgstr "Votre navigateur n’a pas pu enregistrer ce choix. Il s’applique uniquement à cette page."
+
+msgid "You can change your choice at any time. Optional media is off by default. Refusing it does not prevent purchases or payments."
+msgstr "Vous pouvez modifier votre choix à tout moment. Les médias facultatifs sont désactivés par défaut. Leur refus n’empêche ni achats ni paiements."
+
+msgid "Required for security, sign-in, purchase access, language selection and remembering your privacy choice."
+msgstr "Nécessaire pour la sécurité, la connexion, l’accès aux achats, le choix de langue et la mémorisation de votre choix de confidentialité."
+
+msgid "Essential storage remains active. Optional external media is disabled without JavaScript."
+msgstr "Le stockage essentiel reste actif. Les médias externes facultatifs sont désactivés sans JavaScript."
+
+msgid "BCH Flow uses essential storage for security, sessions and purchases. Optional external media stays blocked until you allow it."
+msgstr "BCH Flow utilise un stockage essentiel pour la sécurité, les sessions et les achats. Les médias externes facultatifs restent bloqués sans votre autorisation."
+
+msgid "Allows optional content hosted by third parties. Those providers may receive your IP address and use their own cookies. Videos hosted directly by BCH Flow do not need this permission."
+msgstr "Autorise le contenu facultatif hébergé par des tiers. Ces prestataires peuvent recevoir votre adresse IP et utiliser leurs propres cookies. Les vidéos hébergées directement par BCH Flow ne nécessitent pas cette autorisation."
+
+msgid "BCH Flow processes account details, organization records, purchase email addresses and payment information to provide access to its services. Payment providers process information needed to complete and verify transactions."
+msgstr "BCH Flow traite les données de compte, les données des organisations, les adresses e-mail d’achat et les informations de paiement pour fournir ses services. Les prestataires de paiement traitent les données nécessaires à la réalisation et à la vérification des transactions."
+
+msgid "Privacy choices are stored in this browser for up to 180 days. They are separate from other apps on this site. No account, IP address or consent history is sent to a server by this preference component."
+msgstr "Les choix de confidentialité sont conservés dans ce navigateur pendant 180 jours au maximum, séparément des autres applications du site. Ce composant n’envoie ni compte, ni adresse IP, ni historique de consentement à un serveur."
+
+msgid "Use Privacy choices at the bottom of any BCH Flow page to review or withdraw permission for optional external media. This does not delete purchase or payment records."
+msgstr "Utilisez Choix de confidentialité en bas de toute page BCH Flow pour consulter ou retirer l’autorisation des médias externes facultatifs. Cela ne supprime pas les données d’achat ou de paiement."
+
+msgid "Sessions, security tokens, language selection and purchase access may use cookies or browser storage. BCH Flow also saves your privacy choice in local storage. These functions do not depend on optional media permission."
+msgstr "Les sessions, les jetons de sécurité, le choix de langue et l’accès aux achats peuvent utiliser des cookies ou le stockage du navigateur. BCH Flow y enregistre aussi votre choix de confidentialité. Ces fonctions ne dépendent pas de l’autorisation des médias facultatifs."
+
+msgid "External media is optional and disabled by default. Enabling it permits integrated third-party players to load. You can withdraw permission at any time. Content hosted directly by BCH Flow does not require external media permission."
+msgstr "Les médias externes sont facultatifs et désactivés par défaut. Leur activation autorise le chargement des lecteurs tiers intégrés. Vous pouvez retirer cette autorisation à tout moment. Le contenu hébergé directement par BCH Flow n’en a pas besoin."
+
+msgid "This preference component does not add analytics or advertising trackers. Clearing browser storage removes your saved choice."
+msgstr "Ce composant n’ajoute aucun traceur d’analyse ou de publicité. Effacer le stockage du navigateur supprime votre choix enregistré."
+
+msgid "Review the software description, requirements, price, license and seller support before purchasing. Buying a downloadable file does not include installation, hosting or updates unless the seller explicitly includes them."
+msgstr "Consultez la description, les prérequis, le prix, la licence et l’assistance du vendeur avant l’achat. Un fichier téléchargeable n’inclut ni installation, ni hébergement, ni mises à jour, sauf mention expresse du vendeur."
+
+msgid "Download access depends on the order and verified payment status. Keep private purchase links secure and check the currency, network, amount and destination before paying."
+msgstr "L’accès au téléchargement dépend de la commande et de la vérification du paiement. Protégez vos liens d’achat privés et vérifiez la devise, le réseau, le montant et la destination avant de payer."
+
+msgid "Seller licenses, support and refund conditions apply alongside applicable consumer law. Privacy choices do not constitute acceptance of a software license or authorization for a payment."
+msgstr "Les licences, l’assistance et les conditions de remboursement du vendeur s’appliquent avec le droit de la consommation en vigueur. Les choix de confidentialité ne valent ni acceptation d’une licence ni autorisation de paiement."

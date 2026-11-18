@@ -1,0 +1,10 @@
+/* Storefront card media: one owner for geometry and edge-to-edge coverage. */
+.sw-showcase .sw-preview{position:relative;min-width:0;height:116px;overflow:hidden;border-radius:9px;background:#f1f2ef}
+.sw-preview .sw-product-visual{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);width:100%;height:100%;min-width:0;overflow:hidden;text-decoration:none}
+.sw-preview .sw-product-visual img,.sw-preview-video{display:block;width:100%;height:100%;min-width:0;min-height:0;object-fit:cover;object-position:center;transform:none}
+.sw-preview-video{opacity:0;position:absolute;inset:0;pointer-events:none}
+.sw-preview-video[data-ready]{opacity:1}
+.sw-preview-toggle{position:absolute;inset:auto 8px 8px auto;z-index:1;background:#14242deb;color:#fff;border:1px solid #ffffff70;border-radius:7px;min-height:44px;padding:7px 10px;font-size:11px}
+.sw-preview-toggle:hover{background:#263e48}
+.sw-preview-toggle:focus-visible{outline:3px solid #ff9800;outline-offset:2px}
+@media(min-width:620px){.sw-showcase .sw-preview{height:132px}}

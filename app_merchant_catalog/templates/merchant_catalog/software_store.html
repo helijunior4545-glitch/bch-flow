@@ -1,28 +1,49 @@
-{% extends 'merchant_catalog/software_base.html' %}{% load i18n %}
+{% extends 'merchant_catalog/software_base.html' %}{% load static i18n %}
+{% block content_styles %}{{ block.super }}<link rel="stylesheet" href="{% static 'merchant_catalog/product-media.css' %}?v=2">{% endblock %}
 {% block software_content %}
-<section class="sw-hero sw-store-hero" aria-labelledby="software-title">
-  <div class="sw-hero-copy"><p class="sw-eyebrow"><span class="sw-brand-dot" aria-hidden="true"></span> {% trans 'TOOLS FOR BUILDERS' %}</p>
-    <h1 id="software-title">{% trans 'Less setup.' %}<br><span>{% trans 'More building.' %}</span></h1>
-    <p>{% trans 'Purpose-built software. Source code, documentation and a clear license, delivered after payment confirmation.' %}</p>
-    <a class="sw-button" href="#software-catalog">{% trans 'Explore software' %}<span aria-hidden="true">↓</span></a>
-    <div class="sw-chips" aria-label="{% trans 'Payment methods offered by sellers' %}"><span>Bitcoin</span><span>Bitcoin Cash</span><span>Pix</span></div>
+<section class="sw-banner sw-store-banner" aria-labelledby="software-title">
+  <img class="sw-banner-art" src="{% static 'merchant_catalog/images/software-hero.webp' %}" alt="" width="2172" height="724" fetchpriority="high">
+  <div class="sw-banner-copy"><p class="sw-eyebrow">BCH FLOW / {% trans 'INDEPENDENT SOFTWARE' %}</p>
+    <h1 id="software-title">{% trans 'Great software.' %}<br>{% trans 'Your next move.' %}</h1>
+    <p>{% trans 'Discover practical tools. Pay directly. Build something great.' %}</p>
+    <a class="sw-button" href="#software-catalog">{% trans 'Explore software' %}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a>
+    {% include 'merchant_catalog/software_currencies.html' %}
   </div>
-  <aside class="sw-delivery-preview" aria-label="{% trans 'What you receive' %}">
-    <div class="sw-preview-head"><span class="sw-preview-mark" aria-hidden="true">&lt;/&gt;</span><span>BCH FLOW <small>SOFTWARE</small></span><span class="sw-preview-format">.zip</span></div>
-    <p class="sw-eyebrow">{% trans 'What you receive' %}</p><h2>{% trans 'Built to be yours.' %}</h2>
-    <ul class="sw-package-list"><li><span aria-hidden="true">01</span><strong>{% trans 'Source code' %}</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li><li><span aria-hidden="true">02</span><strong>README</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li><li><span aria-hidden="true">03</span><strong>{% trans 'License' %}</strong><span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></li></ul>
-    <p class="sw-preview-note"><span aria-hidden="true"><i data-lucide="corner-down-right"></i></span> {% trans 'Delivered after payment confirmation.' %}</p>
-  </aside>
 </section>
-<section class="sw-catalog-section" id="software-catalog" aria-labelledby="catalog-title">
-  <header class="sw-section-heading"><div><p class="sw-eyebrow">{% trans 'THE COLLECTION' %}</p><h2 id="catalog-title">{% trans 'Software for your next move.' %}</h2></div><span class="sw-catalog-count">{{ items|length }} {% trans 'available' %}</span></header>
-  <div class="sw-grid">{% for item in items %}
-    <article class="sw-card"><div class="sw-card-top"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><span class="sw-badge">v{{ item.release.version }}</span></div>
-      <p class="sw-eyebrow">{{ item.product.organization.name }}</p><h2><a href="{% url 'bch_flow:software_product' item.product.pk %}">{{ item.product.name }}</a></h2><p>{{ item.product.description|truncatechars:160 }}</p>
-      <div class="sw-card-delivery"><span>{% trans 'Source code' %}</span><span>README</span><span>{% trans 'License' %}</span></div>
-      <div class="sw-offers">{% for offer in item.offers %}<span>{{ offer.price_label }} {{ offer.method_label }}</span>{% endfor %}</div>
-      <a class="sw-button sw-secondary" href="{% url 'bch_flow:software_product' item.product.pk %}">{% trans 'View software' %} <span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></a>
-    </article>
-  {% empty %}<article class="sw-card sw-empty"><span class="sw-code" aria-hidden="true">&lt;/&gt;</span><div><p class="sw-eyebrow">{% trans 'THE COLLECTION' %}</p><h2>{% trans 'The next useful tool starts here.' %}</h2><p>{% trans 'No software is published yet. Sellers can publish a ZIP release from their product catalog after configuring a receiving account.' %}</p><a class="sw-button" href="{% url 'bch_flow:dashboard' %}">{% trans 'Open workspace' %}<span aria-hidden="true"><i data-lucide="arrow-up-right"></i></span></a></div></article>{% endfor %}</div>
+{% include 'app_bch_flow/components/technology_ribbon.html' %}
+<section class="sw-catalog-section sw-showcase" id="software-catalog" aria-labelledby="catalog-title" data-showcase>
+  <header class="sw-section-heading"><div><p class="sw-eyebrow">{% trans 'THE COLLECTION' %}</p><h2 id="catalog-title">{% trans 'Find your next tool.' %}</h2><p>{% trans 'Independent software, ready to explore.' %}</p></div>
+    <label class="sw-search" data-enhanced hidden><i data-lucide="search" aria-hidden="true"></i><span class="sw-sr-only">{% trans 'Search software' %}</span><input type="search" placeholder="{% trans 'Search software' %}" data-software-search autocomplete="off"></label>
+  </header>
+  <div class="sw-catalog-toolbar"><div class="sw-filters" role="group" aria-label="{% trans 'Filter by payment method' %}" data-enhanced hidden>
+    <button type="button" data-filter="all" aria-pressed="true">{% trans 'All software' %}</button><button type="button" data-filter="BTC" aria-pressed="false">BTC</button><button type="button" data-filter="BCH" aria-pressed="false">BCH</button><button type="button" data-filter="BRL" aria-pressed="false">Pix</button>
+  </div><span class="sw-result-count"><strong data-result-count>{{ items|length }}</strong> {% trans 'available' %}</span></div>
+  <div class="sw-carousel" data-software-carousel role="region" aria-label="{% trans 'Software collection' %}" tabindex="0">
+    <div class="sw-grid sw-store-grid" data-software-track>{% for item in items %}
+      <article class="sw-card sw-product-card" data-software-card data-software-search-text="{{ item.product.name }} {{ item.product.organization.name }} {{ item.product.description }}" data-methods="{% for offer in item.offers %}{{ offer.account.asset }} {% endfor %}">
+        <div class="sw-product-identity"><span class="sw-app-symbol sw-app-color-{{ forloop.counter0|divisibleby:2|yesno:'teal,blue' }}" aria-hidden="true"><i data-lucide="{% cycle 'app-window' 'code-xml' 'notebook-pen' 'table-2' 'panels-top-left' 'activity' %}"></i></span><div><h3><a href="{% url 'bch_flow:software_product' item.product.pk %}" aria-label="{{ item.product.name }}" title="{{ item.product.name }}">{{ item.product.name|truncatechars:62 }}</a></h3><p class="sw-product-meta"><span title="{{ item.product.organization.name }}">{% trans 'By' %} {{ item.product.organization.name|truncatechars:38 }}</span><span class="sw-release" title="{% trans 'Version' %} {{ item.release.version }}">v{{ item.release.version|truncatechars:16 }}</span></p></div></div>
+        <div class="sw-preview"><a class="sw-product-visual" href="{% url 'bch_flow:software_product' item.product.pk %}" tabindex="-1" aria-hidden="true">
+          {% if item.product.image %}<img src="{% url 'bch_flow:software_product_image' item.product.pk %}?v={{ item.product.updated_at|date:'U.u' }}" alt="" loading="lazy" decoding="async" width="640" height="400">{% endif %}
+          <span class="sw-image-placeholder" {% if item.product.image %}hidden{% endif %}><i data-lucide="app-window" aria-hidden="true"></i><span>{{ item.product.name }}</span></span>
+        </a>
+        {% if item.product.video %}<video class="sw-preview-video" hidden data-preview-video data-src="{% url 'bch_flow:software_product_video' item.product.pk %}?v={{ item.product.updated_at|date:'U.u' }}" muted loop playsinline preload="none" aria-label="{{ item.product.name }}"></video><button type="button" class="sw-preview-toggle" data-preview-toggle data-play-label="{% trans 'Play preview' %}" data-pause-label="{% trans 'Pause preview' %}" aria-pressed="false" hidden>{% trans 'Play preview' %}</button>{% endif %}
+        </div>
+        <p class="sw-product-summary" title="{{ item.product.description }}">{{ item.product.description|truncatechars:110 }}</p>
+        <p class="sw-card-included"><i data-lucide="code-xml" aria-hidden="true"></i>{% trans 'Source code included' %}</p>
+        <div class="sw-product-bottom">
+          <div class="sw-price-list">{% for offer in item.offers %}<span><span class="sw-coin sw-coin-{{ offer.account.asset|lower }}" aria-hidden="true">{% include 'app_bch_flow/components/asset_symbol.html' with asset=offer.account.asset %}</span><strong>{{ offer.price_label }} <small>{{ offer.method_label }}</small></strong></span>{% endfor %}</div>
+          <a class="sw-button sw-download-button" href="{% url 'bch_flow:software_product' item.product.pk %}#checkout-title" aria-describedby="software-payment-note-{{ item.product.pk }}"><i data-lucide="download" aria-hidden="true"></i>{% trans 'Download' %}<span class="sw-sr-only">: {{ item.product.name }}</span></a>
+          <p class="sw-download-note" id="software-payment-note-{{ item.product.pk }}"><i data-lucide="lock-keyhole" aria-hidden="true"></i>{% trans 'Available after payment confirmation' %}</p>
+        </div>
+      </article>
+    {% empty %}<article class="sw-card sw-empty"><span class="sw-app-symbol" aria-hidden="true"><i data-lucide="package-open"></i></span><div><h3>{% trans 'The next useful tool starts here.' %}</h3><p>{% trans 'No software is published yet. Sellers can publish a ZIP release from their product catalog after configuring a receiving account.' %}</p><a class="sw-button" href="{% url 'bch_flow:dashboard' %}">{% trans 'Open workspace' %}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></article>{% endfor %}</div>
+  </div>
+  <p class="sw-no-results" data-no-results hidden>{% trans 'No software matches your search. Try another name or payment method.' %}</p>
+  <div class="sw-carousel-controls" data-carousel-controls hidden><div class="sw-page-dots" data-page-dots role="group" aria-label="{% trans 'Choose a collection page' %}"></div><div class="sw-carousel-actions"><button type="button" data-carousel-prev aria-label="{% trans 'Previous software' %}"><i data-lucide="arrow-left" aria-hidden="true"></i></button><span data-carousel-position aria-live="polite" aria-atomic="true"></span><button type="button" data-carousel-next aria-label="{% trans 'Next software' %}"><i data-lucide="arrow-right" aria-hidden="true"></i></button><button type="button" data-carousel-play aria-label="{% trans 'Automatic rotation' %}" aria-pressed="false" data-pause-label="{% trans 'Pause automatic rotation' %}" data-play-label="{% trans 'Start automatic rotation' %}"><i data-lucide="play" aria-hidden="true"></i></button></div></div>
+  <span class="sw-sr-only" data-result-status role="status" aria-live="polite"></span>
 </section>
+<ol class="sw-how-it-works" aria-label="{% trans 'How it works' %}"><li><span>01</span>{% trans 'Choose your software' %}</li><li><span>02</span>{% trans 'Enter email & pay' %}</li><li><span>03</span>{% trans 'Download after confirmation' %}</li></ol>
+<section class="sw-banner sw-platform-banner" aria-labelledby="platform-title"><img class="sw-banner-art" src="{% static 'merchant_catalog/images/software-platform.webp' %}" alt="" width="2172" height="724" loading="lazy"><div class="sw-banner-copy"><p class="sw-eyebrow"><i data-lucide="move-up-right" aria-hidden="true"></i> {% trans 'THE BCH FLOW PLATFORM' %}</p><h2 id="platform-title">{% trans 'More than a' %}<br>{% trans 'software storefront.' %}</h2><p>{% trans 'Tools to build. Payments to connect. A workspace to keep it together.' %}</p><div class="sw-platform-pillars"><span>{% trans 'Independent software' %}</span><span>{% trans 'Direct payments' %}</span><span>{% trans 'Private purchase access' %}</span></div><a class="sw-button sw-banner-secondary" href="{% url 'bch_flow:dashboard' %}">{% trans 'Explore the workspace' %}<i data-lucide="arrow-up-right" aria-hidden="true"></i></a></div></section>
+<p class="sw-brand-statement">{% trans 'Built around useful software and direct payments.' %}</p>
+<script src="{% static 'merchant_catalog/product-media.js' %}?v=1" defer></script>
 {% endblock %}

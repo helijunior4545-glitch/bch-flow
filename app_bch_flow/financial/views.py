@@ -304,6 +304,11 @@ def checkout_url(charge):
     token = signing.dumps({"request": str(charge.pk)}, salt=SALT)
     return reverse("bch_flow:financial_checkout", args=[token])
 
+def payment_qr_url(charge):
+    token = signing.dumps({"request": str(charge.pk)}, salt=SALT)
+    return reverse("bch_flow:financial_qr", args=[token])
+
+
 
 @never_cache
 @require_http_methods(["GET", "POST"])
