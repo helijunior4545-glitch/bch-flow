@@ -1,8 +1,0 @@
-{% load i18n %}
-<section class="rc2" data-rc2 data-list-url="{% url 'bch_flow:merchant_catalog_products' member.organization_id %}" data-create-url="{% url 'bch_flow:merchant_catalog_create' member.organization_id %}" data-asset="{{ asset }}">
-  <div class="rc2-head"><div><span class="rc2-eyebrow">{% trans "COMMERCIAL DETAILS" %}</span><h3>{% trans "Product or service" %}</h3></div><span class="rc2-optional">{% trans "Optional" %}</span></div>
-  <div class="rc2-picker"><select id="rc2-product-select" aria-label="{% trans 'Select a product or service' %}"><option value="">{% trans 'No product — custom amount' %}</option></select><button type="button" class="rc2-new" data-rc2-new><span aria-hidden="true">＋</span> {% trans "New product" %}</button></div>
-  <div class="rc2-selected" data-rc2-selected hidden><div class="rc2-product-icon" aria-hidden="true" data-rc2-thumb>▣</div><div class="rc2-selected-body"><strong data-rc2-name></strong><small data-rc2-meta></small></div><button type="button" data-rc2-remove aria-label="{% trans 'Remove product from receipt' %}">×</button></div>
-  <p class="rc2-hint" data-rc2-hint>{% trans "Choose a saved service or create a new one without leaving this receipt." %}</p>
-  <input type="hidden" name="catalog_product_id" value="" data-rc2-product-id>
-</section>

@@ -1,3 +1,0 @@
-/* BCH Flow landing V3 responsive / media-specific enhancements. */
-@media (max-width:760px){.bf-landing .bf-hero-visual{max-width:100%}.bf-landing .bf-film-dialog{width:calc(100vw - 16px)}.bf-landing .bf-jury-actions{width:100%}}
-@media(prefers-reduced-motion:reduce){.bf-landing *{animation-duration:.01ms!important;transition-duration:.01ms!important}}

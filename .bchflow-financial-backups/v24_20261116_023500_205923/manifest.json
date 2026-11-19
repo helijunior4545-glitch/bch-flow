@@ -1,9 +1,0 @@
-{
-  "modified": [
-    "app_bch_flow/templates/app_bch_flow/financial/home.html"
-  ],
-  "created": [
-    "app_bch_flow/static/app_bch_flow/css/signing-env-row-v24.css",
-    "app_bch_flow/static/app_bch_flow/js/signing-env-row-v24.js"
-  ]
-}

@@ -1,2 +1,0 @@
-{% extends 'app_bch_flow/base.html' %}{% load i18n %}{% block title %}{% trans "New organization · BCH Flow" %}{% endblock %}
-{% block content %}<main class="bch-auth"><section class="bch-card"><h1>{% trans "New organization" %}</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button class="button" type="submit">{% trans "Create workspace" %}</button></form><a href="{% url 'bch_flow:dashboard' %}">{% trans "Back" %}</a></section></main>{% endblock %}
