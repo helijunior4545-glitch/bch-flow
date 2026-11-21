@@ -11,7 +11,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 from app_bch_flow.financial.amounts import PaymentError, display
-from app_bch_flow.financial.views import checkout_url, payment_payload_for, payment_qr_url
+from app_bch_flow.financial.views import payment_payload_for, payment_qr_url
 from app_bch_flow.views.authentication import current_identity
 from .models import MerchantProduct, SoftwareRelease, SoftwareOffer, SoftwareOrder, SoftwareDownload
 from .software import available_offers, downloadable, order_software
@@ -22,7 +22,7 @@ from .software_storage import SoftwareStorageError
 from .views import access
 
 SALT = 'software-download-v1'
-STATE_LABELS = {'ready': _('Ready to download'), 'review': _('Under review'), 'expired': _('Payment window ended'), 'preparing': _('Preparing payment'), 'partial': _('Partially paid'), 'confirming': _('Confirming payment'), 'waiting': _('Awaiting payment')}
+STATE_LABELS = {'ready': _('Ready to download'), 'review': _('Under review'), 'late': _('Payment detected after the deadline'), 'expired': _('Payment window ended'), 'preparing': _('Preparing payment'), 'partial': _('Partially paid'), 'confirming': _('Confirming payment'), 'waiting': _('Awaiting payment')}
 
 
 def private(response):
@@ -154,8 +154,17 @@ def state(order):
     charge = order.payment
     if downloadable(order):
         return 'ready'
-    if charge.account.frozen or charge.status == 'review':
+    if charge.account.frozen:
         return 'review'
+    if charge.status == 'review':
+        if (charge.account.asset == 'BCH' and charge.account.environment == 'live'
+                and charge.receipts.filter(status='review', credited_at__isnull=True,
+                                           created_at__gte=charge.expires_at).exists()):
+            return 'late'
+        return 'review'
+    if (charge.account.asset == 'BCH' and charge.account.environment == 'live'
+            and charge.receipts.filter(status='observed', created_at__lt=charge.expires_at).exists()):
+        return 'confirming'
     if charge.expires_at <= timezone.now():
         return 'expired'
     if charge.address.startswith('pending:'):
@@ -194,11 +203,15 @@ def forget_guest_access(request):
 def order_detail(request, order_id):
     order = owned_order(request, order_id)
     delivery_state = state(order)
-    payload = payment_payload_for(order.payment) if delivery_state in ('waiting', 'partial', 'confirming') else ''
+    charge = order.payment
+    payload = payment_payload_for(charge) if delivery_state in ('waiting', 'partial') else ''
+    currency = charge.account.asset
     return private(render(request, 'merchant_catalog/software_order.html', {
-        'order': order, 'state': delivery_state, 'received': display(order.payment.received_units, order.payment.account.asset), 'amount': display(order.payment.amount_units, order.payment.account.asset),
+        'order': order, 'state': delivery_state, 'received': display(charge.received_units, currency),
+        'amount': display(charge.amount_units, currency),
+        'remaining': display(max(0, charge.amount_units - charge.received_units), currency),
+        'can_restart': delivery_state == 'expired' and not charge.receipts.exists(),
         'recovery_url': recovery_url(request, order) if order.guest_id else '',
-        'payment_url': checkout_url(order.payment),
         'payment_payload': payload,
         'payment_qr_url': payment_qr_url(order.payment) if payload else '',
     }))
@@ -209,7 +222,8 @@ def retry_payment(request, order_id):
     from app_bch_flow.financial import service
     order = owned_order(request, order_id)
     try:
-        service.prepare_request(order.payment)
+        if state(order) == 'preparing':
+            service.prepare_request(order.payment)
     except PaymentError:
         pass  # The saved order continues to show its actual preparation state.
     return private(redirect('bch_flow:software_order', order_id=order.pk))

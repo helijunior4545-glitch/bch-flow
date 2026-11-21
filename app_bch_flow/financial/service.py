@@ -243,8 +243,14 @@ def _receipt(account, request, source, amount, confirmations, required):
     if receipt.status == "review":
         return receipt
     receipt.confirmations = max(0, confirmations)
-    late = request.expires_at <= timezone.now()
-    if confirmations >= required and not late:
+    live_bch = account.asset == "BCH" and account.environment == "live"
+    # The receipt records when the provider output was first verified. A
+    # confirmation arriving after expiry does not change that observation.
+    observed_at = receipt.created_at if live_bch else timezone.now()
+    needs_review = request.expires_at <= observed_at or (
+        live_bch and (confirmations < 0 or request.status == "review" or account.frozen)
+    )
+    if confirmations >= required and not needs_review:
         _move(
             account,
             "available",
@@ -262,7 +268,7 @@ def _receipt(account, request, source, amount, confirmations, required):
             if request.received_units == request.amount_units
             else "overpaid"
         )
-    elif late:
+    elif needs_review:
         receipt.status, request.status = "review", "review"
     receipt.save(update_fields=["confirmations", "status", "credited_at"])
     request.save(update_fields=["received_units", "status"])

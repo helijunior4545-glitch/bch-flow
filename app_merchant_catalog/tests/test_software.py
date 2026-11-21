@@ -15,7 +15,7 @@ from django.utils import timezone
 from app_bch_flow.identity.services import register_identity, create_organization
 from app_bch_flow.identity.sessions import create_session, COOKIE_NAME
 from app_bch_flow.models import FlowAccount, FlowReceipt, FlowRequest
-from app_bch_flow.financial import service
+from app_bch_flow.financial import service, worker
 from app_bch_flow.financial.amounts import PaymentError, ProviderUnavailable
 from app_merchant_catalog.models import MerchantProduct, SoftwareRelease, SoftwareOffer, SoftwareOrder, SoftwareDownload
 from app_merchant_catalog.software import inspect_archive, order_software, downloadable
@@ -104,6 +104,68 @@ class SoftwareTests(TestCase):
         self.assertFalse(downloadable(order))
         self.credit(order, 600)
         self.assertTrue(downloadable(order))
+
+    def test_bch_worker_confirms_on_time_payment_after_checkout_expires(self):
+        order = self.buy()
+        charge = order.payment
+        charge.address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
+        charge.save(update_fields=['address'])
+        txid = 'a' * 64
+        output = {'n': 0, 'value': '0.00001000', 'address': charge.address}
+        status_url = self.url('software_status', order.pk)
+        with (
+            patch.object(worker, 'blockchain_node') as scan_node,
+            patch.object(service, 'blockchain_node') as verify_node,
+        ):
+            node = verify_node.return_value = scan_node.return_value
+            node.confirmations = 2
+            node.output_address.side_effect = lambda item: item['address']
+            node.rpc.return_value = {'lastblock': 'b' * 64, 'transactions': [
+                {'category': 'receive', 'txid': txid},
+            ]}
+            node.outputs.return_value = (0, [output])
+            self.assertEqual(worker.sync_crypto(charge.account), 1)
+
+            with patch('django.utils.timezone.now', return_value=charge.expires_at + timedelta(seconds=1)):
+                order_page = self.client.get(self.url('software_order', order.pk))
+                self.assertEqual(order_page.context['state'], 'confirming')
+                self.assertNotContains(order_page, 'class="sw-payment-qr"')
+                self.assertEqual(self.client.post(self.url('software_download_link', order.pk)).status_code, 409)
+
+                node.rpc.return_value['transactions'] = []
+                node.outputs.return_value = (2, [output])
+                self.assertEqual(worker.sync_crypto(charge.account), 1)
+                self.assertEqual(worker.sync_crypto(charge.account), 1)
+                self.assertEqual(self.client.get(status_url).json()['state'], 'ready')
+                download = self.client.post(self.url('software_download_link', order.pk))
+                self.assertEqual(download.status_code, 302)
+                self.assertTrue(b''.join(self.client.get(download.url).streaming_content))
+
+        charge.refresh_from_db()
+        self.assertEqual(charge.received_units, 1000)
+        self.assertEqual(charge.account.journal.count(), 1)
+
+    def test_expired_bch_checkout_offers_restart_then_marks_late_payment_for_review(self):
+        order = self.buy()
+        charge = order.payment
+        charge.address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
+        charge.expires_at = timezone.now() - timedelta(seconds=1)
+        charge.save(update_fields=['address', 'expires_at'])
+        order_url = self.url('software_order', order.pk)
+
+        expired = self.client.get(order_url)
+        self.assertEqual(expired.context['state'], 'expired')
+        self.assertTrue(expired.context['can_restart'])
+        self.assertNotContains(expired, 'class="sw-payment-qr"')
+
+        self.credit(order, confirmations=0, source='late-bch')
+        self.credit(order, confirmations=2, source='late-bch')
+        late = self.client.get(order_url)
+        self.assertEqual(late.context['state'], 'late')
+        self.assertFalse(late.context['can_restart'])
+        self.assertEqual(charge.received_units, 0)
+        self.assertEqual(charge.account.journal.count(), 0)
+        self.assertEqual(self.client.post(self.url('software_download_link', order.pk)).status_code, 409)
 
     def test_overpayment_unlocks(self):
         order = self.buy()
@@ -228,7 +290,7 @@ class SoftwareTests(TestCase):
             'version':'2.0.0','archive':archive(),'requirements':'Python','license_text':'Personal use','account':account.pk,'price':'1'})
         self.assertEqual(response.status_code,200)
         self.assertEqual(SoftwareRelease.objects.count(),1)
-        self.assertContains(response,'Select a valid choice')
+        self.assertTrue(response.context['form'].has_error('account', 'invalid_choice'))
 
     def test_publish_and_add_second_payment_method(self):
         self.login(self.seller)

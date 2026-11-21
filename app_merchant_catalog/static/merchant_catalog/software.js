@@ -36,31 +36,83 @@
   if (!root) return;
   // Render translated state messages on the server. Reload only on transitions.
   let stopped = false;
-  const terminal = new Set(['review', 'expired']);
+  const download = document.getElementById('download-software');
+  if (download && window.location.hash === '#download-software') {
+    download.focus();
+  }
   const feedback = root.querySelector('[data-poll-feedback]');
+  const progress = root.querySelector('[data-payment-progress]');
+  const checking = progress?.querySelector('[data-checking]');
+  const nextCheck = progress?.querySelector('[data-next-check]');
+  const seconds = progress?.querySelector('[data-check-seconds]');
+  let scheduledPoll;
+  let countdown;
+  let activeRequest;
+  if (progress) progress.hidden = false;
+
+  function schedulePoll(delay) {
+    clearTimeout(scheduledPoll);
+    clearInterval(countdown);
+    if (progress) {
+      const deadline = Date.now() + delay;
+      const update = () => {
+        seconds.textContent = Math.max(1, Math.ceil((deadline - Date.now()) / 1000));
+      };
+      checking.hidden = true;
+      nextCheck.hidden = false;
+      update();
+      countdown = setInterval(update, 250);
+    }
+    scheduledPoll = setTimeout(poll, delay);
+  }
+
   async function poll() {
-    if (stopped) return;
-    if (document.hidden) { setTimeout(poll, 5000); return; }
+    if (stopped || activeRequest) return;
+    if (document.hidden) { schedulePoll(5000); return; }
+    clearInterval(countdown);
+    if (progress) {
+      nextCheck.hidden = true;
+      checking.hidden = false;
+    }
     const controller = new AbortController();
+    activeRequest = controller;
     const timeout = setTimeout(() => controller.abort(), 12000);
     try {
       const response = await fetch(root.dataset.statusUrl, {
         credentials: 'same-origin', cache: 'no-store', signal: controller.signal,
         headers: {'Accept': 'application/json'}
       });
+      if (activeRequest !== controller) return;
       if (!response.ok) throw new Error('status');
       const result = await response.json();
+      if (activeRequest !== controller) return;
       if (typeof result.state !== 'string') throw new Error('response');
-      if (result.state !== root.dataset.state) { window.location.reload(); return; }
+      if (result.state !== root.dataset.state) {
+        const destination = new URL(window.location.href);
+        destination.hash = result.state === 'ready' ? 'download-software' : '';
+        window.history.replaceState(null, '', destination);
+        window.location.reload();
+        return;
+      }
       root.querySelector('[data-received]').textContent = result.received;
       feedback.textContent = '';
     } catch (_) {
+      if (activeRequest !== controller) return;
       feedback.textContent = root.dataset.retryMessage;
-    } finally { clearTimeout(timeout); }
-    if (!stopped && !terminal.has(root.dataset.state)) setTimeout(poll, 5000);
+    } finally {
+      clearTimeout(timeout);
+      if (activeRequest === controller) activeRequest = null;
+    }
+    if (!stopped) schedulePoll(5000);
   }
   // Keep checking ready orders too: a reversal must remove the download action.
-  window.addEventListener('pagehide', () => { stopped = true; });
+  window.addEventListener('pagehide', () => {
+    stopped = true;
+    clearTimeout(scheduledPoll);
+    clearInterval(countdown);
+    activeRequest?.abort();
+    activeRequest = null;
+  });
   window.addEventListener('pageshow', event => { if (event.persisted) { stopped = false; poll(); } });
-  if (!terminal.has(root.dataset.state)) setTimeout(poll, 3000);
+  schedulePoll(3000);
 })();

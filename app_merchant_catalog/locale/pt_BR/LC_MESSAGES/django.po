@@ -326,3 +326,117 @@ msgstr "Otimizando o vídeo antes do envio. Mantenha esta página aberta."
 
 msgid "The video will be optimized when saved."
 msgstr "O vídeo será otimizado ao salvar."
+
+msgid "Payment detected after the deadline"
+msgstr "Pagamento detectado após o prazo"
+
+msgid "Payment detected after the deadline."
+msgstr "Pagamento detectado após o prazo."
+
+msgid "Your software is ready."
+msgstr "Seu software está pronto."
+
+msgid "Payment needs review."
+msgstr "O pagamento precisa de revisão."
+
+msgid "Payment window ended."
+msgstr "O prazo para pagamento terminou."
+
+msgid "Payment setup is not complete."
+msgstr "A configuração do pagamento está incompleta."
+
+msgid "Partial payment received."
+msgstr "Pagamento parcial recebido."
+
+msgid "Payment detected. Confirming…"
+msgstr "Pagamento detectado. Aguardando confirmações…"
+
+msgid "Waiting for your payment."
+msgstr "Aguardando seu pagamento."
+
+msgid "Your transaction is being verified automatically. Please wait before sending another payment."
+msgstr "Estamos verificando sua transação automaticamente. Aguarde antes de enviar outro pagamento."
+
+msgid "Confirmed amount:"
+msgstr "Valor confirmado:"
+
+msgid "Download software"
+msgstr "Baixar software"
+
+msgid "Private download. Links expire in five minutes; you can generate another here."
+msgstr "Download privado. O link expira em cinco minutos e você pode gerar outro aqui."
+
+msgid "No payment address or QR code is available."
+msgstr "O endereço de pagamento e o QR Code estão indisponíveis."
+
+msgid "Retry below or contact the seller before sending funds."
+msgstr "Tente novamente abaixo ou fale com o vendedor antes de enviar o pagamento."
+
+msgid "Retry payment setup"
+msgstr "Tentar configurar o pagamento novamente"
+
+msgid "Payment QR code"
+msgstr "QR Code de pagamento"
+
+msgid "Scan to pay for this software"
+msgstr "Escaneie para pagar pelo software"
+
+msgid "Scan to pay"
+msgstr "Escaneie para pagar"
+
+msgid "Check the currency and amount in your wallet before confirming."
+msgstr "Confira a moeda e o valor na sua carteira antes de confirmar."
+
+msgid "Payment address or code"
+msgstr "Endereço ou código de pagamento"
+
+msgid "Copied"
+msgstr "Copiado"
+
+msgid "Code selected. Copy it manually."
+msgstr "Código selecionado. Copie manualmente."
+
+msgid "Copy payment code"
+msgstr "Copiar código de pagamento"
+
+msgid "Contact the seller with this order reference to review a refund. Please do not pay again."
+msgstr "Informe a referência do pedido ao vendedor para análise da devolução. Aguarde antes de pagar novamente."
+
+msgid "Contact the seller with this order reference if you sent funds. Downloads remain blocked until payment is resolved."
+msgstr "Se você enviou o pagamento, informe a referência do pedido ao vendedor. O download ficará bloqueado até a revisão."
+
+msgid "If you already sent funds, wait for verification and contact the seller before paying again."
+msgstr "Se você já enviou o pagamento, aguarde a verificação e fale com o vendedor antes de pagar novamente."
+
+msgid "Start a new payment"
+msgstr "Iniciar um novo pagamento"
+
+msgid "Order total"
+msgstr "Total do pedido"
+
+msgid "Purchase email"
+msgstr "E-mail da compra"
+
+msgid "Purchase progress"
+msgstr "Progresso da compra"
+
+msgid "Order created"
+msgstr "Pedido criado"
+
+msgid "Payment confirmed"
+msgstr "Pagamento confirmado"
+
+msgid "Download ready"
+msgstr "Download disponível"
+
+msgid "Connection interrupted. Your order is saved; checking again shortly."
+msgstr "A conexão foi interrompida. Seu pedido está salvo e a verificação será retomada em instantes."
+
+msgid "Automatic payment tracking"
+msgstr "Acompanhamento automático do pagamento"
+
+msgid "Checking payment status…"
+msgstr "Consultando o pagamento…"
+
+msgid "Next status check in"
+msgstr "Próxima consulta em"

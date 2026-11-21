@@ -1,10 +1,12 @@
 """Optional real Chromium checks: FLOW_BROWSER_TESTS=1 python manage.py test ..."""
 import hashlib
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
 from pathlib import Path
 import subprocess
 import tempfile
+import time
 from unittest import skipUnless
 from unittest.mock import patch
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -48,20 +50,36 @@ class SoftwareBrowserTests(StaticLiveServerTestCase):
     def purchase_and_download(self, sign_in):
         artifacts=Path(os.environ.get('FLOW_BROWSER_ARTIFACTS','/tmp/bch-software-browser'))
         artifacts.mkdir(parents=True,exist_ok=True)
-        result=artifacts/'purchase-session.json'
+        session_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(session_dir.cleanup)
+        result = Path(session_dir.name) / 'purchase-session.json'
         def prepare(charge):
             charge.address = 'bitcoincash:qpm2qsznhks23z7629mms6s4cwef74vcwvy22gdx6a'
             charge.save(update_fields=['address'])
             return charge
-        with patch('app_bch_flow.financial.service.prepare_request', side_effect=prepare):
-            self.browser({'phase':'purchase','base':self.live_server_url,
-                'product':self.url('software_product',self.product.pk),'artifacts':str(artifacts),
-                'result':str(result),'cookieName':COOKIE_NAME if sign_in else GUEST_COOKIE,'signIn':sign_in})
-        order=SoftwareOrder.objects.get()
-        self.assertEqual(order.buyer_id is None, not sign_in)
-        with transaction.atomic():
-            charge=FlowRequest.objects.select_for_update().get(pk=order.payment_id)
-            service._receipt(service._locked(charge.account_id),charge,'browser:fixture',1000,2,2)
+        with (
+            patch('app_bch_flow.financial.service.prepare_request', side_effect=prepare),
+            ThreadPoolExecutor(max_workers=1) as browser,
+        ):
+            purchase = browser.submit(self.browser, {
+                'phase': 'purchase', 'base': self.live_server_url,
+                'product': self.url('software_product', self.product.pk), 'artifacts': str(artifacts),
+                'result': str(result), 'cookieName': COOKIE_NAME if sign_in else GUEST_COOKIE,
+                'signIn': sign_in, 'waitForSettlement': True,
+            })
+            deadline = time.monotonic() + 30
+            while not result.exists() and not purchase.done() and time.monotonic() < deadline:
+                time.sleep(0.05)
+            if purchase.done():
+                purchase.result()
+            self.assertTrue(result.exists(), 'Browser did not reach the payment screen')
+            order = SoftwareOrder.objects.get()
+            self.assertEqual(order.buyer_id is None, not sign_in)
+            with transaction.atomic():
+                account = service._locked(order.payment.account_id)
+                charge = FlowRequest.objects.select_for_update().get(pk=order.payment_id)
+                service._receipt(account, charge, 'browser:fixture', 1000, 2, 2)
+            purchase.result()
         session=json.loads(result.read_text())
         self.browser({'phase':'download','base':self.live_server_url,'order':session['url'],
             'cookie':session['cookie'],'recovery':session.get('recovery'),'artifacts':str(artifacts)})

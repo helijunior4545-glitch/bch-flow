@@ -31,10 +31,24 @@ const fs = require('node:fs');
       await page.screenshot({path:input.artifacts+'/software-after-purchase.png',fullPage:true});
       await page.waitForURL('**/software/orders/**');
       if(await page.getByRole('button',{name:'Download software'}).isVisible()) throw Error('Unpaid download exposed');
+      await page.locator('[data-payment-progress]').waitFor();
+      await page.locator('[data-next-check]').waitFor();
+      await page.route('**/status/', async route => {
+        await page.locator('[data-checking]').waitFor();
+        await route.continue();
+      }, {times: 1});
+      await page.waitForResponse(response => response.url().endsWith('/status/'));
+      await page.locator('[data-next-check]').waitFor();
       await page.screenshot({path:input.artifacts+'/software-order-pending.png',fullPage:true});
       const cookie=(await page.context().cookies()).find(c=>c.name===input.cookieName);
       const recovery = await page.locator('#software-access-link').count() ? await page.locator('#software-access-link').inputValue() : null;
       fs.writeFileSync(input.result,JSON.stringify({url:page.url(),cookie,recovery}),{mode:0o600});
+      if (input.waitForSettlement) {
+        await page.waitForURL('**#download-software');
+        const download = page.getByRole('button', {name:'Download software'});
+        await download.waitFor();
+        await page.waitForFunction(() => document.activeElement?.id === 'download-software');
+      }
     } else {
       await page.goto(input.order);
       await page.getByRole('heading',{name:'Your software is ready.'}).waitFor();
