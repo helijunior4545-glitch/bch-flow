@@ -1,21 +1,27 @@
 """Explicit production entrypoint. Never use the local server for real payments.
 
 Use DJANGO_SETTINGS_MODULE=config.production and inject credentials securely.
-FLOW_DATABASE_URL is separate from the existing local-only DB_* configuration.
+The Studio injects DATABASE_URL, SECRET_KEY and ALLOWED_HOSTS.
 """
 
-from .settings import *  # noqa: F403
+from .base import *  # noqa: F403
 
 DEBUG = False
-ALLOWED_HOSTS = env.list("FLOW_ALLOWED_HOSTS")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[]) or env.list("FLOW_ALLOWED_HOSTS")
 if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
     raise RuntimeError("Configure explicit production hostnames")
+SECRET_KEY = env("SECRET_KEY", default="") or env("DJANGO_SECRET_KEY")
 if len(SECRET_KEY) < 50:
-    raise RuntimeError("A strong production DJANGO_SECRET_KEY is required")
-DATABASES = {"default": environ.Env.db_url_config(env("FLOW_DATABASE_URL"))}
+    raise RuntimeError("A strong production SECRET_KEY or DJANGO_SECRET_KEY is required")
+studio_database_url = env("DATABASE_URL", default="")
+DATABASES = {"default": environ.Env.db_url_config(studio_database_url or env("FLOW_DATABASE_URL"))}
 if DATABASES["default"]["ENGINE"] != "django.db.backends.postgresql":
     raise RuntimeError("Financial operations require PostgreSQL")
-DATABASES["default"].setdefault("OPTIONS", {})["sslmode"] = "verify-full"
+database_options = DATABASES["default"].setdefault("OPTIONS", {})
+if studio_database_url:
+    database_options.setdefault("sslmode", "verify-full")
+else:
+    database_options["sslmode"] = "verify-full"
 FLOW_PAYMENTS_SANDBOX_ENABLED = False
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
