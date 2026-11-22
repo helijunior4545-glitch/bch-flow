@@ -2,6 +2,7 @@
 from django.contrib import admin
 from django.http import JsonResponse
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 
 def local_health(request):
@@ -9,6 +10,7 @@ def local_health(request):
 
 
 urlpatterns = [
+    path("", RedirectView.as_view(pattern_name="app_bch_flow:home", query_string=True)),
     path('i18n/',include('django.conf.urls.i18n')),
     path('wallet-v301/', include(('bch_wallet_v301.urls', 'bch_wallet_v301'), namespace='bch_wallet_v301')),
     path('health/', local_health, name='local_health'),

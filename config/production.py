@@ -7,6 +7,14 @@ The Studio injects DATABASE_URL, SECRET_KEY and ALLOWED_HOSTS.
 from .base import *  # noqa: F403
 
 DEBUG = False
+MIDDLEWARE = [
+    MIDDLEWARE[0],
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    *MIDDLEWARE[1:],
+]
+# The Studio snapshot carries app static directories on its read-only filesystem.
+# Discover those assets at startup because the Studio build skips collectstatic.
+WHITENOISE_USE_FINDERS = True
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[]) or env.list("FLOW_ALLOWED_HOSTS")
 if not ALLOWED_HOSTS or "*" in ALLOWED_HOSTS:
     raise RuntimeError("Configure explicit production hostnames")

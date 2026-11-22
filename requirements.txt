@@ -3,3 +3,4 @@ django-environ==0.14.0
 psycopg[binary]==3.3.7
 cryptography==50.0.2
 qrcode==8.2
+whitenoise==6.12.0
